@@ -5,7 +5,7 @@ const search = require('./search');
 const post = require('./post');
 const vote = require('./vote');
 const login = require('./login');
-//const mail = require('../../mailserver/smtp');
+const mail = require('../../mailserver/smtp');
 
 router.get('/', function (req, res) {
   res.render("index",{});
@@ -24,6 +24,6 @@ router.post('/vote/',vote.post);
 router.post('/login/',login.post);
 
 //メール
-//router.post('/mail/',mail.post);
+router.post('/mail/',mail.post);
 
 module.exports = router;
