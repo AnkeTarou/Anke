@@ -7,7 +7,7 @@ exports.post = function(req,res){
     {$match:{_id:require('mongodb').ObjectID(req.body.id)}},
     {$project:{_id:1,ansers:1,total:{$sum:"$ansers.total"}}}
   ]
-  dbo.aggregate(key,function(JSON){
+  dbo.aggregate("QuestionData","question",key,function(JSON){
     res.json(JSON[0]);
   });
 };

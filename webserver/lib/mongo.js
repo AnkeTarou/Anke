@@ -1,11 +1,11 @@
 const MongoClient = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017';
 //callback関数に検索結果を適用する。
-exports.aggregate = function(key,callback){
+exports.aggregate = function(dbName,collectionName,key,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
-    const dbo = database.db("QuestionData");
-    dbo.collection("question").aggregate(key).toArray(function(err, result) {
+    const dbo = database.db(dbName);
+    dbo.collection(collectionName).aggregate(key).toArray(function(err, result) {
       if (err) throw err;
       database.close();
       callback(result);
