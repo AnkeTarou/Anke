@@ -5,7 +5,7 @@ exports.post = function(req,res){
   const logid = req.body.id;
   const logpass= req.body.pass;
   let inquiry=true;
-  let result;
+  let result=[];
   console.log(inquiry);
   res.json(inquiry);
 };

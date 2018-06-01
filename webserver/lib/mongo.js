@@ -40,7 +40,7 @@ exports.vote = function(id,index){
 }
 
 
-//ユーザー情報の登録をする
+//ログインの照会を行う
 exports.logaggregate = function(key,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
