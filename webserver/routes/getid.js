@@ -4,8 +4,10 @@ exports.post = function(req,res){
   console.log(req.body);
   const logid = req.body.id;
   const logpass= req.body.pass;
-  let inquiry=true;
-  let result=[];
-  console.log(inquiry);
-  res.json(inquiry);
+  const key = {
+    userId:logid,
+    pass:logpass
+  }
+  dbo.insert("LoginUserData","loginuser",key);
+  res.json(true);
 };
