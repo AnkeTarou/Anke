@@ -1,0 +1,64 @@
+/***********　初期設定 ***************/
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  color:#333;
+  background-color: rgb(173, 255, 196);
+}
+/***********************************************/
+/**************** 質問投稿のアクション***********/
+#inputBox{
+  display: block;
+  background-color: red;
+  text-align: center;
+}
+
+/**************** 投稿内容のアクション***********/
+#result{
+  display: block;
+  margin: 0 auto;
+  width: 600px;
+  text-align: center;
+  background-color: rgb(134, 126, 222);
+}
+
+.slide label {
+  color: #000;
+  text-align: center;
+  border-radius: 20px;
+  background: lightblue;
+  margin: 10px auto;
+  display: block;
+  cursor: pointer;
+}
+.off {
+  margin: 0 auto;
+  height: 0;
+  overflow: hidden;
+  display: none;
+}
+.slide .question-action-open{
+  display: none;
+}
+.question+div label{
+  width: 40%;
+  background-color: rgb(190, 88, 51);
+}
+
+/************ログイン処理***********/
+
+#loginBox{
+  display: block;
+  background-color: blue;
+  text-align: center;
+}
+
+#mail{
+  display: block;
+  margin: 0 auto;
+  width: 600px;
+  text-align: center;
+  background-color: rgb(188, 26, 222);
+}

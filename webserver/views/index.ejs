@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>アンケート投稿サイト</title>
+  <link rel="stylesheet" type="text/css" href="css/index.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
+  <script>
+    window.onload = function() {
+      const inputBox = document.getElementById("inputBox");
+      const inputQuery = document.getElementById("inputQuery");
+      const inputAnsers = document.getElementsByName("inputAnser");
+      const inputAddBtn = document.getElementById("inputAddBtn");
+      const inputDelBtn = document.getElementById("inputDelBtn");
+      const inputSub = document.getElementById("inputSub");
+      const searchValue = document.getElementById("searchValue");
+      const searchSub = document.getElementById("searchSub");
+      const inputloginid = document.getElementById("inputloginid");
+      const inputloginpass = document.getElementById("inputloginpass");
+      const inputlogin = document.getElementById("inputlogin");
+      const inputmail = document.getElementById("inputmail");
+      const inputmailadress = document.getElementById("inputmailadress");
+
+      //ログイン処理
+      inputlogin.onclick = function(){
+        $.ajax({
+          type: "POST",
+          url: "/login/",
+          dataType: 'json',
+          data:function(id,pass){
+            const logobj = {id:id.value,pass:pass.value};
+            return logobj;
+          }(inputloginid,inputloginpass)
+        })
+        .done(function(res){
+          if(res==1){
+              console.log("ログイン成功");
+          }else{
+              console.log("ログイン失敗");
+          }
+        })
+        .fail(function(res){
+          console.error(res);
+        });
+      };
+      /**
+       * inputAddBtnが押されたときに選択肢を入力するテキストボックスを追加する
+       * @method
+       * @return {undefind} [description]
+       */
+      inputAddBtn.onclick = function (){
+        const inp = document.createElement("input");
+        const br = document.createElement("br");
+        inp.setAttribute("type","text");
+        inp.setAttribute("name","inputAnser");
+        br.setAttribute("name","br");
+        inputBox.insertBefore(inp,inputAddBtn);
+        inputBox.insertBefore(br,inputAddBtn);
+
+        if(inputAnsers.length == 2){
+          anserDelBtnHidActionHTML(inputDelBtn);
+        }
+      };
+      /**
+       *inputDelBtnが押されたときに最後の選択肢のテキストボックスを削除する
+       * @method
+       * @return {undefind} [description]
+      */
+      inputDelBtn.onclick = function(){
+        const brList = document.getElementsByName("br");
+        inputAnsers[inputAnsers.length-1].remove();
+        inputBox.removeChild(brList[brList.length-1]);
+        if(inputAnsers.length == 1){
+          anserDelBtnHidActionHTML(inputDelBtn);
+        }
+      }
+      /**
+       * inputSubが押されたときにinputBox内の入力内容を
+       * オブジェクトにしてサーバーに送信する。
+       * @method
+       * @return {undefind} [description]
+       */
+      inputSub.onclick = function (){
+        $.ajax({
+          type: "POST",
+          url: "/post/",
+          dataType: 'json',
+          data:function(query,ansers){
+            const obj = {query:query.value};
+            const anser = [];
+            for(let i = 0;i<ansers.length;i++){
+              anser[i] = ansers[i].value;
+            }
+            obj.ansers = anser;
+            return obj;
+          }(inputQuery,inputAnsers)
+        })
+        .done(function(res){
+          inputQuery.value = "";
+          for(let i of inputAnsers){
+            i.value = "";
+          }
+        })
+        .fail(function(res){
+          console.error(res);
+        });
+      };
+      /**
+       * searchSubが押されるとサーバーにrequestを送信し、
+       * 返ってきたオブジェクトを質問としてdocumentに適用する
+       * @method
+       * @return {[undefind]} [description]
+       */
+      searchSub.onclick = function (){
+        $.ajax({
+          type: "POST",
+          url: "/search/",
+          dataType: 'json',
+          data:{value:searchValue.value}
+        })
+        .done(function(res){
+          const result = document.getElementById('result');
+          for(let i = 0;i<res.length;i++){
+            const number = res[i]._id;
+            const query = res[i].query;
+            const ansers = res[i].ansers;
+            const total = res[i].total;
+            result.appendChild(resultQuestionAddHTML(number,query,ansers,total));
+            resultQuestionAddActionHTML(number);
+          }
+        })
+        .fail(function(res){
+          console.error(res);
+        });
+      };
+<<<<<<< HEAD
+=======
+
+      /**
+       * idでDB内を検索しindex番目の投票数を１増やす
+       * @method voteConnect
+       * @param  {[number]}    id   MongoDBでのObjectID
+       * @param  {[number]}    index    何番目のAnserを選択したか
+       * @param  {Function}  callback レスポンスに適用するコールバック関数
+       * @return {[undefind]}    [description]
+       */
+
+       inputmail.onclick = function(){
+         $.ajax({
+           type: "POST",
+           url: "/mail/",
+           dataType: 'json',
+           data:{value:inputmailadress.value}
+         })
+         .done(function(res){
+           console.log("successful");
+         })
+
+         .fail(function(res){
+           console.error(res);
+         });
+       }
+
+>>>>>>> 57bb04c1aca1c25a5957c8063571a42ddb258dc2
+      /**
+       * document表示用のHTMLノードを作成する
+       * @method resultQuestionAddHTML
+       * @param  {[String]}              id   [description]
+       * @param  {[String]}              query    [description]
+       * @param  {[array]}              aryAnser [description]
+       * @param  {[String]}             total
+       * @return {[node]}              [description]
+       */
+      function resultQuestionAddHTML(id,query,aryAnser,total){
+        const que = document.createTextNode(query);
+
+        const article = document.createElement("article");
+        article.setAttribute("class","slide");
+
+        const input1 = document.createElement("input");
+        input1.setAttribute("type","button");
+        input1.setAttribute("id","btn"+id);
+        input1.setAttribute("class","question-action-open");
+
+        const input2 = document.createElement("input");
+        input2.setAttribute("type","submit");
+        input2.setAttribute("id","sub"+id);
+        input2.setAttribute("value","決定");
+
+        const label = document.createElement("label");
+        label.setAttribute("for","btn"+id);
+
+        const div1 = document.createElement("div");
+        div1.setAttribute("class","question");
+
+        const div2 = document.createElement("div");
+        div2.setAttribute("id","hid"+id);
+        div2.setAttribute("class","off");
+
+        const div3 = document.createElement("div");
+        div3.setAttribute("id","status"+id);
+
+        //ノードの挿入
+        article.appendChild(input1);
+        article.appendChild(label);
+        label.appendChild(div1);
+        label.appendChild(div2);
+        label.appendChild(div3);
+        div1.appendChild(document.createTextNode(query));
+
+        //回答内容を入れる
+        for(let i =0;i<aryAnser.length;i++){
+          const lav = document.createElement("label");
+          const ary=  document.createTextNode(aryAnser[i].anser);
+          const inp = document.createElement("input");
+          inp.setAttribute("type","radio");
+          inp.setAttribute("name",id);
+          inp.setAttribute("value",aryAnser[i].anser);
+          //ノードの挿入
+          div2.appendChild(lav);
+          lav.appendChild(inp);
+          lav.appendChild(ary);
+        }
+        div2.appendChild(input2);
+
+        div3.appendChild(document.createTextNode("投票数\t" + total))
+        return article;
+      }
+      /**
+       * 作成された質問表示用HTMLノードにクリック時の開閉動作と
+       * 回答の動作を追加する
+       * @method resultQuestionAddActionHTML
+       * @param  {[String]}                    id [description]
+       * @return {[undefind]}                    [description]
+       */
+      function resultQuestionAddActionHTML(id){
+        const btn = document.getElementById('btn' + id);
+        const hid = document.getElementById('hid'+ id);
+        const sub = document.getElementById('sub'+ id);
+
+        btn.onclick = function(){resultQuestionAddHidActionHTML(hid)}
+        sub.onclick = function(){voteAddActionHTML(id)}
+      }
+      function resultQuestionAddHidActionHTML(hid){
+        if(hid.className == "off"){//offなら表示する
+          hid.style.height = "auto";
+          hid.style.display = "block"
+          hid.className = "on";
+        }else if(hid.className == "on"){//onなら非表示にする
+          hid.style.height = "0";
+          hid.style.display = "none";
+          hid.className = "off";
+        }
+      }
+
+      function anserDelBtnHidActionHTML(hid){
+        if(hid.className == "off"){//offなら表示する
+          hid.style.display = "inline"
+          hid.className = "on";
+        }else if(hid.className == "on"){//onなら非表示にする
+          hid.style.display = "none";
+          hid.className = "off";
+        }else{
+          console.log("resultQuestionAddHidActionHTMLで不正なものが入っている")
+        }
+      }
+      /**
+       * 投票時のアクションを追加する。
+       * 選択されていなければ送信ボタンに選択促す文字列を設定。
+       * 選択されていれば投票処理のあとに投票結果の表示を行う。
+       * @method voteAddActionHTML
+       * @param  {[type]}          id  [description]
+       * @return {[type]}          [description]
+       */
+      function voteAddActionHTML(id){
+        const sub = document.getElementById('sub'+id);
+        const hid = document.getElementById('hid'+id);
+        const btns = document.getElementsByName(id);
+        let check = -1;
+        //１つでもチェックがついているか判断
+        for(let i = 0;i < btns.length;i++){
+          if(btns[i].checked){
+            check = i;
+          }
+        }
+        //選択されていなかったとき
+        if(check == -1){
+           sub.value = "選択してください";
+           return;
+        }
+        //div内の子要素を全て削除
+        while(hid.hasChildNodes()){
+          hid.removeChild(hid.firstChild);
+        }
+        //データベースに反映
+        $.ajax({
+          type: "POST",
+          url: "/vote/",
+          data:{'id':id,'index':check},
+          dataType: 'json',
+        })
+        .done(function(res){
+          const myVote = document.createTextNode(res.ansers[check].anser + "に投票しました");
+          hid.appendChild(myVote);
+          const canvas = document.createElement("canvas");
+          hid.appendChild(canvas);
+          const statusTotal = document.getElementById('status'+id);
+          statusTotal.replaceChild(document.createTextNode("投票数\t"+res.total),statusTotal.firstChild);
+
+          const ctx = canvas.getContext("2d");
+          const data = function(){
+            const ansers = [];
+            const total = [];
+            for(let i in res.ansers){
+              ansers[i] = res.ansers[i].anser;
+              total[i] = res.ansers[i].total;
+            }
+            return {"ansers":ansers,"total":total};
+          }();
+          new Chart(ctx, {
+            // 作成するグラフの種類
+            type: 'bar',
+            // ラベルとデータセットを設定
+            data: {
+              labels: data.ansers,
+              datasets: [{
+              label: "My First dataset",
+              backgroundColor: 'rgb('+random(256,0)+','+random(256,0)+','+random(256,0)+')',
+              borderColor: 'rgb('+random(256,0)+','+random(256,0)+','+random(256,0)+')',
+              data: data.total,
+              }]
+            },
+            //オプション設定
+            options: {}
+          });
+
+
+        })
+        .fail(function(res){
+          console.error(res);
+        });
+        //閉じてしまったhidを表示
+        resultQuestionAddHidActionHTML(hid);
+      }
+      function random(max, min){
+        return Math.floor( Math.random() * (max + 1 - min) ) + min;
+      }
+    }
+
+  </script>
+</head>
+<body>
+  <section id="inputBox">
+    <input type="text" id="inputQuery"/>
+    <br />
+    <input type="text" name="inputAnser" />
+    <br />
+    <input type="button" id="inputAddBtn" value="解答追加"/>
+    <input type="button" id="inputDelBtn" class="off" value="解答削除"/>
+    <input type="submit" id="inputSub" value="送信">
+  </section>
+  <section id="result">
+    <div id="searchBox">
+      <input type="text" id="searchValue" />
+      <input type="submit" id="searchSub" value="取得" />
+    </div>
+  </section>
+
+  <section id="loginBox">
+    <input type="text" id="inputloginid" />
+    <br>
+    <input type="password" id="inputloginpass" />
+    <br>
+    <input type="submit" id="inputlogin" value="ログイン">
+  </section>
+
+  <section id="mail">
+    <input type="text" id="inputmailadress">
+    <br>
+    <input type="submit" id="inputmail" value="メール送信">
+  </section>
+</body>
+</html>
