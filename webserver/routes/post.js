@@ -1,12 +1,12 @@
 const dbo = require('../lib/mongo');
 
 exports.post = function(req,res){
-  const obj = req.body;
+  const key = req.body;
   const ans = [];
-  for(let i in obj.ansers){
-    ans[i] = {anser:obj.ansers[i],total:0};
+  for(let i in key.ansers){
+    ans[i] = {anser:key.ansers[i],total:0};
   }
-  obj.ansers = ans;
-  dbo.insert(obj);
-  res.json(obj);
+  key.ansers = ans;
+  dbo.insert("QuestionData","question",key);
+  res.json(key);
 }
