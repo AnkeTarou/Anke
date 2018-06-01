@@ -14,10 +14,10 @@ exports.aggregate = function(dbName,collectionName,key,callback){
 };
 
 //ObjectをDBに挿入する
-exports.insert = function(database,collection,key){
+exports.insert = function(dbName,collection,key){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
-    const dbo = database.db(database);
+    const dbo = database.db(dbName);
     dbo.collection(collection).insertOne(key, function(err, result) {
       if (err) throw err;
       database.close();
