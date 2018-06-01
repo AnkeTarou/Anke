@@ -10,7 +10,7 @@ exports.post = function(req,res){
     secure: true, // use SSL
     auth: {
       user: '',
-      pass: ''',
+      pass: '',
     },
   }
 
