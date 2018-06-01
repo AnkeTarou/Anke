@@ -6,6 +6,7 @@ const post = require('./post');
 const vote = require('./vote');
 const login = require('./login');
 const mail = require('../../mailserver/smtp');
+const getid = require('./getid');
 
 router.get('/', function (req, res) {
   res.render("index",{});
@@ -22,6 +23,9 @@ router.post('/vote/',vote.post);
 
 //ログイン
 router.post('/login/',login.post);
+
+//ユーザー登録
+router.post('/getid/',getid.post);
 
 //メール
 router.post('/mail/',mail.post);

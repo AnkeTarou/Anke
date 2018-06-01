@@ -19,6 +19,9 @@
       const inputloginid = document.getElementById("inputloginid");
       const inputloginpass = document.getElementById("inputloginpass");
       const inputlogin = document.getElementById("inputlogin");
+      const inputgetid = document.getElementById("inputgetid");
+      const inputgetpass = document.getElementById("inputgetpass");
+      const inputget = document.getElementById("inputget");
       const inputmail = document.getElementById("inputmail");
       const inputmailadress = document.getElementById("inputmailadress");
 
@@ -38,6 +41,28 @@
               console.log("ログイン成功");
           }else{
               console.log("ログイン失敗");
+          }
+        })
+        .fail(function(res){
+          console.error(res);
+        });
+      };
+      //ログイン情報登録
+      inputget.onclick = function(){
+        $.ajax({
+          type: "POST",
+          url: "/getid/",
+          dataType: 'json',
+          data:function(id,pass){
+            const logobj = {id:id.value,pass:pass.value};
+            return logobj;
+          }(inputgetid,inputgetpass)
+        })
+        .done(function(res){
+          if(res==1){
+              console.log("登録成功");
+          }else{
+              console.log("登録失敗");
           }
         })
         .fail(function(res){
@@ -369,7 +394,7 @@
     <input type="password" id="inputloginpass" />
     <br>
     <input type="submit" id="inputlogin" value="ログイン">
-    
+    <br>
     <input type="text" id="inputgetid" />
     <br>
     <input type="password" id="inputgetpass" />

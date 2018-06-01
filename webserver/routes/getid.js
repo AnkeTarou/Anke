@@ -6,14 +6,6 @@ exports.post = function(req,res){
   const logpass= req.body.pass;
   let inquiry=true;
   let result;
-  //const result=db.question.find(id:logid,pass:logpass)
-  /*dbo.logaggregate([{$match:{userId:logid,pass:logpass}}],function(result){
-    if(result[0]){
-      inquiry=true;
-    }else{
-      inquiry=false;
-    }
-  })*/
   console.log(inquiry);
   res.json(inquiry);
 };
