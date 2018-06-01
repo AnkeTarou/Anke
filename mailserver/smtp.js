@@ -9,7 +9,7 @@ exports.post = function(req,res){
     port: 465,
     secure: true, // use SSL
     auth: {
-      user: '',
+      user: 'ankedaisuki4649@gmail.com',
       pass: '',
     },
   }
