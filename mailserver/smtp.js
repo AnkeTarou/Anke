@@ -1,6 +1,6 @@
 ﻿//モジュールの読み込み
 const nodemailer = require("nodemailer");
-const express = require("express");
+const pass = require("./pass.js");
 
 exports.post = function(req,res){
   //SMTPサーバの設定
@@ -10,7 +10,7 @@ exports.post = function(req,res){
     secure: true, // use SSL
     auth: {
       user: 'ankedaisuki4649@gmail.com',
-      pass: '',
+      pass: pass.pass,
     },
   }
 
