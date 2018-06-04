@@ -14,9 +14,7 @@ exports.post = function(req,res){
       inquiry={boo: true, userid: logid, userpass: logpass};
     }else{
       inquiry={boo: false};
-      res.json(key);
-    }else{
-      res.json(null);
     }
+    res.json(inquiry);
   })
 };
