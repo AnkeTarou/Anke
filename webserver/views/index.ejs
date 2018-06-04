@@ -37,20 +37,12 @@
           }(inputloginid,inputloginpass)
         })
         .done(function(res){
-<<<<<<< HEAD
           if(res.boo == 1){
               console.log("ログイン成功");
               window.sessionStorage.setItem(['userid'],[res.userid]);
               window.sessionStorage.setItem(['userpass'],[res.userpass]);
-              console.log(window.sessionStorage.getItem('userid'));
           }else{
-=======
-          if(res==null){
->>>>>>> ff07998de6d705682c7e53ccb7b1e34fd3b4843b
               console.log("ログイン失敗");
-          }else{
-              console.log(res);
-              console.log("ログイン成功");
           }
         })
         .fail(function(res){

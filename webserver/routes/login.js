@@ -11,15 +11,12 @@ exports.post = function(req,res){
     //console.log(result);
     let inquiry;
     if(result[0]){
-<<<<<<< HEAD
       inquiry={boo: true, userid: logid, userpass: logpass};
     }else{
       inquiry={boo: false};
-=======
       res.json(key);
     }else{
       res.json(null);
->>>>>>> ff07998de6d705682c7e53ccb7b1e34fd3b4843b
     }
   })
 };
