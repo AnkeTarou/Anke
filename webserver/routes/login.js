@@ -7,9 +7,9 @@ exports.post = function(req,res){
     //console.log(result);
     let inquiry;
     if(result[0]){
-      inquiry=true;
+      inquiry={boo: true, userid: logid, userpass: logpass};
     }else{
-      inquiry=false;
+      inquiry={boo: false};
     }
     res.json(inquiry);
   })
