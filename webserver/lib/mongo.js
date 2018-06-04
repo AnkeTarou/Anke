@@ -44,8 +44,8 @@ exports.vote = function(id,index){
 exports.logaggregate = function(key,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
-    const dbo = database.db("LoginUserData");
-    dbo.collection("loginuser").aggregate(key).toArray(function(err, result) {
+    const dbo = database.db("UserData");
+    dbo.collection("user").aggregate(key).toArray(function(err, result) {
       if (err) throw err;
       database.close();
       callback(result);

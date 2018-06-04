@@ -11,3 +11,8 @@ exports.post = function(req,res){
     res.json(JSON[0]);
   });
 };
+/*
+req.body = {
+  id:""投稿のObjectId",index:"何番目を選んだか"
+}
+ */
