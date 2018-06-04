@@ -8,6 +8,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
   <script>
     window.onload = function() {
+      let login = false;
+
       const inputBox = document.getElementById("inputBox");
       const inputQuery = document.getElementById("inputQuery");
       const inputAnsers = document.getElementsByName("inputAnser");
@@ -48,6 +50,8 @@
               document.cookie = 'userid=' + res.userid;
               document.cookie = 'userpass=' + res.userpass;
               console.log(document.cookie);
+
+              login = true;
           }else{
               console.log("ログイン失敗");
           }
@@ -62,6 +66,7 @@
         window.sessionStorage.clear();
         document.cookie = 'userid=; max-age=0'
         document.cookie = 'userpass=; max-age=0'
+        login = false;
         console.log(document.cookie);
       }
 
@@ -332,7 +337,16 @@
         const hid = document.getElementById('hid'+ id);
         const sub = document.getElementById('sub'+ id);
 
-        btn.onclick = function(){resultQuestionAddHidActionHTML(hid)}
+        btn.onclick = function(){
+          // ログイン状態の処理
+          if(login){
+            // 投票可能
+              resultQuestionAddHidActionHTML(hid);
+          }else{
+            // 未ログイン状態
+            // 投票不可能
+          }
+        }
         sub.onclick = function(){voteAddActionHTML(id)}
       }
       function resultQuestionAddHidActionHTML(hid){
