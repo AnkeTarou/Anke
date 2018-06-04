@@ -21,7 +21,7 @@ exports.post = function(req,res){
     from: 'ankedaisuki4649@gmail.com',  // Gmailをメインサーバーとして使用中
     to: req.body.value,        // userのメールアドレス
     subject: 'nodemailer test mail',
-    text: 'テストメールです。'
+    text: 'このサイトをよろしくお願いいたします。今後実装予定です。'
   };
 
   // メール送信
