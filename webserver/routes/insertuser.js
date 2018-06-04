@@ -8,6 +8,15 @@ exports.post = function(req,res){
     userId:logid,
     pass:logpass
   }
-  dbo.insert("UserData","user",key);
-  res.json(true);
+  dbo.logaggregate([{$match:{userId:logid}}],function(result){
+    //console.log(result);
+    let inquiry;
+    if(result[0]){
+      inquiry=false;
+    }else{
+      dbo.insert("UserData","user",key);
+      inquiry=true;
+    }
+    res.json(inquiry);
+  })
 };
