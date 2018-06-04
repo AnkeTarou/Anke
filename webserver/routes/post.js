@@ -10,3 +10,15 @@ exports.post = function(req,res){
   dbo.insert("QuestionData","question",key);
   res.json(key);
 }
+/*
+
+req.body = {
+  query:"質問",
+  ansers:[
+    "選択肢１",
+    "選択肢２",
+    "選択肢３",
+    "選択肢４"
+  ]
+}
+ */

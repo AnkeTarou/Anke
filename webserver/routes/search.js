@@ -12,3 +12,9 @@ exports.post = function(req,res){
     res.json(JSON);
   });
 };
+
+/*
+req.body = {
+  value:"検索したい文字列"
+}
+ */
