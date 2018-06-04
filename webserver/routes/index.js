@@ -6,7 +6,7 @@ const post = require('./post');
 const vote = require('./vote');
 const login = require('./login');
 const mail = require('../../mailserver/smtp');
-const getid = require('./getid');
+const getid = require('./insertuser');
 
 router.get('/', function (req, res) {
   res.render("index",{});

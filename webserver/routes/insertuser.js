@@ -8,6 +8,6 @@ exports.post = function(req,res){
     userId:logid,
     pass:logpass
   }
-  dbo.insert("LoginUserData","loginuser",key);
+  dbo.insert("UserData","user",key);
   res.json(true);
 };
