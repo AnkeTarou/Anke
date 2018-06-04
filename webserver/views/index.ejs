@@ -110,9 +110,14 @@
       */
       inputuser.onclick = function(){
         const userId = window.sessionStorage.getItem(['userid']);
-        if( (userId != null) && (userId !='')){
-          const inp = document.createTextNode( userId + "さんでログイン中");
-          loginBox.appendChild(inp);
+        if(userId){
+          const inp = document.getElementById("login_ts");
+          if(!inp){
+            let text = document.createElement("div");
+            text.id = "login_ts";
+            text.appendChild(document.createTextNode(userId + "さんでログイン中"));
+            loginBox.appendChild(text);
+          }
           console.log(document.cookie);
         }else{
           console.log("ログインしてません")
@@ -337,17 +342,19 @@
         const hid = document.getElementById('hid'+ id);
         const sub = document.getElementById('sub'+ id);
 
-        btn.onclick = function(){
+        btn.onclick = function(){resultQuestionAddHidActionHTML(hid);}
+        sub.onclick = function(){
           // ログイン状態の処理
           if(login){
             // 投票可能
-              resultQuestionAddHidActionHTML(hid);
+            voteAddActionHTML(id);
           }else{
             // 未ログイン状態
             // 投票不可能
+            const submit = document.getElementById("sub"+id);
+            submit.value ="ログインしてください";
           }
         }
-        sub.onclick = function(){voteAddActionHTML(id)}
       }
       function resultQuestionAddHidActionHTML(hid){
         if(hid.className == "off"){//offなら表示する
