@@ -3,14 +3,17 @@ const dbo = require('../lib/mongo');
 exports.post = function(req,res){
   const logid = req.body.id;
   const logpass= req.body.pass;
+  const key = {
+    userId:logid,
+    pass:logpass
+  }
   dbo.logaggregate([{$match:{userId:logid,pass:logpass}}],function(result){
     //console.log(result);
     let inquiry;
     if(result[0]){
-      inquiry=true;
+      res.json(key);
     }else{
-      inquiry=false;
+      res.json(null);
     }
-    res.json(inquiry);
   })
 };

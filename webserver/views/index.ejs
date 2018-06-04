@@ -37,10 +37,11 @@
           }(inputloginid,inputloginpass)
         })
         .done(function(res){
-          if(res==1){
-              console.log("ログイン成功");
-          }else{
+          if(res==null){
               console.log("ログイン失敗");
+          }else{
+              console.log(res);
+              console.log("ログイン成功");
           }
         })
         .fail(function(res){
