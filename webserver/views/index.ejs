@@ -91,11 +91,19 @@
           }(inputaccount,inputgetpass)
         })
         .done(function(res){
-          if(res==1){
-            //ここでメールを送る
-              console.log("仮登録が完了しました。");
-          }else{
-              console.log("既に登録されているIDです！");
+          switch (res){
+            case 1:
+              alert("既に登録されているIDです！");
+              break;
+            case 2:
+              alert("IDは８文字以上にしてください");
+              break;
+            case 3:
+              alert("パスワードは８文字以上にしてください");
+              break;
+            case 4:
+              alert("登録が完了しました");
+              break;
           }
         })
         .fail(function(res){
@@ -288,11 +296,11 @@
         div1.setAttribute("class","question");
 
         const div2 = document.createElement("div");
-        div2.setAttribute("id","hid"+id);
-        div2.setAttribute("class","off");
+        div2.setAttribute("id","status"+id);
 
         const div3 = document.createElement("div");
-        div3.setAttribute("id","status"+id);
+        div3.setAttribute("id","hid"+id);
+        div3.setAttribute("class","off");
 
         //ノードの挿入
         article.appendChild(input1);
@@ -311,13 +319,13 @@
           inp.setAttribute("name",id);
           inp.setAttribute("value",aryAnser[i].anser);
           //ノードの挿入
-          div2.appendChild(lav);
+          div2.appendChild(document.createTextNode("投票数\t" + total))
+
+          div3.appendChild(lav);
           lav.appendChild(inp);
           lav.appendChild(ary);
         }
-        div2.appendChild(input2);
-
-        div3.appendChild(document.createTextNode("投票数\t" + total))
+        div3.appendChild(input2);
         return article;
       }
       /**
@@ -331,17 +339,20 @@
         const btn = document.getElementById('btn' + id);
         const hid = document.getElementById('hid'+ id);
         const sub = document.getElementById('sub'+ id);
-        btn.onclick = function(){
+        btn.onclick = function(){resultQuestionAddHidActionHTML(hid);}
+        sub.onclick = function(){
           // ログイン状態の処理
           if(login){
             // 投票可能
-            resultQuestionAddHidActionHTML(hid);
+              resultQuestionAddHidActionHTML(hid);
+            voteAddActionHTML(id);
           }else{
             // 未ログイン状態
             // 投票不可能
+            const submit = document.getElementById("sub"+id);
+            submit.value ="ログインしてください";
           }
         }
-        sub.onclick = function(){voteAddActionHTML(id)}
       }
       function resultQuestionAddHidActionHTML(hid){
         if(hid.className == "off"){//offなら表示する
@@ -408,6 +419,10 @@
           hid.appendChild(canvas);
           const statusTotal = document.getElementById('status'+id);
           statusTotal.replaceChild(document.createTextNode("投票数\t"+res.total),statusTotal.firstChild);
+          const comment = document.createElement("input");
+          comment.setAttribute("type","text");
+          comment.setAttribute("id","comment");
+          hid.appendChild(comment);
 
           const ctx = canvas.getContext("2d");
           const data = function(){
