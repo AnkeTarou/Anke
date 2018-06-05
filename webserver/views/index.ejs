@@ -25,6 +25,30 @@
       const inputuser = document.getElementById("inputuser");
       const inputmail = document.getElementById("inputmail");
       const inputmailadress = document.getElementById("inputmailadress");
+      const choicefile = document.getElementById("choicefile");
+      const sendfile = document.getElementById("sendfile");
+
+
+      /*sendfile.onclick=function(){
+          // フォームデータを取得
+          var formdata = new FormData($('#my_form').get(0));
+
+          // POSTでアップロード
+          $.ajax({
+              url  : "/file/",
+              type : "POST",
+              cache       : false,
+              contentType : false,
+              processData : false,
+              dataType    : "json"
+          })
+          .done(function(data, textStatus, jqXHR){
+              alert(data);
+          })
+          .fail(function(jqXHR, textStatus, errorThrown){
+              alert("fail");
+          });
+      }*/
 
       //ログイン処理
       inputlogin.onclick = function(){
@@ -444,6 +468,11 @@
     <input type="text" id="inputmailadress">
     <br>
     <input type="submit" id="inputmail" value="メール送信">
+  </section>
+  <section id="file">
+    <input type="file" id="choicefile" value="選択しろや">
+    <br>
+    <input type="button" id="sendfile" value="送信">
   </section>
 </body>
 </html>

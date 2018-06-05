@@ -63,3 +63,10 @@ body {
   text-align: center;
   background-color: rgb(188, 26, 222);
 }
+#file{
+  display: block;
+  margin: 0 auto;
+  width: 600px;
+  text-align: center;
+  background-color: rgb(20, 26, 222);
+}
