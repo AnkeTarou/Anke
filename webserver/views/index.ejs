@@ -44,8 +44,8 @@
               window.sessionStorage.setItem(['userid'],[res.userid]);
               window.sessionStorage.setItem(['userpass'],[res.userpass]);
               // cookieに値をセット
-              document.cookie = 'userid=' + res.userid;
-              document.cookie = 'userpass=' + res.userpass;
+              document.cookie = 'userid=' + res.userid + '; max-age=259200';
+              document.cookie = 'userpass=' + res.userpass + '; max-age=259200';
               console.log(document.cookie);
 
               user = {_id:res.userid,_pass:res.userpass};
@@ -69,12 +69,11 @@
 
       //セッション保持
       if(document.cookie != null){
-        console.log("別タブ開いた！");
-        // sessionに値をセット
-        window.sessionStorage.setItem(['userid'],[getCookie('userid')]);
-        window.sessionStorage.setItem(['userpass'],[getCookie('userpass')]);
+        console.log(document.cookie);
         //userに情報をセット
         user = {_id:getCookie('userid'), _pass:getCookie('userpass')};
+        document.cookie = 'userid=' + user._id + '; max-age=259200';
+        document.cookie = 'userpass=' + user._pass + '; max-age=259200';
         console.log(document.cookie);
       }
 
@@ -354,7 +353,7 @@
             $.ajax({
               type: "POST",
               url: "/comment/",
-              data:{user:user,'id':id,'content':come},
+              data:{'user':user,'id':id,'content':come},
               dataType: 'json',
             })
             .done(function(res){
