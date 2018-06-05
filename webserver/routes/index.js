@@ -7,7 +7,11 @@ const vote = require('./vote');
 const login = require('./login');
 const mail = require('../../mailserver/smtp');
 const getid = require('./insertuser');
+<<<<<<< HEAD
 const comment = require('./comment');
+=======
+const file = require('./sendfile');
+>>>>>>> 22ec1584acb10fbe45573f17dd3cef025a750eb1
 
 router.get('/', function (req, res) {
   res.render("index",{});
@@ -31,7 +35,12 @@ router.post('/account/',getid.post);
 //メール
 router.post('/mail/',mail.post);
 
+<<<<<<< HEAD
 //コメント
 router.post('/comment/',comment.post);
+=======
+//ファイル送信
+router.post('/file/',file.post);
+>>>>>>> 22ec1584acb10fbe45573f17dd3cef025a750eb1
 
 module.exports = router;
