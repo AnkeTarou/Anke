@@ -146,7 +146,7 @@ function voteAddActionHTML(id){
   $.ajax({
     type: "POST",
     url: "/vote/",
-    data:{user:user,'id':id,'index':check},
+    data:{'user':"user",'id':id,'index':check},
     dataType: 'json',
   })
   .done(function(res){
@@ -175,7 +175,7 @@ function voteAddActionHTML(id){
       $.ajax({
         type: "POST",
         url: "/comment/",
-        data:{user:user,'id':id,'content':come},
+        data:{user:"user",'id':id,'content':come},
         dataType: 'json',
       })
       .done(function(res){
