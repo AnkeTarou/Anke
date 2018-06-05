@@ -76,6 +76,8 @@
         // sessionに値をセット
         window.sessionStorage.setItem(['userid'],[getCookie('userid')]);
         window.sessionStorage.setItem(['userpass'],[getCookie('userpass')]);
+        //userに情報をセット
+        user = {_id:getCookie('userid'), _pass:getCookie('userpass')};
         console.log(document.cookie);
       }
 
@@ -344,7 +346,7 @@
         btn.onclick = function(){resultQuestionAddHidActionHTML(hid);}
         sub.onclick = function(){
           // ログイン状態の処理
-          if(user){
+          if(user._id){
             // 投票可能
             voteAddActionHTML(id);
           }else{
