@@ -27,37 +27,7 @@
       const inputget = document.getElementById("inputget");
       const inputuser = document.getElementById("inputuser");
 
-      //ログイン処理
-      inputlogin.onclick = function(){
-        $.ajax({
-          type: "POST",
-          url: "/login/",
-          dataType: 'json',
-          data:function(id,pass){
-            const logobj = {_id:id.value,pass:pass.value};
-            return logobj;
-          }(inputloginid,inputloginpass)
-        })
-        .done(function(res){
-          if(res.boo == 1){
-              console.log("ログイン成功");
-              // sessionに値をセット
-              window.sessionStorage.setItem(['userid'],[res.userid]);
-              window.sessionStorage.setItem(['userpass'],[res.userpass]);
-              // cookieに値をセット
-              document.cookie = 'userid=' + res.userid;
-              document.cookie = 'userpass=' + res.userpass;
-              console.log(document.cookie);
-
-              user = {_id:res.userid,_pass:res.userpass};
-          }else{
-              console.log("ログイン失敗");
-          }
-        })
-        .fail(function(res){
-          console.error(res);
-        });
-      };
+      
       //ログアウト処理
       inputlogout.onclick = function(){
         //sessionとcookieを削除
