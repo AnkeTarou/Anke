@@ -11,7 +11,7 @@
 
   <script>
     window.onload = function() {
-      var login = null;
+      var user = null;
 
       post.init();
       search.init();
@@ -49,7 +49,7 @@
               document.cookie = 'userpass=' + res.userpass;
               console.log(document.cookie);
 
-              login = {_id:res.userid,_pass:res.userpass};
+              user = {_id:res.userid,_pass:res.userpass};
           }else{
               console.log("ログイン失敗");
           }
@@ -64,7 +64,7 @@
         window.sessionStorage.clear();
         document.cookie = 'userid=; max-age=0'
         document.cookie = 'userpass=; max-age=0'
-        login = null;
+        user = null;
         console.log(document.cookie);
       }
 
@@ -74,6 +74,8 @@
         // sessionに値をセット
         window.sessionStorage.setItem(['userid'],[getCookie('userid')]);
         window.sessionStorage.setItem(['userpass'],[getCookie('userpass')]);
+        //userに情報をセット
+        user = {_id:getCookie('userid'), _pass:getCookie('userpass')};
         console.log(document.cookie);
       }
 
@@ -162,7 +164,6 @@
          return result;
        }
     }
-
   </script>
 </head>
 <body>

@@ -104,6 +104,8 @@ function resultQuestionAddActionHTML(id){
     }else{
       // 未ログイン状態
       // 投票不可能
+      const submit = document.getElementById("sub"+id);
+      submit.value ="ログインしてください";
     }
     */
   }
@@ -144,7 +146,7 @@ function voteAddActionHTML(id){
   $.ajax({
     type: "POST",
     url: "/vote/",
-    data:{'id':id,'index':check},
+    data:{user:user,'id':id,'index':check},
     dataType: 'json',
   })
   .done(function(res){
@@ -154,6 +156,35 @@ function voteAddActionHTML(id){
     hid.appendChild(canvas);
     const statusTotal = document.getElementById('status'+id);
     statusTotal.replaceChild(document.createTextNode("投票数\t"+res.total),statusTotal.firstChild);
+
+    // コメント機能追加
+    const content = document.createElement("input");
+    content.setAttribute("type","text");
+    content.setAttribute("id","content");
+    hid.appendChild(content);
+    const comment = document.createElement("input");
+    comment.setAttribute("type","submit");
+    comment.setAttribute("id","comment");
+    comment.setAttribute("value","コメントを送信");
+    hid.appendChild(comment);
+
+    comment.onclick = function(){
+      console.log("コメント送信");
+      const come = content.value;
+      // データベースにコメント追加
+      $.ajax({
+        type: "POST",
+        url: "/comment/",
+        data:{user:user,'id':id,'content':come},
+        dataType: 'json',
+      })
+      .done(function(res){
+        console.log("コメント送ったよ");
+      })
+      .fail(function(res){
+        console.log("コメント送れなかった");
+      });
+    }
 
     const ctx = canvas.getContext("2d");
     const data = function(){
@@ -181,8 +212,6 @@ function voteAddActionHTML(id){
       //オプション設定
       options: {}
     });
-
-
   })
   .fail(function(res){
     console.error(res);
