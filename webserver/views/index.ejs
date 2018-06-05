@@ -296,11 +296,11 @@
         div1.setAttribute("class","question");
 
         const div2 = document.createElement("div");
-        div2.setAttribute("id","status"+id);
+        div2.setAttribute("id","hid"+id);
+        div2.setAttribute("class","off");
 
         const div3 = document.createElement("div");
-        div3.setAttribute("id","hid"+id);
-        div3.setAttribute("class","off");
+        div3.setAttribute("id","status"+id);
 
         //ノードの挿入
         article.appendChild(input1);
@@ -319,13 +319,14 @@
           inp.setAttribute("name",id);
           inp.setAttribute("value",aryAnser[i].anser);
           //ノードの挿入
-          div2.appendChild(document.createTextNode("投票数\t" + total))
 
-          div3.appendChild(lav);
+          div2.appendChild(lav);
           lav.appendChild(inp);
           lav.appendChild(ary);
         }
-        div3.appendChild(input2);
+        div2.appendChild(input2);
+
+        div3.appendChild(document.createTextNode("投票数\t" + total));
         return article;
       }
       /**
@@ -344,7 +345,7 @@
           // ログイン状態の処理
           if(login){
             // 投票可能
-              resultQuestionAddHidActionHTML(hid);
+            resultQuestionAddHidActionHTML(hid);
             voteAddActionHTML(id);
           }else{
             // 未ログイン状態
