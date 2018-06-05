@@ -347,6 +347,24 @@
           comment.setAttribute("value","コメントを送信");
           hid.appendChild(comment);
 
+          comment.onclick = function(){
+            console.log("コメント送信");
+            const come = content.value;
+            // データベースにコメント追加
+            $.ajax({
+              type: "POST",
+              url: "/comment/",
+              data:{user:user,'id':id,'content':come},
+              dataType: 'json',
+            });
+            .done(function(res){
+              console.log("コメント送ったよ");
+            )}
+            .fail(function(res){
+              console.log("コメント送れなかった");
+            });
+          }
+
           const ctx = canvas.getContext("2d");
           const data = function(){
             const ansers = [];
