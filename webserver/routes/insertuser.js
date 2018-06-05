@@ -5,10 +5,10 @@ exports.post = function(req,res){
   const logpass= req.body.pass;
   console.log(logpass.length);
   const key = {
-    userId:logid,
+    _id:logid,
     pass:logpass
   }
-  dbo.logaggregate([{$match:{userId:logid}}],function(result){
+  dbo.logaggregate([{$match:{_id:logid}}],function(result){
     //console.log(result);
     let inquiry;
     if(result[0]){
@@ -22,5 +22,5 @@ exports.post = function(req,res){
       inquiry=4;
     }
     res.json(inquiry);
-  })
+  });
 };

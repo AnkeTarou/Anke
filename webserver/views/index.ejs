@@ -8,6 +8,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
   <script>
     window.onload = function() {
+      var login = null;
+
       const inputBox = document.getElementById("inputBox");
       const inputQuery = document.getElementById("inputQuery");
       const inputAnsers = document.getElementsByName("inputAnser");
@@ -19,9 +21,11 @@
       const inputloginid = document.getElementById("inputloginid");
       const inputloginpass = document.getElementById("inputloginpass");
       const inputlogin = document.getElementById("inputlogin");
-      const inputgetid = document.getElementById("inputgetid");
+      const inputlogout = document.getElementById("inputlogout");
+      const inputaccount = document.getElementById("inputaccount");
       const inputgetpass = document.getElementById("inputgetpass");
       const inputget = document.getElementById("inputget");
+      const inputuser = document.getElementById("inputuser");
       const inputmail = document.getElementById("inputmail");
       const inputmailadress = document.getElementById("inputmailadress");
 
@@ -39,8 +43,15 @@
         .done(function(res){
           if(res.boo == 1){
               console.log("ログイン成功");
+              // sessionに値をセット
               window.sessionStorage.setItem(['userid'],[res.userid]);
               window.sessionStorage.setItem(['userpass'],[res.userpass]);
+              // cookieに値をセット
+              document.cookie = 'userid=' + res.userid;
+              document.cookie = 'userpass=' + res.userpass;
+              console.log(document.cookie);
+
+              login = {userid:res.userid,userpass:res.userpass};
           }else{
               console.log("ログイン失敗");
           }
@@ -49,16 +60,35 @@
           console.error(res);
         });
       };
+      //ログアウト処理
+      inputlogout.onclick = function(){
+        //sessionとcookieを削除
+        window.sessionStorage.clear();
+        document.cookie = 'userid=; max-age=0'
+        document.cookie = 'userpass=; max-age=0'
+        login = null;
+        console.log(document.cookie);
+      }
+
+      //セッション保持
+      if(document.cookie != null){
+        console.log("別タブ開いた！");
+        // sessionに値をセット
+        window.sessionStorage.setItem(['userid'],[getCookie('userid')]);
+        window.sessionStorage.setItem(['userpass'],[getCookie('userpass')]);
+        console.log(document.cookie);
+      }
+
       //ログイン情報登録
       inputget.onclick = function(){
         $.ajax({
           type: "POST",
-          url: "/getid/",
+          url: "/account/",
           dataType: 'json',
           data:function(id,pass){
             const logobj = {id:id.value,pass:pass.value};
             return logobj;
-          }(inputgetid,inputgetpass)
+          }(inputaccount,inputgetpass)
         })
         .done(function(res){
           switch (res){
@@ -80,6 +110,28 @@
           console.error(res);
         });
       };
+
+      /**
+       *inputuserボタンが押されたときにログイン状態ならユーザー情報を返す
+       * @method
+       * @return {undefind} [user]
+      */
+      inputuser.onclick = function(){
+        const userId = window.sessionStorage.getItem(['userid']);
+        if(userId){
+          const inp = document.getElementById("login_ts");
+          if(!inp){
+            let text = document.createElement("div");
+            text.id = "login_ts";
+            text.appendChild(document.createTextNode(userId + "さんでログイン中"));
+            loginBox.appendChild(text);
+          }
+          console.log(document.cookie);
+        }else{
+          console.log("ログインしてません")
+        }
+      }
+
       /**
        * inputAddBtnが押されたときに選択肢を入力するテキストボックスを追加する
        * @method
@@ -158,28 +210,18 @@
         .done(function(res){
           const result = document.getElementById('result');
           for(let i = 0;i<res.length;i++){
-            const number = res[i]._id;
+            const id = res[i]._id;
             const query = res[i].query;
             const ansers = res[i].ansers;
             const total = res[i].total;
-            result.appendChild(resultQuestionAddHTML(number,query,ansers,total));
-            resultQuestionAddActionHTML(number);
+            result.appendChild(resultQuestionAddHTML(id,query,ansers,total));
+            resultQuestionAddActionHTML(id);
           }
         })
         .fail(function(res){
           console.error(res);
         });
       };
-
-      /**
-       * idでDB内を検索しindex番目の投票数を１増やす
-       * @method voteConnect
-       * @param  {[number]}    id   MongoDBでのObjectID
-       * @param  {[number]}    index    何番目のAnserを選択したか
-       * @param  {Function}  callback レスポンスに適用するコールバック関数
-       * @return {[undefind]}    [description]
-       */
-
        inputmail.onclick = function(){
          $.ajax({
            type: "POST",
@@ -195,6 +237,33 @@
            console.error(res);
          });
        }
+
+       /**
+        *cookieの値を取得
+        *引数 @name
+        * @return {result}
+       */
+       function getCookie( name ){
+         let result = null;
+
+         const cookieName = name + '=';
+         const allcookies = document.cookie;
+
+         const position = allcookies.indexOf( cookieName );
+         if( position != -1 ){
+           let startIndex = position + cookieName.length;
+
+           let endIndex = allcookies.indexOf( ';', startIndex );
+           if( endIndex == -1 ){
+             endIndex = allcookies.length;
+           }
+
+           result = decodeURIComponent(allcookies.substring( startIndex, endIndex ) );
+         }
+         return result;
+       }
+
+
       /**
        * document表示用のHTMLノードを作成する
        * @method resultQuestionAddHTML
@@ -270,8 +339,16 @@
         const btn = document.getElementById('btn' + id);
         const hid = document.getElementById('hid'+ id);
         const sub = document.getElementById('sub'+ id);
-
-        btn.onclick = function(){resultQuestionAddHidActionHTML(hid)}
+        btn.onclick = function(){
+          // ログイン状態の処理
+          if(login){
+            // 投票可能
+            resultQuestionAddHidActionHTML(hid);
+          }else{
+            // 未ログイン状態
+            // 投票不可能
+          }
+        }
         sub.onclick = function(){voteAddActionHTML(id)}
       }
       function resultQuestionAddHidActionHTML(hid){
@@ -405,12 +482,16 @@
     <input type="password" id="inputloginpass" />
     <br>
     <input type="submit" id="inputlogin" value="ログイン">
+    <input type="submit" id="inputlogout" value="ログアウト">
     <br>
-    <input type="text" id="inputgetid" />
+    <input type="text" id="inputaccount" />
     <br>
     <input type="password" id="inputgetpass" />
     <br>
     <input type="submit" id="inputget" value="ユーザー登録">
+    <br>
+    <input type="submit" id="inputuser" value="ユーザー情報">
+    <br>
   </section>
 
   <section id="mail">

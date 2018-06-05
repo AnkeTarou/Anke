@@ -52,6 +52,7 @@ body {
 #loginBox{
   display: block;
   background-color: blue;
+  color: yellow;
   text-align: center;
 }
 

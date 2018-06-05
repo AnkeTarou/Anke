@@ -25,7 +25,7 @@ router.post('/vote/',vote.post);
 router.post('/login/',login.post);
 
 //ユーザー登録
-router.post('/getid/',getid.post);
+router.post('/account/',getid.post);
 
 //メール
 router.post('/mail/',mail.post);
