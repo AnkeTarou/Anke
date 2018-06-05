@@ -8,7 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
   <script>
     window.onload = function() {
-      let login = false;
+      var login = null;
 
       const inputBox = document.getElementById("inputBox");
       const inputQuery = document.getElementById("inputQuery");
@@ -22,7 +22,7 @@
       const inputloginpass = document.getElementById("inputloginpass");
       const inputlogin = document.getElementById("inputlogin");
       const inputlogout = document.getElementById("inputlogout");
-      const inputgetid = document.getElementById("inputgetid");
+      const inputaccount = document.getElementById("inputaccount");
       const inputgetpass = document.getElementById("inputgetpass");
       const inputget = document.getElementById("inputget");
       const inputuser = document.getElementById("inputuser");
@@ -51,7 +51,7 @@
               document.cookie = 'userpass=' + res.userpass;
               console.log(document.cookie);
 
-              login = true;
+              login = {userid:res.userid,userpass:res.userpass};
           }else{
               console.log("ログイン失敗");
           }
@@ -66,7 +66,7 @@
         window.sessionStorage.clear();
         document.cookie = 'userid=; max-age=0'
         document.cookie = 'userpass=; max-age=0'
-        login = false;
+        login = null;
         console.log(document.cookie);
       }
 
@@ -83,19 +83,27 @@
       inputget.onclick = function(){
         $.ajax({
           type: "POST",
-          url: "/getid/",
+          url: "/account/",
           dataType: 'json',
           data:function(id,pass){
             const logobj = {id:id.value,pass:pass.value};
             return logobj;
-          }(inputgetid,inputgetpass)
+          }(inputaccount,inputgetpass)
         })
         .done(function(res){
-          if(res==1){
-            //ここでメールを送る
-              console.log("仮登録が完了しました。");
-          }else{
-              console.log("既に登録されているIDです！");
+          switch (res){
+            case 1:
+              alert("既に登録されているIDです！");
+              break;
+            case 2:
+              alert("IDは８文字以上にしてください");
+              break;
+            case 3:
+              alert("パスワードは８文字以上にしてください");
+              break;
+            case 4:
+              alert("登録が完了しました");
+              break;
           }
         })
         .fail(function(res){
@@ -202,28 +210,18 @@
         .done(function(res){
           const result = document.getElementById('result');
           for(let i = 0;i<res.length;i++){
-            const number = res[i]._id;
+            const id = res[i]._id;
             const query = res[i].query;
             const ansers = res[i].ansers;
             const total = res[i].total;
-            result.appendChild(resultQuestionAddHTML(number,query,ansers,total));
-            resultQuestionAddActionHTML(number);
+            result.appendChild(resultQuestionAddHTML(id,query,ansers,total));
+            resultQuestionAddActionHTML(id);
           }
         })
         .fail(function(res){
           console.error(res);
         });
       };
-
-      /**
-       * idでDB内を検索しindex番目の投票数を１増やす
-       * @method voteConnect
-       * @param  {[number]}    id   MongoDBでのObjectID
-       * @param  {[number]}    index    何番目のAnserを選択したか
-       * @param  {Function}  callback レスポンスに適用するコールバック関数
-       * @return {[undefind]}    [description]
-       */
-
        inputmail.onclick = function(){
          $.ajax({
            type: "POST",
@@ -341,20 +339,17 @@
         const btn = document.getElementById('btn' + id);
         const hid = document.getElementById('hid'+ id);
         const sub = document.getElementById('sub'+ id);
-
-        btn.onclick = function(){resultQuestionAddHidActionHTML(hid);}
-        sub.onclick = function(){
+        btn.onclick = function(){
           // ログイン状態の処理
           if(login){
             // 投票可能
-            voteAddActionHTML(id);
+            resultQuestionAddHidActionHTML(hid);
           }else{
             // 未ログイン状態
             // 投票不可能
-            const submit = document.getElementById("sub"+id);
-            submit.value ="ログインしてください";
           }
         }
+        sub.onclick = function(){voteAddActionHTML(id)}
       }
       function resultQuestionAddHidActionHTML(hid){
         if(hid.className == "off"){//offなら表示する
@@ -493,7 +488,7 @@
     <input type="submit" id="inputlogin" value="ログイン">
     <input type="submit" id="inputlogout" value="ログアウト">
     <br>
-    <input type="text" id="inputgetid" />
+    <input type="text" id="inputaccount" />
     <br>
     <input type="password" id="inputgetpass" />
     <br>
