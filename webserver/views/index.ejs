@@ -8,6 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
   <script type="text/javascript" src="js/post.js"></script>
   <script type="text/javascript" src="js/search.js"></script>
+  <script type="text/javascript" src="js/mail.js"></script>
 
   <script>
     window.onload = function() {
@@ -15,6 +16,7 @@
 
       post.init();
       search.init();
+      mail.init();
 
       const inputloginid = document.getElementById("inputloginid");
       const inputloginpass = document.getElementById("inputloginpass");
@@ -24,8 +26,6 @@
       const inputgetpass = document.getElementById("inputgetpass");
       const inputget = document.getElementById("inputget");
       const inputuser = document.getElementById("inputuser");
-      const inputmail = document.getElementById("inputmail");
-      const inputmailadress = document.getElementById("inputmailadress");
 
       //ログイン処理
       inputlogin.onclick = function(){
@@ -124,21 +124,7 @@
         }
       }
 
-       inputmail.onclick = function(){
-         $.ajax({
-           type: "POST",
-           url: "/mail/",
-           dataType: 'json',
-           data:{value:inputmailadress.value}
-         })
-         .done(function(res){
-           console.log("successful");
-         })
 
-         .fail(function(res){
-           console.error(res);
-         });
-       }
 
        /**
         *cookieの値を取得
