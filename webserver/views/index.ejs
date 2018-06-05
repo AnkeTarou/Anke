@@ -7,14 +7,17 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
   <script type="text/javascript" src="js/post.js"></script>
+  <script type="text/javascript" src="js/search.js"></script>
+  <script type="text/javascript" src="js/mail.js"></script>
+
   <script>
     window.onload = function() {
       var user = null;
 
       post.init();
+      search.init();
+      mail.init();
 
-      const searchValue = document.getElementById("searchValue");
-      const searchSub = document.getElementById("searchSub");
       const inputloginid = document.getElementById("inputloginid");
       const inputloginpass = document.getElementById("inputloginpass");
       const inputlogin = document.getElementById("inputlogin");
@@ -23,6 +26,7 @@
       const inputgetpass = document.getElementById("inputgetpass");
       const inputget = document.getElementById("inputget");
       const inputuser = document.getElementById("inputuser");
+<<<<<<< HEAD
       const inputmail = document.getElementById("inputmail");
       const inputmailadress = document.getElementById("inputmailadress");
       const choicefile = document.getElementById("choicefile");
@@ -49,6 +53,8 @@
               alert("fail");
           });
       }*/
+=======
+>>>>>>> 4bab6069a492e6e7d9f11d259ce68cd8a2d04f97
 
       //ログイン処理
       inputlogin.onclick = function(){
@@ -68,8 +74,8 @@
               window.sessionStorage.setItem(['userid'],[res.userid]);
               window.sessionStorage.setItem(['userpass'],[res.userpass]);
               // cookieに値をセット
-              document.cookie = 'userid=' + res.userid;
-              document.cookie = 'userpass=' + res.userpass;
+              document.cookie = 'userid=' + res.userid + '; max-age=259200';
+              document.cookie = 'userpass=' + res.userpass + '; max-age=259200';
               console.log(document.cookie);
 
               user = {_id:res.userid,_pass:res.userpass};
@@ -93,12 +99,11 @@
 
       //セッション保持
       if(document.cookie != null){
-        console.log("別タブ開いた！");
-        // sessionに値をセット
-        window.sessionStorage.setItem(['userid'],[getCookie('userid')]);
-        window.sessionStorage.setItem(['userpass'],[getCookie('userpass')]);
+        console.log(document.cookie);
         //userに情報をセット
         user = {_id:getCookie('userid'), _pass:getCookie('userpass')};
+        document.cookie = 'userid=' + user._id + '; max-age=259200';
+        document.cookie = 'userpass=' + user._pass + '; max-age=259200';
         console.log(document.cookie);
       }
 
@@ -146,50 +151,8 @@
           console.log("ログインしてません")
         }
       }
-      /**
-       * searchSubが押されるとサーバーにrequestを送信し、
-       * 返ってきたオブジェクトを質問としてdocumentに適用する
-       * @method
-       * @return {[undefind]} [description]
-       */
-      searchSub.onclick = function (){
-        $.ajax({
-          type: "POST",
-          url: "/search/",
-          dataType: 'json',
-          data:{value:searchValue.value}
-        })
-        .done(function(res){
-          const result = document.getElementById('result');
-          const articles = document.getElementsByClassName("slide");
-          for(let i = articles.length; i<res.length; i++){
-            const id = res[i]._id;
-            const query = res[i].query;
-            const ansers = res[i].ansers;
-            const total = res[i].total;
-            result.appendChild(resultQuestionAddHTML(id,query,ansers,total));
-            resultQuestionAddActionHTML(id);
-          }
-        })
-        .fail(function(res){
-          console.error(res);
-        });
-      };
-       inputmail.onclick = function(){
-         $.ajax({
-           type: "POST",
-           url: "/mail/",
-           dataType: 'json',
-           data:{value:inputmailadress.value}
-         })
-         .done(function(res){
-           console.log("successful");
-         })
 
-         .fail(function(res){
-           console.error(res);
-         });
-       }
+
 
        /**
         *cookieの値を取得
@@ -210,7 +173,6 @@
            if( endIndex == -1 ){
              endIndex = allcookies.length;
            }
-
            result = decodeURIComponent(allcookies.substring( startIndex, endIndex ) );
          }
          return result;
@@ -378,7 +340,7 @@
             $.ajax({
               type: "POST",
               url: "/comment/",
-              data:{user:user,'id':id,'content':come},
+              data:{'user':user,'id':id,'content':come},
               dataType: 'json',
             })
             .done(function(res){
@@ -425,8 +387,8 @@
       function random(max, min){
         return Math.floor( Math.random() * (max + 1 - min) ) + min;
       }
-    }
 
+    }
   </script>
 </head>
 <body>
