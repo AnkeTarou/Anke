@@ -298,11 +298,11 @@
         div1.setAttribute("class","question");
 
         const div2 = document.createElement("div");
-        div2.setAttribute("id","hid"+id);
-        div2.setAttribute("class","off");
+        div2.setAttribute("id","status"+id);
 
         const div3 = document.createElement("div");
-        div3.setAttribute("id","status"+id);
+        div3.setAttribute("id","hid"+id);
+        div3.setAttribute("class","off");
 
         //ノードの挿入
         article.appendChild(input1);
@@ -321,13 +321,13 @@
           inp.setAttribute("name",id);
           inp.setAttribute("value",aryAnser[i].anser);
           //ノードの挿入
-          div2.appendChild(lav);
+          div2.appendChild(document.createTextNode("投票数\t" + total))
+
+          div3.appendChild(lav);
           lav.appendChild(inp);
           lav.appendChild(ary);
         }
-        div2.appendChild(input2);
-
-        div3.appendChild(document.createTextNode("投票数\t" + total))
+        div3.appendChild(input2);
         return article;
       }
       /**
@@ -421,6 +421,10 @@
           hid.appendChild(canvas);
           const statusTotal = document.getElementById('status'+id);
           statusTotal.replaceChild(document.createTextNode("投票数\t"+res.total),statusTotal.firstChild);
+          const comment = document.createElement("input");
+          comment.setAttribute("type","text");
+          comment.setAttribute("id","comment");
+          hid.appendChild(comment);
 
           const ctx = canvas.getContext("2d");
           const data = function(){
