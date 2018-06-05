@@ -19,7 +19,8 @@ search.route = function (){
   })
   .done(function(res){
     const result = document.getElementById('result');
-    for(let i = 0;i<res.length;i++){
+    const articles = document.getElementsByClassName("slide");
+    for(let i = articles.length; i<res.length; i++){
       const id = res[i]._id;
       const query = res[i].query;
       const ansers = res[i].ansers;

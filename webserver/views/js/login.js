@@ -41,8 +41,7 @@ login.route = function(){
 };
 //ログアウトの処理
 login.logout = function(){
-  //sessionとcookieを削除
-  window.sessionStorage.clear();
+  //cookieを削除
   document.cookie = 'userid=; max-age=0'
   document.cookie = 'userpass=; max-age=0'
   user = null;
