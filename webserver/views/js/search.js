@@ -11,7 +11,6 @@ var search = {
 
 
 search.route = function (){
-  console.log(search);
   $.ajax({
     type: "POST",
     url: "/search/",
@@ -96,20 +95,19 @@ function resultQuestionAddActionHTML(id){
   const sub = document.getElementById('sub'+ id);
   btn.onclick = function(){
     resultQuestionAddHidActionHTML(hid);
-    /*
     // ログイン状態の処理
-    if(login){
+    if(user){
       // 投票可能
-      resultQuestionAddHidActionHTML(hid);
+      sub.value ="投票";
+      sub.onclick = function(){voteAddActionHTML(id)}
     }else{
       // 未ログイン状態
       // 投票不可能
-      const submit = document.getElementById("sub"+id);
-      submit.value ="ログインしてください";
+      sub.value ="ログインしてください";
+      sub.onclick = null;
     }
-    */
   }
-  sub.onclick = function(){voteAddActionHTML(id)}
+
 }
 function resultQuestionAddHidActionHTML(hid){
   if(hid.className == "off"){//offなら表示する
@@ -146,7 +144,7 @@ function voteAddActionHTML(id){
   $.ajax({
     type: "POST",
     url: "/vote/",
-    data:{'user':"user",'id':id,'index':check},
+    data:{'user':user,'id':id,'index':check},
     dataType: 'json',
   })
   .done(function(res){
@@ -175,7 +173,7 @@ function voteAddActionHTML(id){
       $.ajax({
         type: "POST",
         url: "/comment/",
-        data:{user:"user",'id':id,'content':come},
+        data:{'user':user,'id':id,'content':come},
         dataType: 'json',
       })
       .done(function(res){

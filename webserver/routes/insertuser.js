@@ -1,5 +1,5 @@
 const dbo = require('../lib/mongo');
-//ログイン処理
+//アカウント登録処理
 exports.post = function(req,res){
   const logid = req.body._id;
   const logpass= req.body.pass;
