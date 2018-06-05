@@ -22,7 +22,7 @@
       const inputloginpass = document.getElementById("inputloginpass");
       const inputlogin = document.getElementById("inputlogin");
       const inputlogout = document.getElementById("inputlogout");
-      const inputAccount = document.getElementById("inputAccount");
+      const inputaccount = document.getElementById("inputaccount");
       const inputgetpass = document.getElementById("inputgetpass");
       const inputget = document.getElementById("inputget");
       const inputuser = document.getElementById("inputuser");
@@ -88,7 +88,7 @@
           data:function(id,pass){
             const logobj = {id:id.value,pass:pass.value};
             return logobj;
-          }(inputAccount,inputgetpass)
+          }(inputaccount,inputgetpass)
         })
         .done(function(res){
           if(res==1){
@@ -110,9 +110,14 @@
       */
       inputuser.onclick = function(){
         const userId = window.sessionStorage.getItem(['userid']);
-        if( (userId != null) && (userId !='')){
-          const inp = document.createTextNode( userId + "さんでログイン中");
-          loginBox.appendChild(inp);
+        if(userId){
+          const inp = document.getElementById("login_ts");
+          if(!inp){
+            let text = document.createElement("div");
+            text.id = "login_ts";
+            text.appendChild(document.createTextNode(userId + "さんでログイン中"));
+            loginBox.appendChild(text);
+          }
           console.log(document.cookie);
         }else{
           console.log("ログインしてません")
@@ -471,7 +476,7 @@
     <input type="submit" id="inputlogin" value="ログイン">
     <input type="submit" id="inputlogout" value="ログアウト">
     <br>
-    <input type="text" id="inputAccount" />
+    <input type="text" id="inputaccount" />
     <br>
     <input type="password" id="inputgetpass" />
     <br>
