@@ -8,7 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
   <script>
     window.onload = function() {
-      let login = false;
+      var login = null;
 
       const inputBox = document.getElementById("inputBox");
       const inputQuery = document.getElementById("inputQuery");
@@ -51,7 +51,7 @@
               document.cookie = 'userpass=' + res.userpass;
               console.log(document.cookie);
 
-              login = true;
+              login = {userid:res.userid,userpass:res.userpass};
           }else{
               console.log("ログイン失敗");
           }
@@ -66,7 +66,7 @@
         window.sessionStorage.clear();
         document.cookie = 'userid=; max-age=0'
         document.cookie = 'userpass=; max-age=0'
-        login = false;
+        login = null;
         console.log(document.cookie);
       }
 
@@ -197,12 +197,12 @@
         .done(function(res){
           const result = document.getElementById('result');
           for(let i = 0;i<res.length;i++){
-            const number = res[i]._id;
+            const id = res[i]._id;
             const query = res[i].query;
             const ansers = res[i].ansers;
             const total = res[i].total;
-            result.appendChild(resultQuestionAddHTML(number,query,ansers,total));
-            resultQuestionAddActionHTML(number);
+            result.appendChild(resultQuestionAddHTML(id,query,ansers,total));
+            resultQuestionAddActionHTML(id);
           }
         })
         .fail(function(res){
@@ -326,12 +326,11 @@
         const btn = document.getElementById('btn' + id);
         const hid = document.getElementById('hid'+ id);
         const sub = document.getElementById('sub'+ id);
-
         btn.onclick = function(){
           // ログイン状態の処理
           if(login){
             // 投票可能
-              resultQuestionAddHidActionHTML(hid);
+            resultQuestionAddHidActionHTML(hid);
           }else{
             // 未ログイン状態
             // 投票不可能
