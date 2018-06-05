@@ -1,9 +1,9 @@
 const dbo = require('../lib/mongo');
 //ログイン処理
 exports.post = function(req,res){
-  console.log(req.body);
   const logid = req.body.id;
   const logpass= req.body.pass;
+  console.log(logpass.length);
   const key = {
     userId:logid,
     pass:logpass
@@ -12,10 +12,14 @@ exports.post = function(req,res){
     //console.log(result);
     let inquiry;
     if(result[0]){
-      inquiry=false;
+      inquiry=1;
+    }else if(logid.length<8){
+      inquiry=2;
+    }else if(logpass.length<8){
+      inquiry=3;
     }else{
       dbo.insert("UserData","user",key);
-      inquiry=true;
+      inquiry=4;
     }
     res.json(inquiry);
   })

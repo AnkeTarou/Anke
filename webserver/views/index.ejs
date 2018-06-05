@@ -61,11 +61,19 @@
           }(inputgetid,inputgetpass)
         })
         .done(function(res){
-          if(res==1){
-            //ここでメールを送る
-              console.log("仮登録が完了しました。");
-          }else{
-              console.log("既に登録されているIDです！");
+          switch (res){
+            case 1:
+              alert("既に登録されているIDです！");
+              break;
+            case 2:
+              alert("IDは８文字以上にしてください");
+              break;
+            case 3:
+              alert("パスワードは８文字以上にしてください");
+              break;
+            case 4:
+              alert("登録が完了しました");
+              break;
           }
         })
         .fail(function(res){
