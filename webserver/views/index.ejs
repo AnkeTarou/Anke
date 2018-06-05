@@ -7,14 +7,17 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
   <script type="text/javascript" src="js/post.js"></script>
+  <script type="text/javascript" src="js/search.js"></script>
+  <script type="text/javascript" src="js/mail.js"></script>
+
   <script>
     window.onload = function() {
       var user = null;
 
       post.init();
+      search.init();
+      mail.init();
 
-      const searchValue = document.getElementById("searchValue");
-      const searchSub = document.getElementById("searchSub");
       const inputloginid = document.getElementById("inputloginid");
       const inputloginpass = document.getElementById("inputloginpass");
       const inputlogin = document.getElementById("inputlogin");
@@ -23,8 +26,6 @@
       const inputgetpass = document.getElementById("inputgetpass");
       const inputget = document.getElementById("inputget");
       const inputuser = document.getElementById("inputuser");
-      const inputmail = document.getElementById("inputmail");
-      const inputmailadress = document.getElementById("inputmailadress");
 
       //ログイン処理
       inputlogin.onclick = function(){
@@ -121,50 +122,8 @@
           console.log("ログインしてません")
         }
       }
-      /**
-       * searchSubが押されるとサーバーにrequestを送信し、
-       * 返ってきたオブジェクトを質問としてdocumentに適用する
-       * @method
-       * @return {[undefind]} [description]
-       */
-      searchSub.onclick = function (){
-        $.ajax({
-          type: "POST",
-          url: "/search/",
-          dataType: 'json',
-          data:{value:searchValue.value}
-        })
-        .done(function(res){
-          const result = document.getElementById('result');
-          const articles = document.getElementsByClassName("slide");
-          for(let i = articles.length; i<res.length; i++){
-            const id = res[i]._id;
-            const query = res[i].query;
-            const ansers = res[i].ansers;
-            const total = res[i].total;
-            result.appendChild(resultQuestionAddHTML(id,query,ansers,total));
-            resultQuestionAddActionHTML(id);
-          }
-        })
-        .fail(function(res){
-          console.error(res);
-        });
-      };
-       inputmail.onclick = function(){
-         $.ajax({
-           type: "POST",
-           url: "/mail/",
-           dataType: 'json',
-           data:{value:inputmailadress.value}
-         })
-         .done(function(res){
-           console.log("successful");
-         })
 
-         .fail(function(res){
-           console.error(res);
-         });
-       }
+
 
        /**
         *cookieの値を取得
@@ -185,11 +144,11 @@
            if( endIndex == -1 ){
              endIndex = allcookies.length;
            }
-
            result = decodeURIComponent(allcookies.substring( startIndex, endIndex ) );
          }
          return result;
        }
+<<<<<<< HEAD
 
 
       /**
@@ -400,8 +359,9 @@
       function random(max, min){
         return Math.floor( Math.random() * (max + 1 - min) ) + min;
       }
+=======
+>>>>>>> 0f0e9902aece442fba621aa2324d8cc7314f27cf
     }
-
   </script>
 </head>
 <body>
