@@ -339,17 +339,20 @@
         const btn = document.getElementById('btn' + id);
         const hid = document.getElementById('hid'+ id);
         const sub = document.getElementById('sub'+ id);
-        btn.onclick = function(){
+        btn.onclick = function(){resultQuestionAddHidActionHTML(hid);}
+        sub.onclick = function(){
           // ログイン状態の処理
           if(login){
             // 投票可能
-            resultQuestionAddHidActionHTML(hid);
+              resultQuestionAddHidActionHTML(hid);
+            voteAddActionHTML(id);
           }else{
             // 未ログイン状態
             // 投票不可能
+            const submit = document.getElementById("sub"+id);
+            submit.value ="ログインしてください";
           }
         }
-        sub.onclick = function(){voteAddActionHTML(id)}
       }
       function resultQuestionAddHidActionHTML(hid){
         if(hid.className == "off"){//offなら表示する
