@@ -36,7 +36,7 @@
           url: "/login/",
           dataType: 'json',
           data:function(id,pass){
-            const logobj = {id:id.value,pass:pass.value};
+            const logobj = {_id:id.value,pass:pass.value};
             return logobj;
           }(inputloginid,inputloginpass)
         })
@@ -51,7 +51,7 @@
               document.cookie = 'userpass=' + res.userpass;
               console.log(document.cookie);
 
-              login = {userid:res.userid,userpass:res.userpass};
+              login = {_id:res.userid,_pass:res.userpass};
           }else{
               console.log("ログイン失敗");
           }
@@ -86,7 +86,7 @@
           url: "/account/",
           dataType: 'json',
           data:function(id,pass){
-            const logobj = {id:id.value,pass:pass.value};
+            const logobj = {_id:id.value,pass:pass.value};
             return logobj;
           }(inputaccount,inputgetpass)
         })
@@ -175,7 +175,7 @@
           url: "/post/",
           dataType: 'json',
           data:function(query,ansers){
-            const obj = {query:query.value};
+            const obj = {user:login,query:query.value};
             const anser = [];
             for(let i = 0;i<ansers.length;i++){
               anser[i] = ansers[i].value;
@@ -296,11 +296,11 @@
         div1.setAttribute("class","question");
 
         const div2 = document.createElement("div");
-        div2.setAttribute("id","status"+id);
+        div2.setAttribute("id","hid"+id);
+        div2.setAttribute("class","off");
 
         const div3 = document.createElement("div");
-        div3.setAttribute("id","hid"+id);
-        div3.setAttribute("class","off");
+        div3.setAttribute("id","status"+id);
 
         //ノードの挿入
         article.appendChild(input1);
@@ -319,13 +319,14 @@
           inp.setAttribute("name",id);
           inp.setAttribute("value",aryAnser[i].anser);
           //ノードの挿入
-          div2.appendChild(document.createTextNode("投票数\t" + total))
 
-          div3.appendChild(lav);
+          div2.appendChild(lav);
           lav.appendChild(inp);
           lav.appendChild(ary);
         }
-        div3.appendChild(input2);
+        div2.appendChild(input2);
+
+        div3.appendChild(document.createTextNode("投票数\t" + total));
         return article;
       }
       /**
@@ -339,17 +340,20 @@
         const btn = document.getElementById('btn' + id);
         const hid = document.getElementById('hid'+ id);
         const sub = document.getElementById('sub'+ id);
-        btn.onclick = function(){
+        btn.onclick = function(){resultQuestionAddHidActionHTML(hid);}
+        sub.onclick = function(){
           // ログイン状態の処理
           if(login){
             // 投票可能
             resultQuestionAddHidActionHTML(hid);
+            voteAddActionHTML(id);
           }else{
             // 未ログイン状態
             // 投票不可能
+            const submit = document.getElementById("sub"+id);
+            submit.value ="ログインしてください";
           }
         }
-        sub.onclick = function(){voteAddActionHTML(id)}
       }
       function resultQuestionAddHidActionHTML(hid){
         if(hid.className == "off"){//offなら表示する
@@ -406,7 +410,7 @@
         $.ajax({
           type: "POST",
           url: "/vote/",
-          data:{'id':id,'index':check},
+          data:{user:login,'id':id,'index':check},
           dataType: 'json',
         })
         .done(function(res){
