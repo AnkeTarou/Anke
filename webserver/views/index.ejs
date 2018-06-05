@@ -36,7 +36,7 @@
           url: "/login/",
           dataType: 'json',
           data:function(id,pass){
-            const logobj = {id:id.value,pass:pass.value};
+            const logobj = {_id:id.value,pass:pass.value};
             return logobj;
           }(inputloginid,inputloginpass)
         })
@@ -51,7 +51,7 @@
               document.cookie = 'userpass=' + res.userpass;
               console.log(document.cookie);
 
-              login = {userid:res.userid,userpass:res.userpass};
+              login = {_id:res.userid,_pass:res.userpass};
           }else{
               console.log("ログイン失敗");
           }
@@ -86,7 +86,7 @@
           url: "/account/",
           dataType: 'json',
           data:function(id,pass){
-            const logobj = {id:id.value,pass:pass.value};
+            const logobj = {_id:id.value,pass:pass.value};
             return logobj;
           }(inputaccount,inputgetpass)
         })
@@ -175,7 +175,7 @@
           url: "/post/",
           dataType: 'json',
           data:function(query,ansers){
-            const obj = {query:query.value};
+            const obj = {user:login,query:query.value};
             const anser = [];
             for(let i = 0;i<ansers.length;i++){
               anser[i] = ansers[i].value;
@@ -410,7 +410,7 @@
         $.ajax({
           type: "POST",
           url: "/vote/",
-          data:{'id':id,'index':check},
+          data:{user:login,'id':id,'index':check},
           dataType: 'json',
         })
         .done(function(res){

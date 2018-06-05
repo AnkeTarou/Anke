@@ -38,17 +38,3 @@ exports.vote = function(id,index){
     });
   })
 }
-
-
-//ログインの照会を行う
-exports.logaggregate = function(key,callback){
-  MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
-    if (error) throw error;
-    const dbo = database.db("UserData");
-    dbo.collection("user").aggregate(key).toArray(function(err, result) {
-      if (err) throw err;
-      database.close();
-      callback(result);
-    });
-  });
-};
