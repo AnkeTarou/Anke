@@ -7,6 +7,7 @@ const vote = require('./vote');
 const login = require('./login');
 const mail = require('../../mailserver/smtp');
 const getid = require('./insertuser');
+const file = require('./sendfile');
 
 router.get('/', function (req, res) {
   res.render("index",{});
@@ -29,5 +30,8 @@ router.post('/account/',getid.post);
 
 //メール
 router.post('/mail/',mail.post);
+
+//ファイル送信
+router.post('/file/',file.post);
 
 module.exports = router;
