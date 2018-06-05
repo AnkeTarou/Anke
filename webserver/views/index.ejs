@@ -27,7 +27,6 @@
       const inputget = document.getElementById("inputget");
       const inputuser = document.getElementById("inputuser");
 
-      
       //ログアウト処理
       inputlogout.onclick = function(){
         //sessionとcookieを削除
@@ -40,12 +39,11 @@
 
       //セッション保持
       if(document.cookie != null){
-        console.log("別タブ開いた！");
-        // sessionに値をセット
-        window.sessionStorage.setItem(['userid'],[getCookie('userid')]);
-        window.sessionStorage.setItem(['userpass'],[getCookie('userpass')]);
+        console.log(document.cookie);
         //userに情報をセット
         user = {_id:getCookie('userid'), _pass:getCookie('userpass')};
+        document.cookie = 'userid=' + user._id + '; max-age=259200';
+        document.cookie = 'userpass=' + user._pass + '; max-age=259200';
         console.log(document.cookie);
       }
 

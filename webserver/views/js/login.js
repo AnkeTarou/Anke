@@ -22,8 +22,8 @@
      if(res.boo == 1){
          console.log("ログイン成功");
          // cookieに値をセット
-         document.cookie = 'userid=' + res.userid;
-         document.cookie = 'userpass=' + res.userpass;
+         document.cookie = 'userid=' + res.userid + '; max-age=259200';
+         document.cookie = 'userpass=' + res.userpass + '; max-age=259200';
          console.log(document.cookie);
 
          user = {_id:res.userid,_pass:res.userpass};
