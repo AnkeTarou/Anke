@@ -13,11 +13,11 @@ exports.post = function(req,res){
     let inquiry;
     if(result[0]){
       inquiry=1;
-    }else if(logid.length<8){
+    }/*else if(logid.length<8){
       inquiry=2;
     }else if(logpass.length<8){
       inquiry=3;
-    }else{
+    }*/else{
       dbo.insert("UserData","user",key);
       inquiry=4;
     }
