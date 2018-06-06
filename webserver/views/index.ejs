@@ -45,20 +45,6 @@
               alert("fail");
           });
       }*/
-
-      if(document.cookie != null){
-        console.log(document.cookie);
-        //userに情報をセット
-        user = {_id:getCookie('userid'), _pass:getCookie('userpass')};
-        document.cookie = 'userid=' + user._id + '; max-age=259200';
-        document.cookie = 'userpass=' + user._pass + '; max-age=259200';
-        console.log(document.cookie);
-      }
-       /**
-        *cookieの値を取得
-        *引数 @name
-        * @return {result}
-       */
      }
   </script>
 </head>
