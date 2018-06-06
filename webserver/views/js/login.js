@@ -10,11 +10,22 @@ var login = {
      this.inSub = document.getElementById("inputlogin");
      this.outSub = document.getElementById("inputlogout");
 
+     this.loadcookie();
      this.inSub.onclick = this.route;
      this.outSub.onclick = this.logout;
      this.outUserStatusSub.onclick = this.outputStatus;
    }
 };
+login.loadcookie = function(){
+  if(document.cookie != null){
+    console.log(document.cookie);
+    //userに情報をセット
+    user = {_id:getCookie('userid'), _pass:getCookie('userpass')};
+    document.cookie = 'userid=' + user._id + '; max-age=259200';
+    document.cookie = 'userpass=' + user._pass + '; max-age=259200';
+    console.log(document.cookie);
+  }
+}
 //ログイン処理
 login.route = function(){
  $.ajax({
