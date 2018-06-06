@@ -36,5 +36,18 @@ exports.vote = function(id,index){
       if (err) throw err;
       database.close();
     });
-  })
+  });
+}
+//投稿にコメントする
+exports.comment = function(id,sender_id,content){
+  MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
+    if (error) throw error;
+    const dbo = database.db("QuestionData");
+    const objId = require('mongodb').ObjectID(id);
+    dbo.collection("question").update({_id:objId},{$push:{comment:{'sender_id':sender_id,'content':content}}},
+    function(err, res) {
+      if (err) throw err;
+      database.close();
+    });
+  });
 }
