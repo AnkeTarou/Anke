@@ -157,16 +157,38 @@ function voteAddActionHTML(id){
 
     // コメント機能追加
     const content = document.createElement("input");
-    content.setAttribute("type","text");
+    content.setAttribute("type","textarea");
     content.setAttribute("id","content");
     hid.appendChild(content);
-    const comment = document.createElement("input");
-    comment.setAttribute("type","submit");
-    comment.setAttribute("id","comment");
-    comment.setAttribute("value","コメントを送信");
-    hid.appendChild(comment);
 
-    comment.onclick = function(){
+    // コメント送信ボタンをセット
+    const commentsub = document.createElement("input");
+    commentsub.setAttribute("type","submit");
+    commentsub.setAttribute("id","comment");
+    commentsub.setAttribute("value","コメントを送信");
+    hid.appendChild(commentsub);
+
+    // 既にあるコメントをブラウザに表示
+    const div1 = document.createElement("div");
+    div1.setAttribute("class","comment");
+    hid.appendChild(div1);
+    if(res.comment){
+      const comments = res.comment;
+
+      for(let i = comments.length-1; i >= 0; i--){
+        const div2 = document.createElement("div");
+        div2.setAttribute("class","comment");
+        div2.setAttribute("style","border:1px solid red");
+        div1.appendChild(div2);
+
+        const commentval = document.createTextNode(comments[i].content);
+        div2.appendChild(commentval);
+      }
+
+    }
+
+    // コメントを送信したとき
+    commentsub.onclick = function(){
       console.log("コメント送信");
       const come = content.value;
       // データベースにコメント追加
@@ -177,8 +199,19 @@ function voteAddActionHTML(id){
         dataType: 'json',
       })
       .done(function(res){
+        content.value = "";
         console.log("コメント送ったよ");
-        console.log(res[0].comment);
+
+        // コメント欄の先頭に新しいコメントを挿入
+        const newdiv = document.createElement("div");
+        newdiv.setAttribute("class","comment");
+        newdiv.setAttribute("style","border:1px solid red");
+        div1.insertBefore(newdiv,div1.firstChild);
+
+        const newcomment = res.comment[res.comment.length-1].content;
+
+        const newcontent = document.createTextNode(newcomment);
+        newdiv.appendChild(newcontent);
       })
       .fail(function(res){
         console.log("コメント送れなかった");
