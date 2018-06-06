@@ -9,7 +9,6 @@ var search = {
   }
 }
 
-
 search.route = function (){
   $.ajax({
     type: "POST",
@@ -178,7 +177,8 @@ function voteAddActionHTML(id){
         dataType: 'json',
       })
       .done(function(res){
-        console.log(res + "コメント送ったよ");
+        console.log("コメント送ったよ");
+        console.log(res[0].comment);
       })
       .fail(function(res){
         console.log("コメント送れなかった");
