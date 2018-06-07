@@ -1,5 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb://localhost:27017';
+const ip = require("../ip.js");
+const url = 'mongodb://'+ ip.ip +':27017';
 //callback関数に検索結果を適用する。
 exports.aggregate = function(dbName,collectionName,key,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
@@ -56,6 +57,17 @@ exports.comment = function(id,sender_id,content,key,callback){
       if (err) throw err;
       database.close();
       callback(result);
+    });
+  });
+}
+// sessionkey挿入
+exports.session = function(id,sessionkey){
+  MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
+    if (error) throw error;
+    const dbo = database.db("UserData");
+    dbo.collection("user").update({_id:id},{$set:{'sessionkey':sessionkey}},
+    function(err, res) {
+      if (err) throw err;
     });
   });
 }

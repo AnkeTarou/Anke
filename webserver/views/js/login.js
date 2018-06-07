@@ -10,19 +10,39 @@ var login = {
      this.inSub = document.getElementById("inputlogin");
      this.outSub = document.getElementById("inputlogout");
 
-     this.loadcookie();
+     this.load();
      this.inSub.onclick = this.route;
      this.outSub.onclick = this.logout;
      this.outUserStatusSub.onclick = this.outputStatus;
    }
 };
-login.loadcookie = function(){
+login.load = function(){
   if(document.cookie != null){
-    console.log(document.cookie);
+    const session = getCookie('sessionkey');
+    console.log(session);
     //userに情報をセット
-    user = {_id:getCookie('userid'), _pass:getCookie('userpass')};
-    document.cookie = 'userid=' + user._id + '; max-age=259200';
-    document.cookie = 'userpass=' + user._pass + '; max-age=259200';
+    if(session){
+      $.ajax({
+        type: "POST",
+        url: "/login/",
+        dataType: 'json',
+        data:{'session':session, type:"session"}
+      })
+      .done(function(res){
+        if(res.boo == 1){
+            user = {_id:res.userid,_pass:res.userpass,session:res.sessionkey};
+            console.log(user._id + "さんです");
+            document.cookie = 'sessionkey=' + user.session + '; max-age=259200';
+        }else{
+          console.log("userを取得できませんでした");
+        }
+      })
+      .fail(function(res){
+        console.error(res);
+      });
+    }else{
+      user = null;
+    }
     console.log(document.cookie);
   }
 }
@@ -32,14 +52,16 @@ login.route = function(){
    type: "POST",
    url: "/login/",
    dataType: 'json',
-   data:{_id:login.userIdNode.value,pass:login.userPassNode.value}
+   data:{_id:login.userIdNode.value,pass:login.userPassNode.value,type:"login"}
  })
  .done(function(res){
    if(res.boo == 1){
+     console.log(res);
        // cookieに値をセット
-       document.cookie = 'userid=' + res.userid + '; max-age=259200';
-       document.cookie = 'userpass=' + res.userpass + '; max-age=259200';
-       user = {_id:res.userid,_pass:res.userpass};
+       document.cookie = 'sessionkey=' + res.sessionkey + '; max-age=259200';
+       // sessionにsessionkey登録
+       window.sessionStorage.setItem(['sessionkey'],[res.sessionkey]);
+       user = {_id:res.userid,_pass:res.userpass,session:res.sessionkey};
    }else{
      console.log("ログイン失敗");
    }
@@ -50,20 +72,19 @@ login.route = function(){
 };
 //ログアウトの処理
 login.logout = function(){
-  //cookieを削除
-  document.cookie = 'userid=; max-age=0'
-  document.cookie = 'userpass=; max-age=0'
+  //cookieとsessionを削除
+  document.cookie = 'sessionkey=; max-age=0'
+  window.sessionStorage.clear();
   user = null;
   console.log(document.cookie);
 }
 login.outputStatus = function(){
-  const userId = getCookie("userid");
-  if(userId){
+  if(user){
     const inp = document.getElementById("login_ts");
     if(!inp){
       let text = document.createElement("div");
       text.id = "login_ts";
-      text.appendChild(document.createTextNode(userId + "さんでログイン中"));
+      text.appendChild(document.createTextNode(user._id + "さんでログイン中"));
       loginBox.appendChild(text);
     }
     console.log(document.cookie);
@@ -88,4 +109,25 @@ function getCookie( name ){
     result = decodeURIComponent(allcookies.substring(startIndex,endIndex));
   }
   return result;
+}
+
+function setUser(session){
+  $.ajax({
+    type: "POST",
+    url: "/login/",
+    dataType: 'json',
+    data:{'session':session, type:"session"}
+  })
+  .done(function(res){
+    if(res.boo == 1){
+      console.log(res);
+        user = {_id:res.userid,_pass:res.userpass,session:res.sessionkey};
+        console.log(user.userid + "さんです");
+    }else{
+      console.log("userを取得できませんでした");
+    }
+  })
+  .fail(function(res){
+    console.error(res);
+  });
 }
