@@ -28,26 +28,19 @@ login.loadcookie = function(){
 }
 //ログイン処理
 login.route = function(){
- $.ajax({
-   type: "POST",
-   url: "/login/",
-   dataType: 'json',
-   data:{_id:login.userIdNode.value,pass:login.userPassNode.value}
- })
- .done(function(res){
-   if(res.boo == 1){
-       // cookieに値をセット
-       document.cookie = 'userid=' + res.userid + '; max-age=259200';
-       document.cookie = 'userpass=' + res.userpass + '; max-age=259200';
-       user = {_id:res.userid,_pass:res.userpass};
-   }else{
-     console.log("ログイン失敗");
-   }
- })
- .fail(function(res){
-   console.error(res);
- });
-};
+  connect("/login/",{_id:login.userIdNode.value,pass:login.userPassNode.value},
+  function(res){
+    if(res.boo == 1){
+      // cookieに値をセット
+      document.cookie = 'userid=' + res.userid + '; max-age=259200';
+      document.cookie = 'userpass=' + res.userpass + '; max-age=259200';
+      user = {_id:res.userid,_pass:res.userpass};
+      console.log("ログイン成功");
+    }else{
+      console.log("ログイン失敗");
+    }
+  })
+}
 //ログアウトの処理
 login.logout = function(){
   //cookieを削除
