@@ -21,36 +21,7 @@
       search.init();
       mail.init();
 
-      const choicefile = document.createElement("choicefile");
-      const sendfile = document.getElementById("sendfile");
-        /*sendfile.onclick = function() {
-
-        // body部パラメーター
-        var data = {};
-        // Canvasのデータをbase64でエンコードした文字列を取得
-        var canvasData = $('canvas').get(0).toDataURL();
-
-        // 不要な情報を取り除く
-        canvasData = canvasData.replace(/^data:image\/png;base64,/, '');
-
-        data.image = canvasData;
-
-        $.ajax({
-          url: '/file/',
-          type: 'POST',
-          success: function() {
-              // 成功時の処理
-              alert("いいゾ～これ");
-            },
-            error(jqXHR, textStatus, errorThrown) {
-              // 失敗時の処理
-              alert("だめです");
-            },
-            data: data,
-            dataType: 'json'
-          });
-      };*/
-      $(function() {
+        const upload = document.getElementById("upload");
         var file = null; // 選択されるファイル
         var blob = null; // 画像(BLOBデータ)
         const THUMBNAIL_WIDTH = 500; // 画像リサイズ後の横の長さの最大値
@@ -60,7 +31,7 @@
         $('input[type=file]').change(function() {
 
           // ファイルを取得
-          file = $(this).prop('files')[0];
+          file = this.files[0];
           // 選択されたファイルが画像かどうか判定
           if (file.type != 'image/jpeg' && file.type != 'image/png') {
             // 画像でない場合は終了
@@ -72,6 +43,7 @@
           // 画像をリサイズする
           var image = new Image();
           var reader = new FileReader();
+          //ページ読み込みした時の処理
           reader.onload = function(e) {
             image.onload = function() {
               var width, height;
@@ -109,45 +81,39 @@
                 i++;
               }
               blob = new Blob([barr], {type: 'image/jpeg'});
-              console.log(blob);
             }
             image.src = e.target.result;
           }
           reader.readAsDataURL(file);
         });
-
-
         // アップロード開始ボタンがクリックされたら
-        $('#upload').click(function(){
-
+        upload.onclick = function(){
+          //data = canvas.toDataURL('files');
+          alert(file);
           // ファイルが指定されていなければ何も起こらない
           if(!file || !blob) {
             alert("指定されてないぞカス");
             return;
           }
-
           var name, fd = new FormData();
           fd.append('file', blob); // ファイルを添付する
-
           $.ajax({
             url: "file", // 送信先
             type: 'POST',
             dataType: 'json',
-            data: fd,
             processData: false,
-            contentType: false
+            contentType: false,
+            data:{date:fd}
           })
-          .done(function( data, textStatus, jqXHR ) {
+          .done(function(res) {
             // 送信成功
             alert("送信成功");
           })
-          .fail(function( jqXHR, textStatus, errorThrown ) {
+          .fail(function(res) {
             // 送信失敗
+            alert("送信失敗");
           });
-
-        });
-
-      });
+        };
       }
   </script>
 </head>
@@ -189,26 +155,18 @@
     <br>
     <input type="submit" id="inputmail" value="メール送信">
   </section>
-  <!--<section id="file">
-      <input type="file" id="choicefile" value="選択しらかた">
-      <br>
-      <input type="submit" id="sendfile" value="送信">
-      <br>
-      <canvas id="canvas"></canvas>
-  </section> -->
   <!-- ファイル選択ボタン -->
   <section id="file">
-  <div style="width: 500px">
-    <form enctype="multipart/form-data" method="post">
-      <input type="file" name="userfile" accept="image/*">
-    </form>
-  </div>
-
-  <!-- サムネイル表示領域 -->
-  <canvas id="canvas" width="0" height="0"></canvas>
-
-  <!-- アップロード開始ボタン -->
-  <button class="btn btn-primary" id="upload">投稿</button>
-</section>
+    <div style="width: 500px">
+      <form enctype="multipart/form-data" method="post">
+        <input type="file" name="userfile" accept="image/*">
+      </form>
+    </div>
+    <!-- サムネイル表示領域 -->
+    <canvas id="canvas" width="0" height="0"></canvas>
+    <!-- アップロード開始ボタン -->
+    <br>
+    <input type="button" id="upload" value="投稿">
+  </section>
 </body>
 </html>
