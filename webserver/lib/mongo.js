@@ -1,5 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb://localhost:27017';
+const ip = require("../ip.js");
+const url = 'mongodb://'+ ip.ip +':27017';
 //callback関数に検索結果を適用する。
 exports.aggregate = function(dbName,collectionName,key,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
