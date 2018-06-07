@@ -26,7 +26,7 @@ exports.insert = function(dbName,collection,key){
 }
 
 //投票する
-exports.vote = function(id,index){
+exports.vote = function(id,index,key,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
     const dbo = database.db("QuestionData");
@@ -34,12 +34,16 @@ exports.vote = function(id,index){
     dbo.collection("question").updateOne({_id:objId},{$inc:{[`ansers.${index}.total`]: 1}},
     function(err, res) {
       if (err) throw err;
+    });
+    dbo.collection("question").aggregate(key).toArray(function(err, result) {
+      if (err) throw err;
       database.close();
+      callback(result);
     });
   });
 }
 //投稿にコメントする
-exports.comment = function(id,sender_id,content){
+exports.comment = function(id,sender_id,content,key,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
     const dbo = database.db("QuestionData");
@@ -47,7 +51,11 @@ exports.comment = function(id,sender_id,content){
     dbo.collection("question").update({_id:objId},{$push:{comment:{'sender_id':sender_id,'content':content}}},
     function(err, res) {
       if (err) throw err;
+    });
+    dbo.collection("question").aggregate(key).toArray(function(err, result) {
+      if (err) throw err;
       database.close();
+      callback(result);
     });
   });
 }
