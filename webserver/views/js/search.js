@@ -10,13 +10,8 @@ var search = {
 }
 
 search.route = function (){
-  $.ajax({
-    type: "POST",
-    url: "/search/",
-    dataType: 'json',
-    data:{value:search.valueNode.value}
-  })
-  .done(function(res){
+  connect("/search/",{value:search.valueNode.value},
+  function(res){
     const result = document.getElementById('result');
     const articles = document.getElementsByClassName("slide");
     for(let i = articles.length; i<res.length; i++){
@@ -28,9 +23,6 @@ search.route = function (){
       resultQuestionAddActionHTML(id);
     }
   })
-  .fail(function(res){
-    console.error(res);
-  });
 };
 
 function createQuestionNode(id,query,aryAnser,total){
@@ -141,13 +133,8 @@ function voteAddActionHTML(id){
     hid.removeChild(hid.firstChild);
   }
   //データベースに反映
-  $.ajax({
-    type: "POST",
-    url: "/vote/",
-    data:{'user':user,'id':id,'index':check},
-    dataType: 'json',
-  })
-  .done(function(res){
+  connect("/vote/",{'user':user,'id':id,'index':check},
+  function(res){
     const myVote = document.createTextNode(res.ansers[check].anser + "に投票しました");
     hid.appendChild(myVote);
     const canvas = document.createElement("canvas");
@@ -191,14 +178,8 @@ function voteAddActionHTML(id){
     commentsub.onclick = function(){
       console.log("コメント送信");
       const come = content.value;
-      // データベースにコメント追加
-      $.ajax({
-        type: "POST",
-        url: "/comment/",
-        data:{'user':user,'id':id,'content':come},
-        dataType: 'json',
-      })
-      .done(function(res){
+      connect("/comment/",{'user':user,'id':id,'content':come},
+      function(res){
         content.value = "";
         console.log("コメント送ったよ");
 
@@ -212,9 +193,6 @@ function voteAddActionHTML(id){
 
         const newcontent = document.createTextNode(newcomment);
         newdiv.appendChild(newcontent);
-      })
-      .fail(function(res){
-        console.log("コメント送れなかった");
       });
     }
 
@@ -245,9 +223,6 @@ function voteAddActionHTML(id){
       options: {}
     });
   })
-  .fail(function(res){
-    console.error(res);
-  });
   //閉じてしまったhidを表示
   resultQuestionAddHidActionHTML(hid);
 }

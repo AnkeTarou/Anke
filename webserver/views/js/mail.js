@@ -13,17 +13,8 @@
 
 
 mail.route = function(){
-  $.ajax({
-    type: "POST",
-    url: "/mail/",
-    dataType: 'json',
-    data:{value:mail.valueNode.value}
-  })
-  .done(function(res){
+  connect("/mail/",{value:mail.valueNode.value},
+  function(){
     console.log("successful");
   })
-
-  .fail(function(res){
-    console.error(res);
-  });
 }

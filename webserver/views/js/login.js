@@ -19,27 +19,19 @@ var login = {
 login.load = function(){
   if(document.cookie != null){
     const session = getCookie('sessionkey');
-    console.log(session);
+    console.log("session",session);
     //userに情報をセット
     if(session){
-      $.ajax({
-        type: "POST",
-        url: "/login/",
-        dataType: 'json',
-        data:{'session':session, type:"session"}
-      })
-      .done(function(res){
+      connect("/login/",{'session':session, type:"session"},
+      function(res){
         if(res.boo == 1){
-            user = {_id:res.userid,_pass:res.userpass,session:res.sessionkey};
-            console.log(user._id + "さんです");
-            document.cookie = 'sessionkey=' + user.session + '; max-age=259200';
+          user = {_id:res.userid,_pass:res.userpass,session:res.sessionkey};
+          console.log(user._id + "さんです");
+          document.cookie = 'sessionkey=' + user.session + '; max-age=259200';
         }else{
           console.log("userを取得できませんでした");
         }
       })
-      .fail(function(res){
-        console.error(res);
-      });
     }else{
       user = null;
     }
@@ -51,21 +43,19 @@ login.route = function(){
   connect("/login/",{_id:login.userIdNode.value,pass:login.userPassNode.value,type:"login"},
   function(res){
     if(res.boo == 1){
-      console.log(res);
-        // cookieに値をセット
-        document.cookie = 'sessionkey=' + res.sessionkey + '; max-age=259200';
-        // sessionにsessionkey登録
-        window.sessionStorage.setItem(['sessionkey'],[res.sessionkey]);
-        user = {_id:res.userid,_pass:res.userpass,session:res.sessionkey};
+      // cookieに値をセット
+      document.cookie = 'sessionkey=' + res.sessionkey + '; max-age=259200';
+      user = {_id:res.userid,_pass:res.userpass,session:res.sessionkey};
     }else{
       console.log("ログイン失敗");
     }
+    console.log(document.cookie);
   })
 }
 //ログアウトの処理
 login.logout = function(){
   //cookieとsessionを削除
-  document.cookie = 'sessionkey=; max-age=0'
+  document.cookie = 'sessionkey=; max-age=0';
   window.sessionStorage.clear();
   user = null;
   console.log(document.cookie);
@@ -101,25 +91,4 @@ function getCookie( name ){
     result = decodeURIComponent(allcookies.substring(startIndex,endIndex));
   }
   return result;
-}
-
-function setUser(session){
-  $.ajax({
-    type: "POST",
-    url: "/login/",
-    dataType: 'json',
-    data:{'session':session, type:"session"}
-  })
-  .done(function(res){
-    if(res.boo == 1){
-      console.log(res);
-        user = {_id:res.userid,_pass:res.userpass,session:res.sessionkey};
-        console.log(user.userid + "さんです");
-    }else{
-      console.log("userを取得できませんでした");
-    }
-  })
-  .fail(function(res){
-    console.error(res);
-  });
 }
