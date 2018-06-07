@@ -59,3 +59,14 @@ exports.comment = function(id,sender_id,content,key,callback){
     });
   });
 }
+// sessionkey挿入
+exports.session = function(id,sessionkey){
+  MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
+    if (error) throw error;
+    const dbo = database.db("UserData");
+    dbo.collection("user").update({_id:id},{$set:{'sessionkey':sessionkey}},
+    function(err, res) {
+      if (err) throw err;
+    });
+  });
+}
