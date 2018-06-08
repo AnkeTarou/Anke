@@ -88,7 +88,7 @@
 
       // アップロード開始ボタンがクリックされたら
       upload.onclick = function(){
-        const data = canva.toDataURL('file');
+        const data = canvas.toDataURL('files');
         console.log(data);
         //const ctx2 = canva.getContext("2d");
         // ファイルが指定されていなければ何も起こらない
@@ -96,9 +96,8 @@
           alert("指定されてないぞカス");
           return;
         }
-        var name, fd = new FormData();
-        fd.append('file', blob); // ファイルを添付する
-        console.log(data);
+        //var name, fd = new FormData();
+        //fd.append('file', blob); // ファイルを添付する
         $.ajax({
           url: "file", // 送信先
           type: 'POST',
@@ -157,6 +156,7 @@
     <br>
     <input type="submit" id="inputmail" value="メール送信">
   </section>
+
   <section id="filecs">
     <input type="file" name="userfile" accept="image/*">
     <!-- サムネイル表示領域 -->
