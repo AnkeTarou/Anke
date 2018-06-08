@@ -25,21 +25,14 @@ post.route = function (){
     return sub;
   }
   let obj = function(){
-<<<<<<< HEAD
     const obj = {'user':user,query:post.query.value};
-    const anser = [];
-    for(let i = 0;i<post.ansers.length;i++){
-      anser[i] = post.ansers[i].value;
-=======
-    const obj = {query:post.query.value};
     const answer = [];
     for(let i = 0;i<post.answers.length;i++){
       answer[i] = post.answers[i].value;
->>>>>>> 343545ce7642830e06f45676dbb05782c84ef8d0
     }
     obj.answers = answer;
     return obj;
-  }()
+  }();
 
   connect("/post/",obj,
   function(res){
