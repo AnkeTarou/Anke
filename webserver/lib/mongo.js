@@ -71,3 +71,21 @@ exports.session = function(id,sessionkey){
     });
   });
 }
+// userの認証
+exports.userCheck = function(checkuser,callback){
+  let r;
+  MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
+    const dbo = database.db("UserData");
+    const key = [{$match:{_id:checkuser._id,pass:checkuser._pass}}];
+    let check;
+    dbo.collection("user").aggregate(key).toArray(function(err, result) {
+      if (err) throw err;
+      const user = result[0];
+      check = (user.sessionkey == checkuser.session);
+      console.log(check);
+      result[1] = check;
+      database.close();
+      callback(result[1]);
+    });
+  });
+}
