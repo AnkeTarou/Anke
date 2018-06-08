@@ -18,30 +18,23 @@ var post = {
 };
 //データベースに接続し処理を行う
 post.route = function (){
-  console.log(post);
-  $.ajax({
-    type: "POST",
-    url: "/post/",
-    dataType: 'json',
-    data:function(){
-      const obj = {query:post.query.value};
-      const anser = [];
-      for(let i = 0;i<post.ansers.length;i++){
-        anser[i] = post.ansers[i].value;
-      }
-      obj.ansers = anser;
-      return obj;
-    }()
-  })
-  .done(function(res){
+  let obj = function(){
+    const obj = {query:post.query.value};
+    const anser = [];
+    for(let i = 0;i<post.ansers.length;i++){
+      anser[i] = post.ansers[i].value;
+    }
+    obj.ansers = anser;
+    return obj;
+  }()
+
+  connect("/post/",obj,
+  function(res){
     post.query.value = "";
     for(let i of post.ansers){
       i.value = "";
     }
   })
-  .fail(function(res){
-    console.error(res);
-  });
 };
 //ansersの長さが1つ増える
 post.addAction = function (){
