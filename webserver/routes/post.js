@@ -1,7 +1,6 @@
 const dbo = require('../lib/mongo');
 
 exports.post = function(req,res){
-<<<<<<< HEAD
   let check;
   dbo.userCheck(req.body.user,function(result){
     check = result;
@@ -20,7 +19,6 @@ exports.post = function(req,res){
       console.log("失敗");
     }
   });
-=======
   const key = req.body;
   const ans = [];
   for(let i in key.answers){
@@ -29,7 +27,6 @@ exports.post = function(req,res){
   key.answers = ans;
   dbo.insert("QuestionData","question",key);
   res.json(key);
->>>>>>> 343545ce7642830e06f45676dbb05782c84ef8d0
 }
 /*
 
