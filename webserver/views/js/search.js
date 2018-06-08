@@ -9,6 +9,8 @@ var search = {
   }
 }
 
+//サーバに接続し検索した後,結果を画面に反映する
+//その後、検索したキーで更新があれば自動で反映される
 search.route = function (){
   connect("/search/",{value:search.valueNode.value},updateResult)
   search.autoUpdate({value:search.valueNode.value});
