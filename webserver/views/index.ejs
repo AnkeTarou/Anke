@@ -23,8 +23,8 @@
 
       const upload = document.getElementById("upload");
       const canva = document.getElementById("canva");
-      var file = null; // 選択されるファイル
-      var blob = null; // 画像(BLOBデータ)
+      let file = null; // 選択されるファイル
+      let blob = null; // 画像(BLOBデータ)
       const THUMBNAIL_WIDTH = 500; // 画像リサイズ後の横の長さの最大値
       const THUMBNAIL_HEIGHT = 500; // 画像リサイズ後の縦の長さの最大値
       // ファイルが選択されたら
@@ -41,35 +41,35 @@
         }
 
         // 画像をリサイズする
-        var image = new Image();
-        var reader = new FileReader();
+        let image = new Image();
+        let reader = new FileReader();
         reader.onload = function(e) {
           image.onload = function() {
-            var width, height;
+            let width, height;
             if(image.width > image.height){
               // 横長の画像は横のサイズを指定値にあわせる
-              var ratio = image.height/image.width;
+              const ratio = image.height/image.width;
               width = THUMBNAIL_WIDTH;
               height = THUMBNAIL_WIDTH * ratio;
             } else {
               // 縦長の画像は縦のサイズを指定値にあわせる
-              var ratio = image.width/image.height;
+              const ratio = image.width/image.height;
               width = THUMBNAIL_HEIGHT * ratio;
               height = THUMBNAIL_HEIGHT;
             }
             // サムネ描画用canvasのサイズを上で算出した値に変更
-            var canvas = $('#canvas')
+            let canvas = $('#canvas')
                          .attr('width', width)
                          .attr('height', height);
-            var ctx = canvas[0].getContext('2d');
+            let ctx = canvas[0].getContext('2d');
             // canvasに既に描画されている画像をクリア
             ctx.clearRect(0,0,width,height);
             // canvasにサムネイルを描画
             ctx.drawImage(image,0,0,image.width,image.height,0,0,width,height);
             // canvasからbase64画像データを取得
-            var base64 = canvas.get(0).toDataURL('image/jpeg');
+            const base64 = canvas.get(0).toDataURL('image/jpeg');
             // base64からBlobデータを作成
-            var barr, bin, i, len;
+            let barr, bin, i, len;
             bin = atob(base64.split('base64,')[1]);
             len = bin.length;
             barr = new Uint8Array(len);
@@ -90,7 +90,7 @@
       upload.onclick = function(){
         const data = canva.toDataURL('files');
         console.log(data);
-        var ctx2 = canva.getContext("2d");
+        const ctx2 = canva.getContext("2d");
         // ファイルが指定されていなければ何も起こらない
         if(!file || !blob) {
           alert("指定されてないぞカス");
