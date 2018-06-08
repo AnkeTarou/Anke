@@ -16,6 +16,7 @@ var login = {
      this.outUserStatusSub.onclick = this.outputStatus;
    }
 };
+//cookieをロード
 login.load = function(){
   if(document.cookie != null){
     const session = getCookie('sessionkey');
@@ -51,7 +52,7 @@ login.route = function(){
     }else{
       console.log("ログイン失敗");
     }
-    console.log(document.cookie);
+    console.log("セッションキー",document.cookie);
   })
 }
 //ログアウトの処理
@@ -78,6 +79,7 @@ login.outputStatus = function(){
   }
 }
 
+//nameのcookieを取得
 function getCookie( name ){
   let result = null;
 

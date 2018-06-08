@@ -7,7 +7,7 @@ var post = {
     this.box = document.getElementById("inputBox");
     this.sub = document.getElementById("inputSub");
     this.query = document.getElementById("inputQuery");
-    this.ansers = document.getElementsByName("inputAnser");
+    this.answers = document.getElementsByName("inputAnswer");
     this.addbtn = document.getElementById("inputAddBtn");
     this.delbtn = document.getElementById("inputDelBtn");
 
@@ -25,48 +25,55 @@ post.route = function (){
     return sub;
   }
   let obj = function(){
+<<<<<<< HEAD
     const obj = {'user':user,query:post.query.value};
     const anser = [];
     for(let i = 0;i<post.ansers.length;i++){
       anser[i] = post.ansers[i].value;
+=======
+    const obj = {query:post.query.value};
+    const answer = [];
+    for(let i = 0;i<post.answers.length;i++){
+      answer[i] = post.answers[i].value;
+>>>>>>> 343545ce7642830e06f45676dbb05782c84ef8d0
     }
-    obj.ansers = anser;
+    obj.answers = answer;
     return obj;
   }()
 
   connect("/post/",obj,
   function(res){
     post.query.value = "";
-    for(let i of post.ansers){
+    for(let i of post.answers){
       i.value = "";
     }
   })
 };
-//ansersの長さが1つ増える
+//answersの長さが1つ増える
 post.addAction = function (){
   const inp = document.createElement("input");
   const br = document.createElement("br");
   inp.setAttribute("type","text");
-  inp.setAttribute("name","inputAnser");
+  inp.setAttribute("name","inputAnswer");
   br.setAttribute("name","br");
   post.box.insertBefore(inp,post.addbtn);
   post.box.insertBefore(br,post.addbtn);
 
-  if(post.ansers.length == 2){
-    anserDelBtnHidActionHTML(post.delbtn);
+  if(post.answers.length == 2){
+    answerDelBtnHidActionHTML(post.delbtn);
   }
 };
-//ansersの長さが1つ減る
+//answersの長さが1つ減る
 post.delAction = function(){
   const brList = document.getElementsByName("br");
-  post.ansers[post.ansers.length-1].remove();
+  post.answers[post.answers.length-1].remove();
   post.box.removeChild(brList[brList.length-1]);
-  if(post.ansers.length == 1){
-    anserDelBtnHidActionHTML(post.delbtn);
+  if(post.answers.length == 1){
+    answerDelBtnHidActionHTML(post.delbtn);
   }
 }
 
-function anserDelBtnHidActionHTML(hid){
+function answerDelBtnHidActionHTML(hid){
   if(hid.className == "off"){//offなら表示する
     hid.style.display = "inline"
     hid.className = "on";
