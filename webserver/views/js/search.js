@@ -2,7 +2,7 @@
   検索蘭、検索結果表示を定義
  */
 var search = {
-  init:function(){
+    init:function(){
     this.valueNode = document.getElementById("searchValue");
     this.subNode = document.getElementById("searchSub");
     this.subNode.onclick = this.route;
@@ -10,22 +10,34 @@ var search = {
 }
 
 search.route = function (){
-  connect("/search/",{value:search.valueNode.value},
-  function(res){
-    const result = document.getElementById('result');
-    const articles = document.getElementsByClassName("slide");
-    for(let i = articles.length; i<res.length; i++){
-      const id = res[i]._id;
-      const query = res[i].query;
-      const ansers = res[i].ansers;
-      const total = res[i].total;
-      result.appendChild(createQuestionNode(id,query,ansers,total));
-      resultQuestionAddActionHTML(id);
-    }
-  })
+  connect("/search/",{value:search.valueNode.value},updateResult)
+  search.autoUpdate({value:search.valueNode.value});
 };
 
-function createQuestionNode(id,query,aryAnser,total){
+search.autoUpdate = function(key){
+  clearInterval(this.current);
+  this.current = setInterval(function(){
+    connect.log = false;
+    connect("/search/",key,updateResult);
+  },5000);
+}
+
+
+//送られてきたデータをresultに反映する
+function updateResult(date){
+  const result = document.getElementById('result');
+  const articles = document.getElementsByClassName("slide");
+  for(let i = articles.length; i<date.length; i++){
+    const id = date[i]._id;
+    const query = date[i].query;
+    const answers = date[i].answers;
+    const total = date[i].total;
+    result.appendChild(createQuestionNode(id,query,answers,total));
+    resultQuestionAddActionHTML(id);
+  }
+}
+
+function createQuestionNode(id,query,aryAnswer,total){
   const que = document.createTextNode(query);
 
   const article = document.createElement("article");
@@ -63,13 +75,13 @@ function createQuestionNode(id,query,aryAnser,total){
   div1.appendChild(document.createTextNode(query));
 
   //回答内容を入れる
-  for(let i =0;i<aryAnser.length;i++){
+  for(let i =0;i<aryAnswer.length;i++){
     const lav = document.createElement("label");
-    const ary=  document.createTextNode(aryAnser[i].anser);
+    const ary=  document.createTextNode(aryAnswer[i].answer);
     const inp = document.createElement("input");
     inp.setAttribute("type","radio");
     inp.setAttribute("name",id);
-    inp.setAttribute("value",aryAnser[i].anser);
+    inp.setAttribute("value",aryAnswer[i].answer);
     //ノードの挿入
     div2.appendChild(lav);
     lav.appendChild(inp);
@@ -135,7 +147,7 @@ function voteAddActionHTML(id){
   //データベースに反映
   connect("/vote/",{'user':user,'id':id,'index':check},
   function(res){
-    const myVote = document.createTextNode(res.ansers[check].anser + "に投票しました");
+    const myVote = document.createTextNode(res.answers[check].answer + "に投票しました");
     hid.appendChild(myVote);
     const canvas = document.createElement("canvas");
     hid.appendChild(canvas);
@@ -198,29 +210,76 @@ function voteAddActionHTML(id){
 
     const ctx = canvas.getContext("2d");
     const data = function(){
-      const ansers = [];
+      const answers = [];
       const total = [];
-      for(let i in res.ansers){
-        ansers[i] = res.ansers[i].anser;
-        total[i] = res.ansers[i].total;
+      for(let i in res.answers){
+        answers[i] = res.answers[i].answer;
+        total[i] = res.answers[i].total;
       }
-      return {"ansers":ansers,"total":total};
+      return {"answers":answers,"total":total};
     }();
     new Chart(ctx, {
       // 作成するグラフの種類
       type: 'bar',
       // ラベルとデータセットを設定
       data: {
-        labels: data.ansers,
+        labels: data.answers,
         datasets: [{
-        label: "My First dataset",
-        backgroundColor: 'rgb('+random(256,0)+','+random(256,0)+','+random(256,0)+')',
-        borderColor: 'rgb('+random(256,0)+','+random(256,0)+','+random(256,0)+')',
-        data: data.total,
+          data: data.total,
+          backgroundColor: 'rgb(0,0,0)',
         }]
       },
       //オプション設定
-      options: {}
+      options: {
+        legend: {
+            display: false,
+        },
+        scales: {                          //軸設定
+          yAxes: [{                    //表示設定
+            scaleLabel: {              //軸ラベル設定
+             display: true,          //表示設定
+             fontSize: 18,           //フォントサイズ
+             fontColor: "rgb(0,0,0)"
+            },
+            ticks: {
+              min: 0,                   //最小値
+              fontSize: 18,             //フォントサイズ
+              stepSize: 10,             //軸間隔
+              fontColor: "rgb(0,0,0)"
+            },
+            gridLines:{           //グリッド設定
+              display:true,
+              color:"rgba(0,0,0,0.8)"
+            }
+          }],
+          xAxes: [{                         //x軸設定
+            display: true,                //表示設定
+            categoryPercentage: 0.6,      //棒グラフ幅
+            scaleLabel: {                 //軸ラベル設定
+              display: true,             //表示設定
+              fontSize: 18               //フォントサイズ
+            },
+            ticks: {
+              fontSize: 16,             //フォントサイズ
+              fontColor:"rgb(15, 15, 15)",
+              tickMarkLength:1
+            },
+            gridLines:{           //グリッド設定
+              display:true,
+              color:"rgba(0,0,0,0.3)",
+            }
+          }],
+        },
+        animation:{
+          duration:1500, //アニメーションにかける時間
+          easing:"easeInQuad"
+        },
+        elements:{
+          line:{
+            backgroundColor:"rgba(0,0,0,0.5)"
+          }
+        }
+      }
     });
   })
   //閉じてしまったhidを表示

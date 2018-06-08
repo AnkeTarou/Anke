@@ -16,10 +16,11 @@ var login = {
      this.outUserStatusSub.onclick = this.outputStatus;
    }
 };
+//cookieをロード
 login.load = function(){
   if(document.cookie != null){
     const session = getCookie('sessionkey');
-    console.log("session",session);
+    console.log("beforeSession",session);
     //userに情報をセット
     if(session){
       connect("/login/",{'session':session, type:"session"},
@@ -32,10 +33,11 @@ login.load = function(){
           console.log("userを取得できませんでした");
         }
       })
+      document.getElementById("inputSub").value = "送信";
     }else{
       user = null;
     }
-    console.log(document.cookie);
+    console.log("before" + document.cookie);
   }
 }
 //ログイン処理
@@ -46,10 +48,11 @@ login.route = function(){
       // cookieに値をセット
       document.cookie = 'sessionkey=' + res.sessionkey + '; max-age=259200';
       user = {_id:res.userid,_pass:res.userpass,session:res.sessionkey};
+      login.load();
     }else{
       console.log("ログイン失敗");
     }
-    console.log(document.cookie);
+    console.log("セッションキー",document.cookie);
   })
 }
 //ログアウトの処理
@@ -59,6 +62,7 @@ login.logout = function(){
   window.sessionStorage.clear();
   user = null;
   console.log(document.cookie);
+  login.load();
 }
 login.outputStatus = function(){
   if(user){
@@ -69,12 +73,13 @@ login.outputStatus = function(){
       text.appendChild(document.createTextNode(user._id + "さんでログイン中"));
       loginBox.appendChild(text);
     }
-    console.log(document.cookie);
+    console.log("current" + document.cookie);
   }else{
     console.log("ログインしてません")
   }
 }
 
+//nameのcookieを取得
 function getCookie( name ){
   let result = null;
 
