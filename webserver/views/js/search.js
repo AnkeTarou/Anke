@@ -226,7 +226,6 @@ function voteAddActionHTML(id){
           yAxes: [{                    //表示設定
             scaleLabel: {              //軸ラベル設定
              display: true,          //表示設定
-             labelString: '投票数',  //ラベル
              fontSize: 18,           //フォントサイズ
              fontColor: "rgb(0,0,0)"
             },
@@ -236,6 +235,10 @@ function voteAddActionHTML(id){
               stepSize: 10,             //軸間隔
               fontColor: "rgb(0,0,0)"
             },
+            gridLines:{           //グリッド設定
+              display:true,
+              color:"rgba(0,0,0,0.8)"
+            }
           }],
           xAxes: [{                         //x軸設定
             display: true,                //表示設定
@@ -245,10 +248,24 @@ function voteAddActionHTML(id){
               fontSize: 18               //フォントサイズ
             },
             ticks: {
-              fontSize: 18,             //フォントサイズ
-              fontColor:"rgb(15, 15, 15)"
+              fontSize: 16,             //フォントサイズ
+              fontColor:"rgb(15, 15, 15)",
+              tickMarkLength:1
             },
+            gridLines:{           //グリッド設定
+              display:true,
+              color:"rgba(0,0,0,0.3)",
+            }
           }],
+        },
+        animation:{
+          duration:1500, //アニメーションにかける時間
+          easing:"easeInQuad"
+        },
+        elements:{
+          line:{
+            backgroundColor:"rgba(0,0,0,0.5)"
+          }
         }
       }
     });

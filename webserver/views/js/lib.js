@@ -9,8 +9,8 @@ function connect(uri,data,callback,error){
   .done(function(res){
     console.log("connect");
     console.log("uri",uri);
-    console.log("data",data);
-    console.log("res",res);
+    console.log("送信データ",data);
+    console.log("受信データ",res);
     callback(res);
   })
   .fail(function(res){
