@@ -2,7 +2,7 @@
   検索蘭、検索結果表示を定義
  */
 var search = {
-  init:function(){
+    init:function(){
     this.valueNode = document.getElementById("searchValue");
     this.subNode = document.getElementById("searchSub");
     this.subNode.onclick = this.route;
@@ -10,20 +10,32 @@ var search = {
 }
 
 search.route = function (){
-  connect("/search/",{value:search.valueNode.value},
-  function(res){
-    const result = document.getElementById('result');
-    const articles = document.getElementsByClassName("slide");
-    for(let i = articles.length; i<res.length; i++){
-      const id = res[i]._id;
-      const query = res[i].query;
-      const answers = res[i].answers;
-      const total = res[i].total;
-      result.appendChild(createQuestionNode(id,query,answers,total));
-      resultQuestionAddActionHTML(id);
-    }
-  })
+  connect("/search/",{value:search.valueNode.value},updateResult)
+  search.autoUpdate({value:search.valueNode.value});
 };
+
+search.autoUpdate = function(key){
+  clearInterval(this.current);
+  this.current = setInterval(function(){
+    connect.log = false;
+    connect("/search/",key,updateResult);
+  },5000);
+}
+
+
+//送られてきたデータをresultに反映する
+function updateResult(date){
+  const result = document.getElementById('result');
+  const articles = document.getElementsByClassName("slide");
+  for(let i = articles.length; i<date.length; i++){
+    const id = date[i]._id;
+    const query = date[i].query;
+    const answers = date[i].answers;
+    const total = date[i].total;
+    result.appendChild(createQuestionNode(id,query,answers,total));
+    resultQuestionAddActionHTML(id);
+  }
+}
 
 function createQuestionNode(id,query,aryAnswer,total){
   const que = document.createTextNode(query);

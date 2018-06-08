@@ -7,10 +7,13 @@ function connect(uri,data,callback,error){
     dataType: 'json',
   })
   .done(function(res){
-    console.log("connect");
-    console.log("uri",uri);
-    console.log("送信データ",data);
-    console.log("受信データ",res);
+    if(this.log){
+      console.log("connect");
+      console.log("uri",uri);
+      console.log("送信データ",data);
+      console.log("受信データ",res);
+    }
+    this.log = true;
     callback(res);
   })
   .fail(function(res){
