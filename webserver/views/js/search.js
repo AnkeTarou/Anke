@@ -213,14 +213,19 @@ function voteAddActionHTML(id){
       data: {
         labels: data.ansers,
         datasets: [{
-        label: "My First dataset",
-        backgroundColor: 'rgb('+random(256,0)+','+random(256,0)+','+random(256,0)+')',
-        borderColor: 'rgb('+random(256,0)+','+random(256,0)+','+random(256,0)+')',
-        data: data.total,
+          backgroundColor: 'rgba('+random(256,0)+','+random(256,0)+','+random(256,0)+',1)',
+          borderColor: 'rgba('+random(256,0)+','+random(256,0)+','+random(256,0)+',1)',
+          borderwidth: 3,
+          data: data.total,
+
         }]
       },
       //オプション設定
-      options: {}
+      options: {
+        legend: {
+            display: false,
+        }
+      }
     });
   })
   //閉じてしまったhidを表示
