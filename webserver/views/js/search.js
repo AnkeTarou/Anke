@@ -213,17 +213,42 @@ function voteAddActionHTML(id){
       data: {
         labels: data.ansers,
         datasets: [{
-          backgroundColor: 'rgba('+random(256,0)+','+random(256,0)+','+random(256,0)+',1)',
-          borderColor: 'rgba('+random(256,0)+','+random(256,0)+','+random(256,0)+',1)',
-          borderwidth: 3,
           data: data.total,
-
+          backgroundColor: 'rgb(0,0,0)',
         }]
       },
       //オプション設定
       options: {
         legend: {
             display: false,
+        },
+        scales: {                          //軸設定
+          yAxes: [{                    //表示設定
+            scaleLabel: {              //軸ラベル設定
+             display: true,          //表示設定
+             labelString: '投票数',  //ラベル
+             fontSize: 18,           //フォントサイズ
+             fontColor: "rgb(0,0,0)"
+            },
+            ticks: {
+              min: 0,                   //最小値
+              fontSize: 18,             //フォントサイズ
+              stepSize: 10,             //軸間隔
+              fontColor: "rgb(0,0,0)"
+            },
+          }],
+          xAxes: [{                         //x軸設定
+            display: true,                //表示設定
+            categoryPercentage: 0.6,      //棒グラフ幅
+            scaleLabel: {                 //軸ラベル設定
+              display: true,             //表示設定
+              fontSize: 18               //フォントサイズ
+            },
+            ticks: {
+              fontSize: 18,             //フォントサイズ
+              fontColor:"rgb(15, 15, 15)"
+            },
+          }],
         }
       }
     });
