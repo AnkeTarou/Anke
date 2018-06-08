@@ -32,7 +32,7 @@ post.route = function (){
     }
     obj.answers = answer;
     return obj;
-  }()
+  }();
 
   connect("/post/",obj,
   function(res){
