@@ -25,7 +25,7 @@ post.route = function (){
     return sub;
   }
   let obj = function(){
-    const obj = {query:post.query.value};
+    const obj = {'user':user,query:post.query.value};
     const answer = [];
     for(let i = 0;i<post.answers.length;i++){
       answer[i] = post.answers[i].value;
