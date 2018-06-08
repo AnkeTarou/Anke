@@ -18,6 +18,12 @@ var post = {
 };
 //データベースに接続し処理を行う
 post.route = function (){
+  // ログイン状態かチェック
+  if(!user){
+    const sub = document.getElementById("inputSub");
+    sub.value = "ログインしてください";
+    return sub;
+  }
   let obj = function(){
     const obj = {query:post.query.value};
     const anser = [];
