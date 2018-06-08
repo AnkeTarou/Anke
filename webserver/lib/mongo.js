@@ -32,7 +32,7 @@ exports.vote = function(id,index,key,callback){
     if (error) throw error;
     const dbo = database.db("QuestionData");
     const objId = require('mongodb').ObjectID(id);
-    dbo.collection("question").updateOne({_id:objId},{$inc:{[`ansers.${index}.total`]: 1}},
+    dbo.collection("question").updateOne({_id:objId},{$inc:{[`answers.${index}.total`]: 1}},
     function(err, res) {
       if (err) throw err;
     });
