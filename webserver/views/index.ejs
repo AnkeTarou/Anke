@@ -31,7 +31,7 @@
       $('input[type=file]').change(function() {
 
         // ファイルを取得
-        file = $(this).prop('files')[0];
+        file = this.files[0];
         // 選択されたファイルが画像かどうか判定
         if (file.type != 'image/jpeg' && file.type != 'image/png') {
           // 画像でない場合は終了
@@ -79,7 +79,7 @@
               i++;
             }
             blob = new Blob([barr], {type: 'image/jpeg'});
-            console.log(blob);
+
           }
           image.src = e.target.result;
         }
@@ -88,23 +88,23 @@
 
       // アップロード開始ボタンがクリックされたら
       upload.onclick = function(){
-        const data = canva.toDataURL('files');
+        const data = canvas.toDataURL('files');
         console.log(data);
-        const ctx2 = canva.getContext("2d");
+        //const ctx2 = canva.getContext("2d");
         // ファイルが指定されていなければ何も起こらない
         if(!file || !blob) {
           alert("指定されてないぞカス");
           return;
         }
-        var name, fd = new FormData();
-        fd.append('file', blob); // ファイルを添付する
+        //var name, fd = new FormData();
+        //fd.append('file', blob); // ファイルを添付する
         $.ajax({
           url: "file", // 送信先
           type: 'POST',
           dataType: 'json',
           processData: false,
           contentType: false,
-          data:{data:data}
+          data:{'data':data}
         })
         .done(function(res) {
           // 送信成功
@@ -156,12 +156,9 @@
     <br>
     <input type="submit" id="inputmail" value="メール送信">
   </section>
-  <section id="file">
-    <div style="width: 500px">
-      <form enctype="multipart/form-data" method="post">
-        <input type="file" name="userfile" accept="image/*">
-      </form>
-    </div>
+
+  <section id="filecs">
+    <input type="file" name="userfile" accept="image/*">
     <!-- サムネイル表示領域 -->
     <canvas id="canvas" width="0" height="0"></canvas>
     <!-- アップロード開始ボタン -->
@@ -169,5 +166,6 @@
     <input type="button" id="upload" value="投稿">
     <br>
     <canvas id="canva" width="500" height="500"></canvas>
+  </section>
 </body>
 </html>
