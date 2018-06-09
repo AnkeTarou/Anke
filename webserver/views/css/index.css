@@ -12,6 +12,7 @@ body {
 #inputBox{
   display: block;
   background-color: red;
+  color: lightgreen;
   text-align: center;
 }
 

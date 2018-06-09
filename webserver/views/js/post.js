@@ -4,7 +4,7 @@
 
 var post = {
   init:function(){
-    this.box = document.getElementById("inputBox");
+    this.box = document.getElementById("answerBox");
     this.sub = document.getElementById("inputSub");
     this.query = document.getElementById("inputQuery");
     this.answers = document.getElementsByName("inputAnswer");
@@ -14,6 +14,8 @@ var post = {
     this.sub.onclick = this.route;
     this.addbtn.onclick = this.addAction;
     this.delbtn.onclick = this.delAction;
+    this.query.onkeyup = this.change;
+    this.answers[0].onkeyup = this.change;
   }
 };
 //データベースに接続し処理を行う
@@ -48,17 +50,24 @@ post.route = function (){
 };
 //answersの長さが1つ増える
 post.addAction = function (){
+  /*
+    コメントアウトは未実装
+  */
+  //const text = document.createTextNode("回答選択肢" + (post.answers.length + 1) + " ：");
   const inp = document.createElement("input");
   const br = document.createElement("br");
   inp.setAttribute("type","text");
   inp.setAttribute("name","inputAnswer");
   br.setAttribute("name","br");
-  post.box.insertBefore(inp,post.addbtn);
-  post.box.insertBefore(br,post.addbtn);
+  inp.onkeyup = post.change;
+  //post.box.appendChild(text);
+  post.box.appendChild(inp);
+  post.box.appendChild(br);
 
   if(post.answers.length == 2){
     answerDelBtnHidActionHTML(post.delbtn);
   }
+  post.change();
 };
 //answersの長さが1つ減る
 post.delAction = function(){
@@ -68,7 +77,24 @@ post.delAction = function(){
   if(post.answers.length == 1){
     answerDelBtnHidActionHTML(post.delbtn);
   }
+  post.change();
 }
+// 送信ボタンの切り替え
+post.change = function(){
+  let check = true;
+  // 選択肢に文字が入力されているかチェック
+  for(let i=0; i<post.answers.length; i++ ){
+    if(!post.answers[i].value){
+      check = false;
+    }
+  }
+  if(post.query.value == "" || !check){
+    $("#inputSub").prop("disabled", true);
+  }else{
+    $("#inputSub").prop("disabled", false);
+  }
+}
+
 
 function answerDelBtnHidActionHTML(hid){
   if(hid.className == "off"){//offなら表示する

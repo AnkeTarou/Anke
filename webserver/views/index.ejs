@@ -120,13 +120,19 @@
 </head>
 <body>
   <section id="inputBox">
-    <input type="text" id="inputQuery"/>
-    <br />
-    <input type="text" name="inputAnswer" />
-    <br />
-    <input type="button" id="inputAddBtn" value="解答追加"/>
-    <input type="button" id="inputDelBtn" class="off" value="解答削除"/>
-    <input type="submit" id="inputSub" value="送信">
+    <div id="queryBox">
+      アンケート内容：<input type="text" id="inputQuery"/>
+    </div>
+    <div id="answerBox">
+      <span>回答選択肢：</span>
+      <input type="text" name="inputAnswer" />
+      <br>
+    </div>
+    <div>
+      <input type="button" id="inputAddBtn" value="解答追加"/>
+      <input type="button" id="inputDelBtn" class="off" value="解答削除"/>
+      <input type="submit" id="inputSub" disabled="disabled" value="送信">
+    </div>
   </section>
   <section id="result">
     <div id="searchBox">
