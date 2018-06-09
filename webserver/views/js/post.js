@@ -95,7 +95,6 @@ post.change = function(){
   }
 }
 
-
 function answerDelBtnHidActionHTML(hid){
   if(hid.className == "off"){//offなら表示する
     hid.style.display = "inline"

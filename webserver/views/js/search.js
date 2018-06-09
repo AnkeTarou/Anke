@@ -165,7 +165,8 @@ function voteAddActionHTML(id){
     // コメント送信ボタンをセット
     const commentsub = document.createElement("input");
     commentsub.setAttribute("type","submit");
-    commentsub.setAttribute("id","comment");
+    commentsub.setAttribute("id","commentsub");
+    commentsub.setAttribute("disabled","disabled");
     commentsub.setAttribute("value","コメントを送信");
     hid.appendChild(commentsub);
 
@@ -188,6 +189,14 @@ function voteAddActionHTML(id){
 
     }
 
+    content.onkeyup = function(){
+      if(content.value == ""){
+        $("#commentsub").prop("disabled", true);
+      }else{
+        $("#commentsub").prop("disabled", false);
+      }
+    }
+
     // コメントを送信したとき
     commentsub.onclick = function(){
       console.log("コメント送信");
@@ -195,8 +204,7 @@ function voteAddActionHTML(id){
       connect("/comment/",{'user':user,'id':id,'content':come},
       function(res){
         content.value = "";
-        console.log("コメント送ったよ");
-
+        $("#commentsub").prop("disabled", true);
         // コメント欄の先頭に新しいコメントを挿入
         const newdiv = document.createElement("div");
         newdiv.setAttribute("class","comment");
