@@ -50,19 +50,15 @@ post.route = function (){
 };
 //answersの長さが1つ増える
 post.addAction = function (){
-  /*
-    コメントアウトは未実装
-  */
-  //const text = document.createTextNode("回答選択肢" + (post.answers.length + 1) + " ：");
+  const div = document.createElement("div");
   const inp = document.createElement("input");
-  const br = document.createElement("br");
+  div.setAttribute("id","inputAnswer" + (post.answers.length + 1) );
+  div.textContent = "回答選択肢" + (post.answers.length + 1) + " ： ";
   inp.setAttribute("type","text");
   inp.setAttribute("name","inputAnswer");
-  br.setAttribute("name","br");
   inp.onkeyup = post.change;
-  //post.box.appendChild(text);
-  post.box.appendChild(inp);
-  post.box.appendChild(br);
+  post.box.appendChild(div);
+  div.appendChild(inp);
 
   if(post.answers.length == 2){
     answerDelBtnHidActionHTML(post.delbtn);
@@ -71,9 +67,8 @@ post.addAction = function (){
 };
 //answersの長さが1つ減る
 post.delAction = function(){
-  const brList = document.getElementsByName("br");
-  post.answers[post.answers.length-1].remove();
-  post.box.removeChild(brList[brList.length-1]);
+  const div = document.getElementById("inputAnswer" + post.answers.length);
+  div.remove();
   if(post.answers.length == 1){
     answerDelBtnHidActionHTML(post.delbtn);
   }
