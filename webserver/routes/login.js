@@ -21,7 +21,7 @@ exports.post = function(req,res){
     let inquiry;
     if(user){
       dbo.session(user._id,newSessionkey);
-      inquiry={boo: true, userid:user._id, userpass:user.pass, 'sessionkey':newSessionkey};
+      inquiry={boo: true, userid:user._id, 'sessionkey':newSessionkey};
     }else{
       inquiry={boo: false};
     }

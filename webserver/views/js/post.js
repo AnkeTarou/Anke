@@ -36,9 +36,13 @@ post.route = function (){
 
   connect("/post/",obj,
   function(res){
-    post.query.value = "";
-    for(let i of post.answers){
-      i.value = "";
+    if(!res.replay){
+      post.query.value = "";
+      for(let i of post.answers){
+        i.value = "";
+      }
+    }else{
+      window.alert(res.replay + "\n安全のため再ログインしてから再投稿をお願いします");
     }
   })
 };

@@ -26,7 +26,7 @@ login.load = function(){
       connect("/login/",{'session':session, type:"session"},
       function(res){
         if(res.boo == 1){
-          user = {_id:res.userid,_pass:res.userpass,session:res.sessionkey};
+          user = {_id:res.userid,session:res.sessionkey};
           console.log(user._id + "さんです");
           document.cookie = 'sessionkey=' + user.session + '; max-age=259200';
         }else{
@@ -47,7 +47,7 @@ login.route = function(){
     if(res.boo == 1){
       // cookieに値をセット
       document.cookie = 'sessionkey=' + res.sessionkey + '; max-age=259200';
-      user = {_id:res.userid,_pass:res.userpass,session:res.sessionkey};
+      user = {_id:res.userid,session:res.sessionkey};
       login.load();
     }else{
       console.log("ログイン失敗");
@@ -59,7 +59,6 @@ login.route = function(){
 login.logout = function(){
   //cookieとsessionを削除
   document.cookie = 'sessionkey=; max-age=0';
-  window.sessionStorage.clear();
   user = null;
   console.log(document.cookie);
   login.load();
