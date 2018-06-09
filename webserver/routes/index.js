@@ -7,6 +7,7 @@ const vote = require('./vote');
 const login = require('./login');
 const mail = require('../../mailserver/smtp');
 const getid = require('./insertuser');
+const good = require('./good');
 const comment = require('./comment');
 const file = require('./sendfile');
 
@@ -31,6 +32,9 @@ router.post('/account/',getid.post);
 
 //メール
 router.post('/mail/',mail.post);
+
+//いいね
+router.post('/good/',good.post);
 
 //コメント
 router.post('/comment/',comment.post);

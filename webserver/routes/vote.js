@@ -5,7 +5,7 @@ const async = require('async');
 exports.post = function(req,res){
   const key = [
     {$match:{_id:require('mongodb').ObjectID(req.body.id)}},
-    {$project:{_id:1,answers:1,total:{$sum:"$answers.total"},comment:1}}
+    {$project:{_id:1,answers:1,total:{$sum:"$answers.total"},good:1,comment:1}}
   ];
 
   dbo.vote(req.body.id,req.body.index,key,function(json){

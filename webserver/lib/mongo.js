@@ -43,6 +43,31 @@ exports.vote = function(id,index,key,callback){
     });
   });
 }
+//いいねをデータベースに反映
+exports.good = function(user,id,good,key,callback){
+  MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
+    if (error) throw error;
+    const dbo = database.db("QuestionData");
+    const objId = require('mongodb').ObjectID(id);
+    if(good == "on"){
+      dbo.collection("question").update({_id:objId},{$inc:{"good.totalgood":1}},
+      function(err, res) {
+        if (err) throw err;
+      });
+      dbo.collection("question").update({_id:objId},{$addToSet:{"good.gooduser":user._id}},
+      function(err, res) {
+        if (err) throw err;
+      });
+      dbo.collection("question").aggregate(key).toArray(function(err, result) {
+        if (err) throw err;
+        database.close();
+        callback(result);
+      });
+    }else{
+
+    }
+  });
+}
 //投稿にコメントする
 exports.comment = function(id,sender_id,content,key,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {

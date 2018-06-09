@@ -7,11 +7,13 @@ exports.post = function(req,res){
     if(result){
       console.log("成功");
       const ans = [];
+      const Good = {totalgood:0, gooduser:[]};
       for(let i in key.answers){
         console.log(key.answers);
         ans[i] = {answer:key.answers[i],total:0};
       }
       key.answers = ans;
+      key.good = Good;
       dbo.insert("QuestionData","question",key);
       res.json(key);
     }else{

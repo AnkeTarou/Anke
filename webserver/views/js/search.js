@@ -62,11 +62,12 @@ function createQuestionNode(id,query,aryAnswer,total){
   div1.setAttribute("class","question");
 
   const div2 = document.createElement("div");
-  div2.setAttribute("id","hid"+id);
-  div2.setAttribute("class","off");
+  div2.setAttribute("id","status"+id);
+  div1.appendChild(document.createTextNode(query));
 
   const div3 = document.createElement("div");
-  div3.setAttribute("id","status"+id);
+  div3.setAttribute("id","hid"+id);
+  div3.setAttribute("class","off");
 
   //ノードの挿入
   article.appendChild(input1);
@@ -74,7 +75,6 @@ function createQuestionNode(id,query,aryAnswer,total){
   label.appendChild(div1);
   label.appendChild(div2);
   label.appendChild(div3);
-  div1.appendChild(document.createTextNode(query));
 
   //回答内容を入れる
   for(let i =0;i<aryAnswer.length;i++){
@@ -85,13 +85,12 @@ function createQuestionNode(id,query,aryAnswer,total){
     inp.setAttribute("name",id);
     inp.setAttribute("value",aryAnswer[i].answer);
     //ノードの挿入
-    div2.appendChild(lav);
+    div3.appendChild(lav);
     lav.appendChild(inp);
     lav.appendChild(ary);
   }
-  div2.appendChild(input2);
-
-  div3.appendChild(document.createTextNode("投票数\t" + total))
+  div2.appendChild(document.createTextNode("投票数\t" + total));
+  div3.appendChild(input2);
   return article;
 }
 
@@ -149,31 +148,80 @@ function voteAddActionHTML(id){
   //データベースに反映
   connect("/vote/",{'user':user,'id':id,'index':check},
   function(res){
-    const myVote = document.createTextNode(res.answers[check].answer + "に投票しました");
-    hid.appendChild(myVote);
-    const canvas = document.createElement("canvas");
-    hid.appendChild(canvas);
     const statusTotal = document.getElementById('status'+id);
     statusTotal.replaceChild(document.createTextNode("投票数\t"+res.total),statusTotal.firstChild);
+
+    // それぞれのブロックを作成
+    const myVotediv = document.createElement("div");
+    hid.appendChild(myVotediv);
+    const canvasdiv = document.createElement("div");
+    hid.appendChild(canvasdiv);
+    const gooddiv = document.createElement("div");
+    gooddiv.setAttribute("class","good");
+    hid.appendChild(gooddiv);
+    const commentdiv = document.createElement("div");
+    hid.appendChild(commentdiv);
+
+    const myVote = document.createTextNode(res.answers[check].answer + "に投票しました");
+    myVotediv.appendChild(myVote);
+    const canvas = document.createElement("canvas");
+    canvasdiv.appendChild(canvas);
+
+    /****いいね機能を追加****/
+
+    //　ラベル生成
+    const goodlabel = document.createElement("label");
+    goodlabel.setAttribute("id","goodlabel"+id);
+    goodlabel.textContent = "いいね\t" + res.good.totalgood + "\t";
+    gooddiv.appendChild(goodlabel);
+
+    //　いいねボタンをセット
+    const goodbtn = document.createElement("input");
+    goodbtn.setAttribute("type","checkbox");
+    goodbtn.setAttribute("id","goodbtn"+id);
+    goodbtn.setAttribute("name","goodbtn");
+    goodbtn.setAttribute("value","off");
+    goodlabel.appendChild(goodbtn);
+
+    // いいねボタンが押されたとき
+    goodbtn.onclick = function(){
+      if(goodbtn.value == "off"){
+        console.log("いいね");
+        goodbtn.value = "on";
+        // いいねをデータベースに反映
+        connect("/good/",{'user':user,'id':id,'good':"on"},
+        function(resGood){
+          goodlabel.textContent = "いいね\t" + resGood.good.totalgood + "\t";
+          goodlabel.appendChild(goodbtn);
+          console.log("いいねしたよ");
+        });
+      }else{
+        goodbtn.value = "off";
+        connect("/good/",{'user':user,'id':id,'good':"off"},
+        function(resGood){
+          console.log("いいね外したよ");
+        });
+      }
+    }
 
     // コメント機能追加
     const content = document.createElement("input");
     content.setAttribute("type","textarea");
-    content.setAttribute("id","content");
-    hid.appendChild(content);
+    content.setAttribute("id","content"+id);
+    commentdiv.appendChild(content);
 
     // コメント送信ボタンをセット
     const commentsub = document.createElement("input");
     commentsub.setAttribute("type","submit");
-    commentsub.setAttribute("id","commentsub");
+    commentsub.setAttribute("id","commentsub"+id);
     commentsub.setAttribute("disabled","disabled");
     commentsub.setAttribute("value","コメントを送信");
-    hid.appendChild(commentsub);
+    commentdiv.appendChild(commentsub);
 
     // 既にあるコメントをブラウザに表示
     const div1 = document.createElement("div");
     div1.setAttribute("class","comment");
-    hid.appendChild(div1);
+    commentdiv.appendChild(div1);
     if(res.comment){
       const comments = res.comment;
 
@@ -189,11 +237,12 @@ function voteAddActionHTML(id){
 
     }
 
+    //　コメント内容が入っているかチェック
     content.onkeyup = function(){
       if(content.value == ""){
-        $("#commentsub").prop("disabled", true);
+        $("#commentsub"+id).prop("disabled", true);
       }else{
-        $("#commentsub").prop("disabled", false);
+        $("#commentsub"+id).prop("disabled", false);
       }
     }
 

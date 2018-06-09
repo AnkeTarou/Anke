@@ -43,7 +43,7 @@ body {
 .slide .question-action-open{
   display: none;
 }
-.question+div label{
+.question+div+div label{
   width: 40%;
   background-color: rgb(190, 88, 51);
 }
