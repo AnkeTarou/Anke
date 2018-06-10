@@ -1,14 +1,14 @@
 const dbo = require('../lib/mongo');
-const async = require('async');
 
 /** 投票 **/
 exports.post = function(req,res){
+  const param = req.body;
   const key = [
-    {$match:{_id:require('mongodb').ObjectID(req.body.id)}},
+    {$match:{_id:require('mongodb').ObjectID(param.id)}},
     {$project:{_id:1,answers:1,total:{$sum:"$answers.total"},good:1,comment:1}}
   ];
 
-  dbo.vote(req.body.id,req.body.index,key,function(json){
+  dbo.vote(param.user, param.id, param.index, key, function(json){
     console.log(json[0]);
     res.json(json[0]);
   });

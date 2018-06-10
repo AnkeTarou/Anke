@@ -67,6 +67,7 @@ function createUserNode(id,follow,follower){
   label.appendChild(userInfo);
   label.appendChild(userlabel);
   label.appendChild(userNode);
+
   /****フォロー機能を追加****/
 
   /**ユーザー認証**/
@@ -98,26 +99,48 @@ function createUserNode(id,follow,follower){
 
       // followボタンが押されたとき
       followbtn.onclick = function(){
+        // MyNodeを取得
+        const mylabel = document.getElementById("userlabel"+user._id);
+        const myNode = document.getElementById("hid"+user._id);
+
         if(followbtn.checked){
-          // いいねをデータベースに反映
+          // フォロー状況をデータベースに反映
           connect("/follow/",{'own':user,'id':id,'follow':true},
           function(resFollow){
-            userlabel.textContent = "フォロー数\t" + resFollow.follow.length + "\t"
-            + "フォロワー数\t" + resFollow.follower.length + "\t";
-            followlabel.textContent = "フォロー";
-            followbtn.checked = true;
-            followlabel.appendChild(followbtn);
-            console.log("フォローしたよ");
+            // MyDataを取得
+            connect("/userSearch/",{value:user._id},function(own){
+
+              userlabel.textContent = "フォロー数\t" + resFollow.follow.length + "\t"
+              + "フォロワー数\t" + resFollow.follower.length + "\t";
+              mylabel.textContent = "フォロー数\t" + own[0].follow.length + "\t"
+              + "フォロワー数\t" + own[0].follower.length + "\t";
+
+              // Nodeを更新
+              followlabel.textContent = "フォロー";
+              followbtn.checked = true;
+              followlabel.appendChild(followbtn);
+
+              console.log("フォローしたよ");
+            });
           });
         }else{
           connect("/follow/",{'own':user,'id':id,'follow':false},
           function(resFollow){
-            userlabel.textContent = "フォロー数\t" + resFollow.follow.length + "\t"
-            + "フォロワー数\t" + resFollow.follower.length + "\t";
-            followlabel.textContent = "フォロー";
-            followbtn.checked = false;
-            followlabel.appendChild(followbtn);
-            console.log("フォロー外したよ");
+            // MyDataを取得
+            connect("/userSearch/",{value:user._id},function(own){
+
+              userlabel.textContent = "フォロー数\t" + resFollow.follow.length + "\t"
+              + "フォロワー数\t" + resFollow.follower.length + "\t";
+              mylabel.textContent = "フォロー数\t" + own[0].follow.length + "\t"
+              + "フォロワー数\t" + own[0].follower.length + "\t";
+
+              // Nodeを更新
+              followlabel.textContent = "フォロー";
+              followbtn.checked = false;
+              followlabel.appendChild(followbtn);
+
+              console.log("フォロー外したよ");
+            });
           });
         }
       }

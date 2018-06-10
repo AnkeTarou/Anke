@@ -27,12 +27,17 @@ exports.insert = function(dbName,collection,key){
 }
 
 //投票する
-exports.vote = function(id,index,key,callback){
+exports.vote = function(user, id, index, key, callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
     const dbo = database.db("QuestionData");
+    const dbo2 = database.db("UserData");
     const objId = require('mongodb').ObjectID(id);
     dbo.collection("question").updateOne({_id:objId},{$inc:{[`answers.${index}.total`]: 1}},
+    function(err, res) {
+      if (err) throw err;
+    });
+    dbo2.collection("user").update({_id:user._id},{$addToSet:{vote:objId}},
     function(err, res) {
       if (err) throw err;
     });
@@ -48,7 +53,15 @@ exports.good = function(user,id,good,key,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
     const dbo = database.db("QuestionData");
+    const dbo2 = database.db("UserData");
     const objId = require('mongodb').ObjectID(id);
+
+    /**
+    　* goodの値で分岐
+      * @true or false
+      * userのgoodプロパティも更新
+    **/
+
     if(good == "true"){
       dbo.collection("question").update({_id:objId},{$inc:{"good.totalgood":1}},
       function(err, res) {
@@ -56,6 +69,9 @@ exports.good = function(user,id,good,key,callback){
       });
       dbo.collection("question").update({_id:objId},{$addToSet:{"good.gooduser":user._id}},
       function(err, res) {
+        if (err) throw err;
+      });
+      dbo2.collection("user").update({_id:user._id},{$addToSet:{good:objId}},function(err, res) {
         if (err) throw err;
       });
       dbo.collection("question").aggregate(key).toArray(function(err, result) {
@@ -70,6 +86,9 @@ exports.good = function(user,id,good,key,callback){
       });
       dbo.collection("question").update({_id:objId},{$pull:{"good.gooduser":user._id}},
       function(err, res) {
+        if (err) throw err;
+      });
+      dbo2.collection("user").update({_id:user._id},{$pull:{good:objId}},function(err, res) {
         if (err) throw err;
       });
       dbo.collection("question").aggregate(key).toArray(function(err, result) {

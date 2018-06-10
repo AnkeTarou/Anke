@@ -8,7 +8,9 @@ exports.post = function(req,res){
     _id:logid,
     pass:logpass,
     follow:[],
-    follower:[]
+    follower:[],
+    good:[],
+    vote:[]
   }
   dbo.aggregate("UserData","user",[{$match:{_id:logid}}],function(result){
     //console.log(result);
