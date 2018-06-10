@@ -25,13 +25,14 @@ function userResult(data){
     const follow = data[i].follow;
     const follower = data[i].follower;
     const good = data[i].good;
+    const post = data[i].post;
 
-    usersection.appendChild(createUserNode(id, follow, follower, good));
+    usersection.appendChild(createUserNode(id, follow, follower, good, post));
     resultUserAddActionHTML(id);
   }
 }
 
-function createUserNode(id,follow,follower, good){
+function createUserNode(id,follow,follower, good, post){
   // ユーザーを表示するresultノード生成
   const resultNode = document.createElement("div");
   resultNode.setAttribute("class","userSlide");
@@ -51,8 +52,8 @@ function createUserNode(id,follow,follower, good){
   const userlabel = document.createElement("label");
   userlabel.setAttribute("id","userlabel"+id);
   userlabel.setAttribute("for","userlabel");
-  userlabel.textContent = "いいね数" + good.length + "\t" + "フォロー数\t" + follow.length + "\t"
-  + "フォロワー数\t" + follower.length + "\t";
+  userlabel.textContent = "投稿数\t" + post.length  + "\t" + "いいね数\t" + good.length + "\t"
+  + "フォロー数\t" + follow.length + "\t" + "フォロワー数\t" + follower.length + "\t";
 
   //ユーザーノード生成
   const userNode = document.createElement("div");
@@ -109,9 +110,12 @@ function createUserNode(id,follow,follower, good){
             // MyDataを取得
             connect("/userSearch/",{value:user._id},function(own){
 
-              userlabel.textContent = "フォロー数\t" + resFollow.follow.length + "\t"
+              userlabel.textContent = "投稿数\t" + resFollow.post.length  + "\t" + "いいね数\t"
+              + resFollow.good.length + "\t" + "フォロー数\t" + resFollow.follow.length + "\t"
               + "フォロワー数\t" + resFollow.follower.length + "\t";
-              mylabel.textContent = "フォロー数\t" + own[0].follow.length + "\t"
+
+              mylabel.textContent = "投稿数\t" + own[0].post.length  + "\t" + "いいね数\t"
+              + own[0].good.length + "\t" + "フォロー数\t" + own[0].follow.length + "\t"
               + "フォロワー数\t" + own[0].follower.length + "\t";
 
               // Nodeを更新
@@ -128,9 +132,12 @@ function createUserNode(id,follow,follower, good){
             // MyDataを取得
             connect("/userSearch/",{value:user._id},function(own){
 
-              userlabel.textContent = "フォロー数\t" + resFollow.follow.length + "\t"
+              userlabel.textContent = "投稿数\t" + resFollow.post.length  + "\t" + "いいね数\t"
+              + resFollow.good.length + "\t" + "フォロー数\t" + resFollow.follow.length + "\t"
               + "フォロワー数\t" + resFollow.follower.length + "\t";
-              mylabel.textContent = "フォロー数\t" + own[0].follow.length + "\t"
+
+              mylabel.textContent = "投稿数\t" + own[0].post.length  + "\t" + "いいね数\t"
+              + own[0].good.length + "\t" + "フォロー数\t" + own[0].follow.length + "\t"
               + "フォロワー数\t" + own[0].follower.length + "\t";
 
               // Nodeを更新
