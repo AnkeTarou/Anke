@@ -6,7 +6,9 @@ exports.post = function(req,res){
   console.log(logpass.length);
   const key = {
     _id:logid,
-    pass:logpass
+    pass:logpass,
+    follow:[],
+    follower:[]
   }
   dbo.aggregate("UserData","user",[{$match:{_id:logid}}],function(result){
     //console.log(result);
@@ -17,7 +19,8 @@ exports.post = function(req,res){
       inquiry=2;
     }else if(logpass.length<8){
       inquiry=3;
-    }*/else{
+    }*/
+    else{
       dbo.insert("UserData","user",key);
       inquiry=4;
     }

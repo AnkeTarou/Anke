@@ -97,6 +97,42 @@ exports.comment = function(id,sender_id,content,key,callback){
     });
   });
 }
+//folloe状況をデータベースに反映
+exports.follow = function(own,user_id,follow,key,callback){
+  MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
+    if (error) throw error;
+    const dbo = database.db("UserData");
+    if(follow == "true"){
+      dbo.collection("user").update({_id:own._id},{$addToSet:{follow:user_id}},
+      function(err, res) {
+        if (err) throw err;
+      });
+      dbo.collection("user").update({_id:user_id},{$addToSet:{follower:own._id}},
+      function(err, res) {
+        if (err) throw err;
+      });
+      dbo.collection("user").aggregate(key).toArray(function(err, result) {
+        if (err) throw err;
+        database.close();
+        callback(result);
+      });
+    }else{
+      dbo.collection("user").update({_id:own._id},{$pull:{follow:user_id}},
+      function(err, res) {
+        if (err) throw err;
+      });
+      dbo.collection("user").update({_id:user_id},{$pull:{follower:own._id}},
+      function(err, res) {
+        if (err) throw err;
+      });
+      dbo.collection("user").aggregate(key).toArray(function(err, result) {
+        if (err) throw err;
+        database.close();
+        callback(result);
+      });
+    }
+  });
+}
 // sessionkey挿入
 exports.session = function(id,sessionkey){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
@@ -109,7 +145,7 @@ exports.session = function(id,sessionkey){
   });
 }
 // userの認証
-exports.userCheck = function(checkuser,callback1,callback2){
+exports.userCheck = function(checkuser,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     const dbo = database.db("UserData");
     const key = [{$match:{sessionkey:checkuser.session}}];
@@ -118,9 +154,9 @@ exports.userCheck = function(checkuser,callback1,callback2){
       user = result[0];
       database.close();
       if(user){
-        callback1(user);
+        callback(user);
       }else {
-        callback2(null);
+        callback(null);
       }
     });
   });

@@ -3,9 +3,7 @@ const dbo = require('../lib/mongo');
 exports.post = function(req,res){
   const key = req.body;
   dbo.userCheck(key.user,function(result){
-    console.log(result);
     if(result){
-      console.log("成功");
       const ans = [];
       const Good = {totalgood:0, gooduser:[]};
       for(let i in key.answers){
@@ -17,7 +15,6 @@ exports.post = function(req,res){
       dbo.insert("QuestionData","question",key);
       res.json(key);
     }else{
-      console.log("失敗");
       key.replay = "認証に失敗したので投稿できませんでした"
       res.json(key);
     }

@@ -54,6 +54,10 @@ body {
   width: 40%;
   background-color: rgb(190, 88, 51);
 }
+[name=user] label {
+  width: 40%;
+  background-color: rgb(190, 88, 51);
+}
 
 /************ログイン処理***********/
 

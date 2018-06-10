@@ -10,7 +10,9 @@ const mail = require('../../mailserver/smtp');
 const getid = require('./insertuser');
 const good = require('./good');
 const comment = require('./comment');
+const follow = require('./follow');
 const file = require('./sendfile');
+const userCheck = require('./userCheck');
 
 router.get('/', function (req, res) {
   res.render("index",{});
@@ -43,7 +45,13 @@ router.post('/good/',good.post);
 //コメント
 router.post('/comment/',comment.post);
 
+//フォロー
+router.post('/follow',follow.post);
+
 //ファイル送信
 router.post('/file/',file.post);
+
+//ユーザー認証
+router.post('/userCheck/',userCheck.post);
 
 module.exports = router;
