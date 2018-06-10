@@ -24,16 +24,14 @@ function userResult(data){
     const id = data[i]._id;
     const follow = data[i].follow;
     const follower = data[i].follower;
+    const good = data[i].good;
 
-    /****未実装****/
-    /*const good = data[i].good;*/
-
-    usersection.appendChild(createUserNode(id,follow,follower));
+    usersection.appendChild(createUserNode(id, follow, follower, good));
     resultUserAddActionHTML(id);
   }
 }
 
-function createUserNode(id,follow,follower){
+function createUserNode(id,follow,follower, good){
   // ユーザーを表示するresultノード生成
   const resultNode = document.createElement("div");
   resultNode.setAttribute("class","userSlide");
@@ -53,7 +51,8 @@ function createUserNode(id,follow,follower){
   const userlabel = document.createElement("label");
   userlabel.setAttribute("id","userlabel"+id);
   userlabel.setAttribute("for","userlabel");
-  userlabel.textContent = "フォロー数\t" + follow.length + "\t" + "フォロワー数\t" + follower.length + "\t";
+  userlabel.textContent = "いいね数" + good.length + "\t" + "フォロー数\t" + follow.length + "\t"
+  + "フォロワー数\t" + follower.length + "\t";
 
   //ユーザーノード生成
   const userNode = document.createElement("div");

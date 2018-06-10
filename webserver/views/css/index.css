@@ -25,6 +25,7 @@ body {
   background-color: rgb(134, 126, 222);
 }
 
+/**　　userlabelも指定　　**/
 .questionSlide label,.userSlide label{
   color: #000;
   text-align: center;
@@ -59,12 +60,12 @@ body {
 }
 
 label[for="userlabel"] {
-  width: 40%;
+  width: 60%;
   background-color: rgb(10, 188, 251);
 }
 
 [name=user] label {
-  width: 40%;
+  width: 20%;
   background-color: rgb(190, 88, 51);
 }
 

@@ -10,6 +10,7 @@ exports.post = function(req,res){
   }
   key.answers = ans;
   key.good = Good;
-  dbo.insert("QuestionData","question",key);
-  res.json(key);
+  dbo.post(key,function(result){
+    res.json(result);
+  });
 }

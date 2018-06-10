@@ -26,6 +26,32 @@ exports.insert = function(dbName,collection,key){
   });
 }
 
+//投稿処理
+exports.post = function(key,callback){
+  MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
+    if (error) throw error;
+    const dbo = database.db("QuestionData");
+    const dbo2 = database.db("UserData");
+    const Key = [{$match:{'user._id':key.user._id, 'user.session':key.user.session}}];
+
+    // 投稿をデータベースに挿入
+    dbo.collection("question").insertOne(key, function(err, result) {
+      if (err) throw err;
+    });
+    // 投稿をユーザーデータベースに反映
+    dbo.collection("question").aggregate(Key).toArray(function(err, result) {
+      if (err) throw err;
+      const objId = result[result.length-1]._id;
+      dbo2.collection("user").update({_id:key.user._id},{$addToSet:{post:objId}},
+      function(err, res) {
+        if (err) throw err;
+        database.close();
+        callback(result);
+      });
+    });
+  });
+}
+
 //投票する
 exports.vote = function(user, id, index, key, callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
