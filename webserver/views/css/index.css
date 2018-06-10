@@ -24,8 +24,15 @@ body {
   text-align: center;
   background-color: rgb(134, 126, 222);
 }
+#usersection{
+  display: block;
+  margin: 0 auto;
+  width: 600px;
+  text-align: center;
+  background-color: rgb(245, 26, 22);
+}
 
-.slide label {
+.questionSlide label,.userSlide label{
   color: #000;
   text-align: center;
   border-radius: 20px;
@@ -40,7 +47,7 @@ body {
   overflow: hidden;
   display: none;
 }
-.slide .question-action-open{
+.action-open{
   display: none;
 }
 .question+div+div label{

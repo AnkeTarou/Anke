@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const search = require('./search');
+const userSearch = require('./userSearch');
 const post = require('./post');
 const vote = require('./vote');
 const login = require('./login');
@@ -16,7 +17,10 @@ router.get('/', function (req, res) {
 });
 
 //検索
-router.post('/search/',search.post)
+router.post('/search/',search.post);
+
+//ユーザー検索
+router.post('/userSearch/',userSearch.post);
 
 //投稿
 router.post('/post/',post.post);

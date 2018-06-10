@@ -12,6 +12,7 @@
   <script type="text/javascript" src="js/post.js"></script>
   <script type="text/javascript" src="js/search.js"></script>
   <script type="text/javascript" src="js/mail.js"></script>
+  <script type="text/javascript" src="js/userSearch.js"></script>
 
   <script>
     window.onload = function() {
@@ -20,6 +21,7 @@
       post.init();
       search.init();
       mail.init();
+      userSearch.init();
 
       const upload = document.getElementById("upload");
       const canva = document.getElementById("canva");
@@ -138,7 +140,13 @@
   <section id="result">
     <div id="searchBox">
       <input type="text" id="searchValue" />
-      <input type="submit" id="searchSub" value="取得" />
+      <input type="submit" id="searchSub" value="投稿を取得" />
+    </div>
+  </section>
+  <section id="usersection">
+    <div id="userBox">
+      <input type="text" id="userSearch"/>
+      <input type="submit" id="uerSearchSub" value="ユーザー取得" />
     </div>
   </section>
   <section id="loginBox">

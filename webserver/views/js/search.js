@@ -3,7 +3,7 @@
  */
 var search = {
     init:function(){
-      this.valueNode = document.getElementById("searchValue");
+      this.searchValueNode = document.getElementById("searchValue");
       this.subNode = document.getElementById("searchSub");
       this.subNode.onclick = this.route;
     }
@@ -12,8 +12,8 @@ var search = {
 //サーバに接続し検索した後,結果を画面に反映する
 //その後、検索したキーで更新があれば自動で反映される
 search.route = function (){
-  connect("/search/",{value:search.valueNode.value},updateResult)
-  search.autoUpdate({value:search.valueNode.value});
+  connect("/search/",{value:search.searchValueNode.value},updateResult);
+  search.autoUpdate({value:search.searchValueNode.value});
 };
 
 search.autoUpdate = function(key){
@@ -27,7 +27,7 @@ search.autoUpdate = function(key){
 //送られてきたデータをresultに反映する
 function updateResult(date){
   const result = document.getElementById('result');
-  const articles = document.getElementsByClassName("slide");
+  const articles = document.getElementsByClassName("questionSlide");
   for(let i = articles.length; i<date.length; i++){
     const id = date[i]._id;
     const query = date[i].query;
@@ -42,12 +42,12 @@ function createQuestionNode(id,query,aryAnswer,total){
   const que = document.createTextNode(query);
 
   const article = document.createElement("article");
-  article.setAttribute("class","slide");
+  article.setAttribute("class","questionSlide");
 
   const input1 = document.createElement("input");
   input1.setAttribute("type","button");
   input1.setAttribute("id","btn"+id);
-  input1.setAttribute("class","question-action-open");
+  input1.setAttribute("class","action-open");
 
   const input2 = document.createElement("input");
   input2.setAttribute("type","submit");
