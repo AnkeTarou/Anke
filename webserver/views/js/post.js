@@ -20,34 +20,34 @@ var post = {
 };
 //データベースに接続し処理を行う
 post.route = function (){
-  // ログイン状態かチェック
-  if(!user){
-    const sub = document.getElementById("inputSub");
-    sub.value = "ログインしてください";
-    return sub;
-  }
-  let obj = function(){
-    const obj = {'user':user,query:post.query.value};
-    const answer = [];
-    for(let i = 0;i<post.answers.length;i++){
-      answer[i] = post.answers[i].value;
-    }
-    obj.answers = answer;
-    return obj;
-  }();
+  // ユーザー認証
+  connect("/userCheck/",{'user':user},function(res){
+    if(res){
+      let obj = function(){
+        const obj = {'user':user,query:post.query.value};
+        const answer = [];
+        for(let i = 0;i<post.answers.length;i++){
+          answer[i] = post.answers[i].value;
+        }
+        obj.answers = answer;
+        return obj;
+      }();
 
-  connect("/post/",obj,
-  function(res){
-    if(!res.replay){
-      post.query.value = "";
-      for(let i of post.answers){
-        i.value = "";
-      }
-      post.change();
+      connect("/post/",obj,
+      function(res){
+        post.query.value = "";
+        for(let i of post.answers){
+          i.value = "";
+        }
+        post.change();
+      });
     }else{
-      window.alert(res.replay + "\n安全のため再ログインしてから再投稿をお願いします");
+      const sub = document.getElementById("inputSub");
+      sub.value = "ログインしてください";
+      return sub;
     }
-  })
+  });
+
 };
 //answersの長さが1つ増える
 post.addAction = function (){

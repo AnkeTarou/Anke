@@ -151,9 +151,9 @@ exports.userCheck = function(checkuser,callback){
     const key = [{$match:{sessionkey:checkuser.session}}];
     dbo.collection("user").aggregate(key).toArray(function(err, result) {
       if (err) throw err;
-      user = result[0];
       database.close();
-      if(user){
+      user = result[0];
+      if(user && (user._id == checkuser._id) ){
         callback(user);
       }else {
         callback(null);
