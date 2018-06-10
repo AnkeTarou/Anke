@@ -24,13 +24,6 @@ body {
   text-align: center;
   background-color: rgb(134, 126, 222);
 }
-#usersection{
-  display: block;
-  margin: 0 auto;
-  width: 600px;
-  text-align: center;
-  background-color: rgb(245, 26, 22);
-}
 
 .questionSlide label,.userSlide label{
   color: #000;
@@ -54,10 +47,27 @@ body {
   width: 40%;
   background-color: rgb(190, 88, 51);
 }
+
+/****ユーザー検索****/
+
+#usersection{
+  display: block;
+  margin: 0 auto;
+  width: 600px;
+  text-align: center;
+  background-color: rgb(245, 26, 22);
+}
+
+label[for="userlabel"] {
+  width: 40%;
+  background-color: rgb(10, 188, 251);
+}
+
 [name=user] label {
   width: 40%;
   background-color: rgb(190, 88, 51);
 }
+
 
 /************ログイン処理***********/
 

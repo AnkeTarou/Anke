@@ -49,6 +49,12 @@ function createUserNode(id,follow,follower){
   //　ユーザー情報をノードに追加
   const userInfo = document.createTextNode(id);
 
+  // ユーザーラベル生成
+  const userlabel = document.createElement("label");
+  userlabel.setAttribute("id","userlabel"+id);
+  userlabel.setAttribute("for","userlabel");
+  userlabel.textContent = "フォロー数\t" + follow.length + "\t" + "フォロワー数\t" + follower.length + "\t";
+
   //ユーザーノード生成
   const userNode = document.createElement("div");
   userNode.setAttribute("id","hid"+id);
@@ -59,8 +65,8 @@ function createUserNode(id,follow,follower){
   resultNode.appendChild(input1);
   resultNode.appendChild(label);
   label.appendChild(userInfo);
+  label.appendChild(userlabel);
   label.appendChild(userNode);
-
   /****フォロー機能を追加****/
 
   /**ユーザー認証**/
@@ -96,6 +102,8 @@ function createUserNode(id,follow,follower){
           // いいねをデータベースに反映
           connect("/follow/",{'own':user,'id':id,'follow':true},
           function(resFollow){
+            userlabel.textContent = "フォロー数\t" + resFollow.follow.length + "\t"
+            + "フォロワー数\t" + resFollow.follower.length + "\t";
             followlabel.textContent = "フォロー";
             followbtn.checked = true;
             followlabel.appendChild(followbtn);
@@ -104,6 +112,8 @@ function createUserNode(id,follow,follower){
         }else{
           connect("/follow/",{'own':user,'id':id,'follow':false},
           function(resFollow){
+            userlabel.textContent = "フォロー数\t" + resFollow.follow.length + "\t"
+            + "フォロワー数\t" + resFollow.follower.length + "\t";
             followlabel.textContent = "フォロー";
             followbtn.checked = false;
             followlabel.appendChild(followbtn);
