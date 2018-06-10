@@ -43,6 +43,7 @@ post.route = function (){
       for(let i of post.answers){
         i.value = "";
       }
+      post.change();
     }else{
       window.alert(res.replay + "\n安全のため再ログインしてから再投稿をお願いします");
     }

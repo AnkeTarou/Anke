@@ -48,7 +48,7 @@ login.route = function(){
       // cookieに値をセット
       document.cookie = 'sessionkey=' + res.sessionkey + '; max-age=259200';
       user = {_id:res.userid,session:res.sessionkey};
-      login.load();
+      location.href = "";
     }else{
       console.log("ログイン失敗");
     }
@@ -61,7 +61,7 @@ login.logout = function(){
   document.cookie = 'sessionkey=; max-age=0';
   user = null;
   console.log(document.cookie);
-  login.load();
+  location.href = "";
 }
 login.outputStatus = function(){
   if(user){

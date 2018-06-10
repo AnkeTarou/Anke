@@ -3,10 +3,10 @@
  */
 var search = {
     init:function(){
-    this.valueNode = document.getElementById("searchValue");
-    this.subNode = document.getElementById("searchSub");
-    this.subNode.onclick = this.route;
-  }
+      this.valueNode = document.getElementById("searchValue");
+      this.subNode = document.getElementById("searchSub");
+      this.subNode.onclick = this.route;
+    }
 }
 
 //サーバに接続し検索した後,結果を画面に反映する
@@ -23,7 +23,6 @@ search.autoUpdate = function(key){
     connect("/search/",key,updateResult);
   },5000);
 }
-
 
 //送られてきたデータをresultに反映する
 function updateResult(date){
@@ -156,9 +155,11 @@ function voteAddActionHTML(id){
     hid.appendChild(myVotediv);
     const canvasdiv = document.createElement("div");
     hid.appendChild(canvasdiv);
+
     const gooddiv = document.createElement("div");
     gooddiv.setAttribute("class","good");
     hid.appendChild(gooddiv);
+
     const commentdiv = document.createElement("div");
     hid.appendChild(commentdiv);
 
@@ -175,30 +176,39 @@ function voteAddActionHTML(id){
     goodlabel.textContent = "いいね\t" + res.good.totalgood + "\t";
     gooddiv.appendChild(goodlabel);
 
+    // 投稿にいいねをしているかを判別
+    let checker = false;
+    for(let i = 0; i<res.good.gooduser.length; i++){
+      if(user._id == res.good.gooduser[i]){
+        checker = true;
+      }
+    }
+
     //　いいねボタンをセット
     const goodbtn = document.createElement("input");
     goodbtn.setAttribute("type","checkbox");
     goodbtn.setAttribute("id","goodbtn"+id);
     goodbtn.setAttribute("name","goodbtn");
-    goodbtn.setAttribute("value","off");
+    goodbtn.checked = checker;
     goodlabel.appendChild(goodbtn);
 
     // いいねボタンが押されたとき
     goodbtn.onclick = function(){
-      if(goodbtn.value == "off"){
-        console.log("いいね");
-        goodbtn.value = "on";
+      if(goodbtn.checked){
         // いいねをデータベースに反映
-        connect("/good/",{'user':user,'id':id,'good':"on"},
+        connect("/good/",{'user':user,'id':id,'good':true},
         function(resGood){
           goodlabel.textContent = "いいね\t" + resGood.good.totalgood + "\t";
+          goodbtn.checked = true;
           goodlabel.appendChild(goodbtn);
           console.log("いいねしたよ");
         });
       }else{
-        goodbtn.value = "off";
-        connect("/good/",{'user':user,'id':id,'good':"off"},
+        connect("/good/",{'user':user,'id':id,'good':false},
         function(resGood){
+          goodlabel.textContent = "いいね\t" + resGood.good.totalgood + "\t";
+          goodbtn.checked = false;
+          goodlabel.appendChild(goodbtn);
           console.log("いいね外したよ");
         });
       }

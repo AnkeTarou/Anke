@@ -49,7 +49,7 @@ exports.good = function(user,id,good,key,callback){
     if (error) throw error;
     const dbo = database.db("QuestionData");
     const objId = require('mongodb').ObjectID(id);
-    if(good == "on"){
+    if(good == "true"){
       dbo.collection("question").update({_id:objId},{$inc:{"good.totalgood":1}},
       function(err, res) {
         if (err) throw err;
@@ -64,7 +64,19 @@ exports.good = function(user,id,good,key,callback){
         callback(result);
       });
     }else{
-
+      dbo.collection("question").update({_id:objId},{$inc:{"good.totalgood":-1}},
+      function(err, res) {
+        if (err) throw err;
+      });
+      dbo.collection("question").update({_id:objId},{$pull:{"good.gooduser":user._id}},
+      function(err, res) {
+        if (err) throw err;
+      });
+      dbo.collection("question").aggregate(key).toArray(function(err, result) {
+        if (err) throw err;
+        database.close();
+        callback(result);
+      });
     }
   });
 }
