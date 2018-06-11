@@ -13,6 +13,7 @@
   <script type="text/javascript" src="js/search.js"></script>
   <script type="text/javascript" src="js/mail.js"></script>
   <script type="text/javascript" src="js/userSearch.js"></script>
+  <script type="text/javascript" src="js/image.js"></script>
 
   <script>
     window.onload = function() {
@@ -22,98 +23,7 @@
       search.init();
       mail.init();
       userSearch.init();
-
-      const upload = document.getElementById("upload");
-      const canva = document.getElementById("canva");
-      let file = null; // 選択されるファイル
-      let blob = null; // 画像(BLOBデータ)
-      const THUMBNAIL_WIDTH = 500; // 画像リサイズ後の横の長さの最大値
-      const THUMBNAIL_HEIGHT = 500; // 画像リサイズ後の縦の長さの最大値
-      // ファイルが選択されたら
-      $('input[type=file]').change(function() {
-
-        // ファイルを取得
-        file = this.files[0];
-        // 選択されたファイルが画像かどうか判定
-        if (file.type != 'image/jpeg' && file.type != 'image/png') {
-          // 画像でない場合は終了
-          file = null;
-          blob = null;
-          return;
-        }
-
-        // 画像をリサイズする
-        let image = new Image();
-        let reader = new FileReader();
-        reader.onload = function(e) {
-          image.onload = function() {
-            let width, height;
-            if(image.width > image.height){
-              // 横長の画像は横のサイズを指定値にあわせる
-              const ratio = image.height/image.width;
-              width = THUMBNAIL_WIDTH;
-              height = THUMBNAIL_WIDTH * ratio;
-            } else {
-              // 縦長の画像は縦のサイズを指定値にあわせる
-              const ratio = image.width/image.height;
-              width = THUMBNAIL_HEIGHT * ratio;
-              height = THUMBNAIL_HEIGHT;
-            }
-            // サムネ描画用canvasのサイズを上で算出した値に変更
-            let canvas = $('#canvas')
-                         .attr('width', width)
-                         .attr('height', height);
-            let ctx = canvas[0].getContext('2d');
-            // canvasに既に描画されている画像をクリア
-            ctx.clearRect(0,0,width,height);
-            // canvasにサムネイルを描画
-            ctx.drawImage(image,0,0,image.width,image.height,0,0,width,height);
-            // canvasからbase64画像データを取得
-            const base64 = canvas.get(0).toDataURL('image/jpeg');
-            // base64からBlobデータを作成
-            let barr, bin, i, len;
-            bin = atob(base64.split('base64,')[1]);
-            len = bin.length;
-            barr = new Uint8Array(len);
-            i = 0;
-            while (i < len) {
-              barr[i] = bin.charCodeAt(i);
-              i++;
-            }
-            blob = new Blob([barr], {type: 'image/jpeg'});
-          }
-          image.src = e.target.result;
-        }
-        reader.readAsDataURL(file);
-      });
-
-      // アップロード開始ボタンがクリックされたら
-      upload.onclick = function(){
-        const data = canvas.toDataURL('files');
-        // ファイルが指定されていなければ何も起こらない
-        if(!file || !blob) {
-          alert("指定されてないぞ");
-          return;
-        }
-        //var name, fd = new FormData();
-        //fd.append('file', blob); // ファイルを添付する
-        $.ajax({
-          url: "file", // 送信先
-          type: 'POST',
-          dataType: 'json',
-          processData: false,
-          contentType: false,
-          data:{'data':data}
-        })
-        .done(function(res) {
-          const elem = document.getElementById("image");
-          elem.src=data;
-        })
-        .fail(function(res) {
-          // 送信失敗
-          alert("送信失敗");
-        });
-      };
+      image.init();
     }
   </script>
 </head>
@@ -170,11 +80,12 @@
   </section>
 
   <section id="filecs">
-    <input type="file" name="userfile" accept="image/*">
+    <input type="file" id="file" accept="image/*">
     <!-- サムネイル表示領域 -->
     <canvas id="canvas" width="0" height="0"></canvas>
     <!-- アップロード開始ボタン -->
     <br>
+    <button id="letsbutton">ファイル表示</button>
     <input type="button" id="upload" value="投稿">
     <br>
     <img id=image src="image/default.png" alt="取得した画像" title="base64の画像" width="300" height="200">
