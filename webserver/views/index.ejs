@@ -81,7 +81,6 @@
               i++;
             }
             blob = new Blob([barr], {type: 'image/jpeg'});
-
           }
           image.src = e.target.result;
         }
@@ -91,11 +90,9 @@
       // アップロード開始ボタンがクリックされたら
       upload.onclick = function(){
         const data = canvas.toDataURL('files');
-        console.log(data);
-        //const ctx2 = canva.getContext("2d");
         // ファイルが指定されていなければ何も起こらない
         if(!file || !blob) {
-          alert("指定されてないぞカス");
+          alert("指定されてないぞ");
           return;
         }
         //var name, fd = new FormData();
@@ -109,8 +106,8 @@
           data:{'data':data}
         })
         .done(function(res) {
-          // 送信成功
-          alert("送信成功");
+          const elem = document.getElementById("image");
+          elem.src=data;
         })
         .fail(function(res) {
           // 送信失敗
@@ -192,7 +189,7 @@
     <br>
     <input type="button" id="upload" value="投稿">
     <br>
-    <canvas id="canva" width="500" height="500"></canvas>
+    <img id=image src="image/default.png" alt="取得した画像" title="base64の画像" width="300" height="200">
   </section>
 </body>
 </html>
