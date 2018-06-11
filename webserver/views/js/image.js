@@ -6,7 +6,7 @@ var image = {
    init:function(){
      this.upload = document.getElementById("upload");
      this.letsbutton = document.getElementById("letsbutton");
-     this.files = document.getElementById("file");
+     this.tmpfile = document.getElementById("tmpfile");
      this.file = null; // 選択されるファイル
      this.blob = null; // 画像(BLOBデータ)
 
@@ -18,9 +18,11 @@ image.button = function(){
   const THUMBNAIL_WIDTH = 500; // 画像リサイズ後の横の長さの最大値
   const THUMBNAIL_HEIGHT = 500; // 画像リサイズ後の縦の長さの最大値
   // ファイルを取得
-  image.file = image.files;
+  image.file = $(image.tmpfile).prop('files')[0];
+  console.log(image.file);
+  const elem = document.getElementById("image");
   // 選択されたファイルが画像かどうか判定
-  if (image.files.type != 'image/jpeg' && image.files.type != 'image/png') {
+  if (image.file.type != 'image/jpeg' && image.file.type != 'image/png') {
     // 画像でない場合は終了
     image.file = null;
     image.blob = null;
@@ -52,7 +54,7 @@ image.button = function(){
       // canvasに既に描画されている画像をクリア
       ctx.clearRect(0,0,width,height);
       // canvasにサムネイルを描画
-      ctx.drawImage(image,0,0,images.width,images.height,0,0,width,height);
+      ctx.drawImage(images,0,0,images.width,images.height,0,0,width,height);
       // canvasからbase64画像データを取得
       const base64 = canvas.get(0).toDataURL('image/jpeg');
       // base64からBlobデータを作成
@@ -69,12 +71,14 @@ image.button = function(){
     }
     images.src = e.target.result;
   }
-  reader.readAsDataURL(file);
+  reader.readAsDataURL(image.file);
 };
 
 // アップロード開始ボタンがクリックされたら
-this.load = function(){
+image.load = function(){
   const data = canvas.toDataURL('files');
+  const elem = document.getElementById("image");
+  elem.src=data;
   // ファイルが指定されていなければ何も起こらない
   if(!image.file || !image.blob) {
     alert("指定されてないぞ");
@@ -91,8 +95,8 @@ this.load = function(){
     data:{'data':data}
   })
   .done(function(res) {
-    const elem = document.getElementById("image");
-    elem.src=data;
+    /*const elem = document.getElementById("image");
+    elem.src=data;*/
   })
   .fail(function(res) {
     // 送信失敗
