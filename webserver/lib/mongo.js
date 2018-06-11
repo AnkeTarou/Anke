@@ -93,11 +93,7 @@ exports.good = function(user,id,good,key,callback){
     **/
 
     if(good == "true"){
-      dbo.collection("question").update({_id:objId},{$inc:{"good.totalgood":1}},
-      function(err, res) {
-        if (err) throw err;
-      });
-      dbo.collection("question").update({_id:objId},{$addToSet:{"good.gooduser":user._id}},
+      dbo.collection("question").update({_id:objId},{$addToSet:{"gooduser":user._id}},
       function(err, res) {
         if (err) throw err;
       });
@@ -110,11 +106,7 @@ exports.good = function(user,id,good,key,callback){
         callback(result);
       });
     }else{
-      dbo.collection("question").update({_id:objId},{$inc:{"good.totalgood":-1}},
-      function(err, res) {
-        if (err) throw err;
-      });
-      dbo.collection("question").update({_id:objId},{$pull:{"good.gooduser":user._id}},
+      dbo.collection("question").update({_id:objId},{$pull:{"gooduser":user._id}},
       function(err, res) {
         if (err) throw err;
       });
