@@ -16,6 +16,10 @@ body {
   text-align: center;
 }
 
+#answerTypeBox{
+  color: lightblue;
+}
+
 /**************** 投稿内容のアクション***********/
 #result{
   display: block;

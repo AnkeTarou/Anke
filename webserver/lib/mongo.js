@@ -59,10 +59,14 @@ exports.vote = function(user, id, index, key, callback){
     const dbo = database.db("QuestionData");
     const dbo2 = database.db("UserData");
     const objId = require('mongodb').ObjectID(id);
-    dbo.collection("question").updateOne({_id:objId},{$inc:{[`answers.${index}.total`]: 1}},
-    function(err, res) {
-      if (err) throw err;
-    });
+    for(let i = 0; i<index.length; i++){
+      if(index[i]){
+        dbo.collection("question").updateOne({_id:objId},{$inc:{[`answers.${i}.total`]: 1}},
+        function(err, res) {
+          if (err) throw err;
+        });
+      }
+    }
     dbo2.collection("user").update({_id:user._id},{$addToSet:{vote:objId}},
     function(err, res) {
       if (err) throw err;

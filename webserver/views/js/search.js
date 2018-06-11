@@ -33,12 +33,13 @@ function updateResult(date){
     const query = date[i].query;
     const answers = date[i].answers;
     const total = date[i].total;
-    result.appendChild(createQuestionNode(id,query,answers,total));
+    const answerType = date[i].answerType;
+    result.appendChild(createQuestionNode(id,query,answers,total,answerType));
     resultQuestionAddActionHTML(id);
   }
 }
 
-function createQuestionNode(id,query,aryAnswer,total){
+function createQuestionNode(id,query,aryAnswer,total,answerType){
   const que = document.createTextNode(query);
 
   const article = document.createElement("article");
@@ -80,9 +81,19 @@ function createQuestionNode(id,query,aryAnswer,total){
     const lav = document.createElement("label");
     const ary=  document.createTextNode(aryAnswer[i].answer);
     const inp = document.createElement("input");
-    inp.setAttribute("type","radio");
     inp.setAttribute("name",id);
     inp.setAttribute("value",aryAnswer[i].answer);
+
+    if(answerType == "ラジオ"){
+      inp.setAttribute("type","radio");
+
+    }else if(answerType == "チェック"){
+      inp.setAttribute("type","checkbox");
+    }else{
+      /****記述式の処理****/
+      console.log(answerType);
+    }
+
     //ノードの挿入
     div3.appendChild(lav);
     lav.appendChild(inp);
@@ -90,6 +101,7 @@ function createQuestionNode(id,query,aryAnswer,total){
   }
   div2.appendChild(document.createTextNode("投票数\t" + total));
   div3.appendChild(input2);
+
   return article;
 }
 
@@ -128,15 +140,15 @@ function voteAddActionHTML(id){
   const sub = document.getElementById('sub'+id);
   const hid = document.getElementById('hid'+id);
   const btns = document.getElementsByName(id);
-  let check = -1;
+  let check = [];
   //１つでもチェックがついているか判断
   for(let i = 0;i < btns.length;i++){
     if(btns[i].checked){
-      check = i;
+      check[i] = true;
     }
   }
   //選択されていなかったとき
-  if(check == -1){
+  if(check.length == 0){
      sub.value = "選択してください";
      return;
   }
@@ -147,6 +159,9 @@ function voteAddActionHTML(id){
   //データベースに反映
   connect("/vote/",{'user':user,'id':id,'index':check},
   function(res){
+
+    /****クライアント側に結果を表示****/
+
     const statusTotal = document.getElementById('status'+id);
     statusTotal.replaceChild(document.createTextNode("投票数\t"+res.total),statusTotal.firstChild);
 
@@ -163,7 +178,14 @@ function voteAddActionHTML(id){
     const commentdiv = document.createElement("div");
     hid.appendChild(commentdiv);
 
-    const myVote = document.createTextNode(res.answers[check].answer + "に投票しました");
+    let text = "";
+    for(let i = 0; i<res.answers.length; i++){
+      if(check[i]){
+        text += res.answers[i].answer + "\t";
+      }
+    }
+
+    const myVote = document.createTextNode(text + "に投票しました");
     myVotediv.appendChild(myVote);
     const canvas = document.createElement("canvas");
     canvasdiv.appendChild(canvas);
