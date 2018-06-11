@@ -8,6 +8,7 @@ var post = {
     this.sub = document.getElementById("inputSub");
     this.query = document.getElementById("inputQuery");
     this.answers = document.getElementsByName("inputAnswer");
+    this.type = document.getElementsByName("inputAnswerType");
     this.addbtn = document.getElementById("inputAddBtn");
     this.delbtn = document.getElementById("inputDelBtn");
 
@@ -26,10 +27,17 @@ post.route = function (){
       let obj = function(){
         const obj = {'user':user,query:post.query.value};
         const answer = [];
+        let answerType;
         for(let i = 0;i<post.answers.length;i++){
           answer[i] = post.answers[i].value;
         }
+        for(let i = 0;i<post.type.length;i++){
+          if(post.type[i].checked){
+            answerType = post.type[i].value;
+          }
+        }
         obj.answers = answer;
+        obj.type = answerType;
         return obj;
       }();
 
@@ -55,6 +63,7 @@ post.route = function (){
 };
 //answersの長さが1つ増える
 post.addAction = function (){
+
   const div = document.createElement("div");
   const inp = document.createElement("input");
   div.setAttribute("id","inputAnswer" + (post.answers.length + 1) );

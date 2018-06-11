@@ -33,12 +33,13 @@ function updateResult(date){
     const query = date[i].query;
     const answers = date[i].answers;
     const total = date[i].total;
-    result.appendChild(createQuestionNode(id,query,answers,total));
+    const answerType = date[i].type;
+    result.appendChild(createQuestionNode(id,query,answers,total,answerType));
     resultQuestionAddActionHTML(id);
   }
 }
 
-function createQuestionNode(id,query,aryAnswer,total){
+function createQuestionNode(id,query,aryAnswer,total,answerType){
   const que = document.createTextNode(query);
 
   const article = document.createElement("article");
@@ -76,18 +77,39 @@ function createQuestionNode(id,query,aryAnswer,total){
   label.appendChild(div3);
 
   //回答内容を入れる
-  for(let i =0;i<aryAnswer.length;i++){
-    const lav = document.createElement("label");
-    const ary=  document.createTextNode(aryAnswer[i].answer);
-    const inp = document.createElement("input");
-    inp.setAttribute("type","radio");
-    inp.setAttribute("name",id);
-    inp.setAttribute("value",aryAnswer[i].answer);
-    //ノードの挿入
-    div3.appendChild(lav);
-    lav.appendChild(inp);
-    lav.appendChild(ary);
+  if(answerType == "ラジオ"){
+    console.log("ラジオ");
+    for(let i =0;i<aryAnswer.length;i++){
+      const lav = document.createElement("label");
+      const ary=  document.createTextNode(aryAnswer[i].answer);
+      const inp = document.createElement("input");
+      inp.setAttribute("type","radio");
+      inp.setAttribute("name",id);
+      inp.setAttribute("value",aryAnswer[i].answer);
+      //ノードの挿入
+      div3.appendChild(lav);
+      lav.appendChild(inp);
+      lav.appendChild(ary);
+    }
+  }else if(answerType == "チェック"){
+    console.log("チェック");
+    for(let i =0;i<aryAnswer.length;i++){
+      const lav = document.createElement("label");
+      const ary=  document.createTextNode(aryAnswer[i].answer);
+      const inp = document.createElement("input");
+      inp.setAttribute("type","checkbox");
+      inp.setAttribute("name",id);
+      inp.setAttribute("value",aryAnswer[i].answer);
+      //ノードの挿入
+      div3.appendChild(lav);
+      lav.appendChild(inp);
+      lav.appendChild(ary);
+    }
+  }else{
+    /****記述式の処理****/
+    
   }
+
   div2.appendChild(document.createTextNode("投票数\t" + total));
   div3.appendChild(input2);
   return article;

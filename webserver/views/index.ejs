@@ -131,6 +131,18 @@
         <input type="text" name="inputAnswer" />
       </div>
     </div>
+    <div id="answerTypeBox">
+      回答形式を選択して下さい<br>
+      <label>
+        <input type="radio" name="inputAnswerType" value="ラジオ" checked> ラジオ式
+      </label>
+      <label>
+        <input type="radio" name="inputAnswerType" value="チェック" disabled="disabled"> チェック式（実装中）
+      </label>
+      <label>
+        <input type="radio" name="inputAnswerType" value="記述" disabled="disabled"> 記述式（未実装）
+      </label>
+    </div>
     <div>
       <input type="button" id="inputAddBtn" value="解答追加"/>
       <input type="button" id="inputDelBtn" class="off" value="解答削除"/>
