@@ -33,7 +33,7 @@ function updateResult(date){
     const query = date[i].query;
     const answers = date[i].answers;
     const total = date[i].total;
-    const answerType = date[i].type;
+    const answerType = date[i].answerType;
     result.appendChild(createQuestionNode(id,query,answers,total,answerType));
     resultQuestionAddActionHTML(id);
   }
@@ -107,7 +107,7 @@ function createQuestionNode(id,query,aryAnswer,total,answerType){
     }
   }else{
     /****記述式の処理****/
-    
+
   }
 
   div2.appendChild(document.createTextNode("投票数\t" + total));

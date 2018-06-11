@@ -27,17 +27,17 @@ post.route = function (){
       let obj = function(){
         const obj = {'user':user,query:post.query.value};
         const answer = [];
-        let answerType;
+        let answertype;
         for(let i = 0;i<post.answers.length;i++){
           answer[i] = post.answers[i].value;
         }
         for(let i = 0;i<post.type.length;i++){
           if(post.type[i].checked){
-            answerType = post.type[i].value;
+            answertype = post.type[i].value;
           }
         }
         obj.answers = answer;
-        obj.type = answerType;
+        obj.answerType = answertype;
         return obj;
       }();
 
