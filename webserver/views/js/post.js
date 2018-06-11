@@ -35,11 +35,15 @@ post.route = function (){
 
       connect("/post/",obj,
       function(res){
-        post.query.value = "";
-        for(let i of post.answers){
-          i.value = "";
+        if(res){
+          post.query.value = "";
+          for(let i of post.answers){
+            i.value = "";
+          }
+          post.change();
+        }else{
+          window.alert("投稿処理が正常に行われませんでした。");
         }
-        post.change();
       });
     }else{
       const sub = document.getElementById("inputSub");
