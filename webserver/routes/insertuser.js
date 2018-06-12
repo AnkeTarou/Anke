@@ -7,11 +7,7 @@ exports.post = function(req,res){
   const key = {
     _id:logid,
     pass:logpass,
-    follow:[],
-    follower:[],
-    good:[],
-    vote:[],
-    post:[]
+    follow:[]
   }
   dbo.aggregate("UserData","user",[{$match:{_id:logid}}],function(result){
     //console.log(result);
@@ -24,8 +20,9 @@ exports.post = function(req,res){
       inquiry=3;
     }*/
     else{
-      dbo.insert("UserData","user",key);
-      inquiry=4;
+      dbo.insert("UserData","user",key,function(result){
+        inquiry=4;
+      });
     }
     res.json(inquiry);
   });

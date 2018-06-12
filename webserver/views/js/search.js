@@ -26,6 +26,7 @@ search.autoUpdate = function(key){
 
 //送られてきたデータをresultに反映する
 function updateResult(date){
+  console.log("data " + date[0].total);
   const result = document.getElementById('result');
   const articles = document.getElementsByClassName("questionSlide");
   for(let i = articles.length; i<date.length; i++){
@@ -40,6 +41,7 @@ function updateResult(date){
 }
 
 function createQuestionNode(id,query,aryAnswer,total,answerType){
+  console.log(total);
   const que = document.createTextNode(query);
 
   const article = document.createElement("article");
@@ -159,6 +161,7 @@ function voteAddActionHTML(id){
   //データベースに反映
   connect("/vote/",{'user':user,'id':id,'index':check},
   function(res){
+    console.log(res);
 
     /****クライアント側に結果を表示****/
 
@@ -195,13 +198,13 @@ function voteAddActionHTML(id){
     //　ラベル生成
     const goodlabel = document.createElement("label");
     goodlabel.setAttribute("id","goodlabel"+id);
-    goodlabel.textContent = "いいね\t" + res.gooduser.length + "\t";
+    goodlabel.textContent = "いいね\t" + res.good.length + "\t";
     gooddiv.appendChild(goodlabel);
 
     // 投稿にいいねをしているかを判別
     let checker = false;
-    for(let i = 0; i<res.gooduser.length; i++){
-      if(user._id == res.gooduser[i]){
+    for(let i = 0; i<res.good.length; i++){
+      if(user._id == res.good[i]){
         checker = true;
       }
     }
@@ -220,7 +223,7 @@ function voteAddActionHTML(id){
         // いいねをデータベースに反映
         connect("/good/",{'user':user,'id':id,'good':true},
         function(resGood){
-          goodlabel.textContent = "いいね\t" + resGood.gooduser.length + "\t";
+          goodlabel.textContent = "いいね\t" + resGood.good.length + "\t";
           goodbtn.checked = true;
           goodlabel.appendChild(goodbtn);
           console.log("いいねしたよ");
@@ -228,7 +231,7 @@ function voteAddActionHTML(id){
       }else{
         connect("/good/",{'user':user,'id':id,'good':false},
         function(resGood){
-          goodlabel.textContent = "いいね\t" + resGood.gooduser.length + "\t";
+          goodlabel.textContent = "いいね\t" + resGood.good.length + "\t";
           goodbtn.checked = false;
           goodlabel.appendChild(goodbtn);
           console.log("いいね外したよ");
@@ -305,7 +308,7 @@ function voteAddActionHTML(id){
       const total = [];
       for(let i in res.answers){
         answers[i] = res.answers[i].answer;
-        total[i] = res.answers[i].total;
+        total[i] = res.answers[i].voter.length;
       }
       return {"answers":answers,"total":total};
     }();

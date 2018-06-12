@@ -21,42 +21,34 @@ var post = {
 };
 //データベースに接続し処理を行う
 post.route = function (){
-  // ユーザー認証
-  connect("/userCheck/",{'user':user},function(res){
-    if(res){
-      let obj = function(){
-        const obj = {'user':user,query:post.query.value};
-        const answer = [];
-        let answertype;
-        for(let i = 0;i<post.answers.length;i++){
-          answer[i] = post.answers[i].value;
-        }
-        for(let i = 0;i<post.type.length;i++){
-          if(post.type[i].checked){
-            answertype = post.type[i].value;
-          }
-        }
-        obj.answers = answer;
-        obj.answerType = answertype;
-        return obj;
-      }();
 
-      connect("/post/",obj,
-      function(res){
-        if(res){
-          post.query.value = "";
-          for(let i of post.answers){
-            i.value = "";
-          }
-          post.change();
-        }else{
-          window.alert("投稿処理が正常に行われませんでした。");
-        }
-      });
+  let obj = function(){
+    const obj = {'user':user,query:post.query.value};
+    const answer = [];
+    let answertype;
+    for(let i = 0;i<post.answers.length;i++){
+      answer[i] = post.answers[i].value;
+    }
+    for(let i = 0;i<post.type.length;i++){
+      if(post.type[i].checked){
+        answertype = post.type[i].value;
+      }
+    }
+    obj.answers = answer;
+    obj.answerType = answertype;
+    return obj;
+  }();
+
+  connect("/post/",obj,
+  function(res){
+    if(res){
+      post.query.value = "";
+      for(let i of post.answers){
+        i.value = "";
+      }
+      post.change();
     }else{
-      const sub = document.getElementById("inputSub");
-      sub.value = "ログインしてください";
-      return sub;
+      window.alert("投稿処理が正常に行われませんでした。");
     }
   });
 

@@ -15,39 +15,14 @@ exports.aggregate = function(dbName,collectionName,key,callback){
 };
 
 //ObjectをDBに挿入する
-exports.insert = function(dbName,collection,key){
+exports.insert = function(dbName,collection,key,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
     const dbo = database.db(dbName);
     dbo.collection(collection).insertOne(key, function(err, result) {
       if (err) throw err;
       database.close();
-    });
-  });
-}
-
-//投稿処理
-exports.post = function(key,callback){
-  MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
-    if (error) throw error;
-    const dbo = database.db("QuestionData");
-    const dbo2 = database.db("UserData");
-    const Key = [{$match:{'user._id':key.user._id, 'user.session':key.user.session}}];
-
-    // 投稿をデータベースに挿入
-    dbo.collection("question").insertOne(key, function(err, result) {
-      if (err) throw err;
-    });
-    // 投稿をユーザーデータベースに反映
-    dbo.collection("question").aggregate(Key).toArray(function(err, result) {
-      if (err) throw err;
-      const objId = result[result.length-1]._id;
-      dbo2.collection("user").update({_id:key.user._id},{$addToSet:{post:objId}},
-      function(err, res) {
-        if (err) throw err;
-        database.close();
-        callback(result);
-      });
+      callback(result);
     });
   });
 }
@@ -57,17 +32,16 @@ exports.vote = function(user, id, index, key, callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
     const dbo = database.db("QuestionData");
-    const dbo2 = database.db("UserData");
     const objId = require('mongodb').ObjectID(id);
     for(let i = 0; i<index.length; i++){
       if(index[i]){
-        dbo.collection("question").updateOne({_id:objId},{$inc:{[`answers.${i}.total`]: 1}},
+        dbo.collection("question").updateOne({_id:objId},{$addToSet:{[`answers.${i}.voter`]: user._id}},
         function(err, res) {
           if (err) throw err;
         });
       }
     }
-    dbo2.collection("user").update({_id:user._id},{$addToSet:{vote:objId}},
+    dbo.collection("question").update({_id:objId},{$addToSet:{voters:user._id}},
     function(err, res) {
       if (err) throw err;
     });
@@ -83,7 +57,6 @@ exports.good = function(user,id,good,key,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
     const dbo = database.db("QuestionData");
-    const dbo2 = database.db("UserData");
     const objId = require('mongodb').ObjectID(id);
 
     /**
@@ -92,33 +65,22 @@ exports.good = function(user,id,good,key,callback){
       * userのgoodプロパティも更新
     **/
 
+    let operator;
+
     if(good == "true"){
-      dbo.collection("question").update({_id:objId},{$addToSet:{"gooduser":user._id}},
-      function(err, res) {
-        if (err) throw err;
-      });
-      dbo2.collection("user").update({_id:user._id},{$addToSet:{good:objId}},function(err, res) {
-        if (err) throw err;
-      });
-      dbo.collection("question").aggregate(key).toArray(function(err, result) {
-        if (err) throw err;
-        database.close();
-        callback(result);
-      });
+      operator = {$addToSet:{"good":user._id}};
     }else{
-      dbo.collection("question").update({_id:objId},{$pull:{"gooduser":user._id}},
-      function(err, res) {
-        if (err) throw err;
-      });
-      dbo2.collection("user").update({_id:user._id},{$pull:{good:objId}},function(err, res) {
-        if (err) throw err;
-      });
-      dbo.collection("question").aggregate(key).toArray(function(err, result) {
-        if (err) throw err;
-        database.close();
-        callback(result);
-      });
+      operator = {$pull:{"good":user._id}};
     }
+    dbo.collection("question").update({_id:objId},operator,
+    function(err, res) {
+      if (err) throw err;
+    });
+    dbo.collection("question").aggregate(key).toArray(function(err, result) {
+      if (err) throw err;
+      database.close();
+      callback(result);
+    });
   });
 }
 //投稿にコメントする
@@ -139,39 +101,26 @@ exports.comment = function(id,sender_id,content,key,callback){
   });
 }
 //folloe状況をデータベースに反映
-exports.follow = function(own,user_id,follow,key,callback){
+exports.follow = function(user_id,followUser_id,follow,key,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
     const dbo = database.db("UserData");
+    let operator;
+
     if(follow == "true"){
-      dbo.collection("user").update({_id:own._id},{$addToSet:{follow:user_id}},
-      function(err, res) {
-        if (err) throw err;
-      });
-      dbo.collection("user").update({_id:user_id},{$addToSet:{follower:own._id}},
-      function(err, res) {
-        if (err) throw err;
-      });
-      dbo.collection("user").aggregate(key).toArray(function(err, result) {
-        if (err) throw err;
-        database.close();
-        callback(result);
-      });
+      operator = {$addToSet:{"follow":followUser_id}};
     }else{
-      dbo.collection("user").update({_id:own._id},{$pull:{follow:user_id}},
-      function(err, res) {
-        if (err) throw err;
-      });
-      dbo.collection("user").update({_id:user_id},{$pull:{follower:own._id}},
-      function(err, res) {
-        if (err) throw err;
-      });
-      dbo.collection("user").aggregate(key).toArray(function(err, result) {
-        if (err) throw err;
-        database.close();
-        callback(result);
-      });
+      operator = {$pull:{"follow":followUser_id}};
     }
+    dbo.collection("user").update({_id:user_id},operator,
+    function(err, res) {
+      if (err) throw err;
+    });
+    dbo.collection("user").aggregate(key).toArray(function(err, result) {
+      if (err) throw err;
+      database.close();
+      callback(result);
+    });
   });
 }
 // sessionkey挿入
