@@ -7,96 +7,52 @@ var image = {
      this.upload = document.getElementById("upload");
      this.letsbutton = document.getElementById("letsbutton");
      this.tmpfile = document.getElementById("tmpfile");
+     this.image = undefined;
+     this.fileData = undefined;
      this.file = null; // 選択されるファイル
      this.blob = null; // 画像(BLOBデータ)
 
-     this.upload.onclick = this.load;
+     this.tmpfile.onchange = image.test;
+     this.upload.onclick = this.route;
      this.letsbutton.onclick = this.button;
    }
 };
-image.button = function(){
-  const THUMBNAIL_WIDTH = 500; // 画像リサイズ後の横の長さの最大値
-  const THUMBNAIL_HEIGHT = 500; // 画像リサイズ後の縦の長さの最大値
-  // ファイルを取得
-  image.file = $(image.tmpfile).prop('files')[0];
-  console.log(image.file);
-  const elem = document.getElementById("image");
-  // 選択されたファイルが画像かどうか判定
-  if (image.file.type != 'image/jpeg' && image.file.type != 'image/png') {
-    // 画像でない場合は終了
-    image.file = null;
-    image.blob = null;
-    return;
-  }
-
-  // 画像をリサイズする
-  let images = new Image();
+image.test = function(e){
+  let file = e.target.files;
   let reader = new FileReader();
-  reader.onload = function(e) {
-    images.onload = function() {
-      let width, height;
-      if(images.width > images.height){
-        // 横長の画像は横のサイズを指定値にあわせる
-        const ratio = images.height/images.width;
-        width = THUMBNAIL_WIDTH;
-        height = THUMBNAIL_WIDTH * ratio;
-      } else {
-        // 縦長の画像は縦のサイズを指定値にあわせる
-        const ratio = images.width/images.height;
-        width = THUMBNAIL_HEIGHT * ratio;
-        height = THUMBNAIL_HEIGHT;
-      }
-      // サムネ描画用canvasのサイズを上で算出した値に変更
-      let canvas = $('#canvas')
-                   .attr('width', width)
-                   .attr('height', height);
-      let ctx = canvas[0].getContext('2d');
-      // canvasに既に描画されている画像をクリア
-      ctx.clearRect(0,0,width,height);
-      // canvasにサムネイルを描画
-      ctx.drawImage(images,0,0,images.width,images.height,0,0,width,height);
-      // canvasからbase64画像データを取得
-      const base64 = canvas.get(0).toDataURL('image/jpeg');
-      // base64からBlobデータを作成
-      let barr, bin, i, len;
-      bin = atob(base64.split('base64,')[1]);
-      len = bin.length;
-      barr = new Uint8Array(len);
-      i = 0;
-      while (i < len) {
-        barr[i] = bin.charCodeAt(i);
-        i++;
-      }
-      blob = new Blob([barr], {type: 'image/jpeg'});
-    }
-    images.src = e.target.result;
+
+  /*var encodedData = window.btoa(file[0]);  // 文字列のエンコード
+  console.log(encodedData);
+  var decodedData = window.atob(encodedData);     // 文字列のデコード
+  console.log(decodedData);
+
+  var decoded = window.atob(image.fileData);
+  console.log(decoded);*/
+  //dataURL形式でファイルを読み込む
+  reader.readAsDataURL(file[0]);
+  //ファイルの読込が終了した時の処理
+  reader.onload = function(){
+    image.fileData = reader.result;
+    //console.log(image.fileData);
   }
-  reader.readAsDataURL(image.file);
-};
+}
 
 // アップロード開始ボタンがクリックされたら
-image.load = function(){
-  const data = canvas.toDataURL('files');
-  const elem = document.getElementById("image");
-  elem.src=data;
-  // ファイルが指定されていなければ何も起こらない
-  if(!image.file || !image.blob) {
-    alert("指定されてないぞ");
-    return;
-  }
-  //var name, fd = new FormData();
-  //fd.append('file', blob); // ファイルを添付する
+image.route = function(){
+  /*var decodeString = window.atob(image.fileData);
+  console.log(decodeString);*/
   $.ajax({
-    url: "file", // 送信先
+    url: "/sendfile/", // 送信先
     type: 'POST',
     dataType: 'json',
-    processData: false,
-    contentType: false,
-    data:{'data':data}
+    data:function(){
+      //console.log("ajax",image.fileData);
+      return {img:image.fileData};
+    }()
   })
   .done(function(res) {
-    /*const elem = document.getElementById("image");
-    elem.src=data;*/
+    console.log(res);
+    alert("送信成功");
   })
   .fail(function(res) {
     // 送信失敗
