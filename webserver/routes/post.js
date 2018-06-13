@@ -1,7 +1,8 @@
 const dbo = require('../lib/mongo');
 
 exports.post = function(req,res){
-  const key = req.body;
+  console.log("でーた ",req.body);
+  const key = req.body.obj;
   let check = !(key.query.value == "");
   const ans = [];
   const voters = [];
@@ -16,8 +17,9 @@ exports.post = function(req,res){
   key.answers = ans;
   key.voters = voters;
   key.good = good;
-  dbo.userCheck(key.user,function(result){
+  dbo.userCheck(req.body.user,function(result){
     if(result && check){
+      key.senderId = result._id
       dbo.insert("QuestionData","question",key,function(result){
         res.json(result);
       });

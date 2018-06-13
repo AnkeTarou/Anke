@@ -101,16 +101,16 @@ exports.comment = function(id,sender_id,content,key,callback){
   });
 }
 //folloe状況をデータベースに反映
-exports.follow = function(user_id,followUser_id,follow,key,callback){
+exports.follow = function(user_id,followUserId,follow,key,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
     const dbo = database.db("UserData");
     let operator;
 
     if(follow == "true"){
-      operator = {$addToSet:{"follow":followUser_id}};
+      operator = {$addToSet:{"follow":followUserId}};
     }else{
-      operator = {$pull:{"follow":followUser_id}};
+      operator = {$pull:{"follow":followUserId}};
     }
     dbo.collection("user").update({_id:user_id},operator,
     function(err, res) {
