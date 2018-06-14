@@ -5,8 +5,6 @@ exports.post = function(req,res){
   const key = req.body.obj;
   let check = !(key.query.value == "");
   const ans = [];
-  const voters = [];
-  const good = [];
   for(let i in key.answers){
     console.log(key.answers);
     ans[i] = {answer:key.answers[i],voter:[]};
@@ -15,8 +13,11 @@ exports.post = function(req,res){
     }
   }
   key.answers = ans;
-  key.voters = voters;
-  key.good = good;
+  key.voters = [];
+  key.good = [];
+  key.comment = [];
+  key.img = [];
+  key.time = new Date();
   dbo.userCheck(req.body.user,function(result){
     if(result && check){
       key.senderId = result._id

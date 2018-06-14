@@ -6,6 +6,10 @@ exports.post = function(req,res){
   const key = {
     _id:logid,
     pass:logpass,
+    gender:"int",
+    birthday:"int",
+    age:"int",
+    area:"String",
     follow:[],
     follower:[]
   }
@@ -21,11 +25,22 @@ exports.post = function(req,res){
     }else if(logpass.length<8){
       inquiry=3;
       res.json(inquiry);
+    }else if( (gender != 1) && (gender != 2) ){
+      inquiry=5;
+      res.json(inquiry);
+    }else if(!age.value){
+      inquiry=6;
+      res.json(inquiry);
+    }else if(!area.value){
+      inquiry=7;
+      res.json(inquiry);
+    }else if(!birthday.value){
+      inquiry=8;
+      res.json(inquiry);
     }*/
     else{
       dbo.insert("UserData","user",key,function(JSON){
         inquiry = 4;
-        console.log("1 " +inquiry);
         res.json(inquiry);
       });
     }

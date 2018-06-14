@@ -5,7 +5,7 @@ exports.post = function(req,res){
   const key = {$regex:".*"+req.body.value+".*"};
   const keyObj = [
     {$match:{$or:[{query:key},{"answers.answer":key}]}},
-    {$project:{query:1,[`answers.answer`]:1,total:{$size:"$voters"},answerType:1}},
+    {$project:{query:1,[`answers.answer`]:1,total:{$size:"$voters"},type:1}},
     {$sort:{total:-1}}
   ];
   dbo.aggregate("QuestionData","question",keyObj,function(JSON){

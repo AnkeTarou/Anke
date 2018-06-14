@@ -18,12 +18,12 @@ exports.post = function(req,res){
             count++;
         }
       }
-      if(question[0].answerType == "ラジオ"){
+      if(question[0].type == "radio"){
         if(count != 1){
           res.json("不正な値が入力されています");
           return;
         }
-      }else if(question[0].answerType == "チェック"){
+      }else if(question[0].type == "checkbox"){
         if(count < 1){
           res.json("不正な値が入力されています");
           return;
@@ -40,9 +40,4 @@ exports.post = function(req,res){
       }
     });
   });
-};
-/*
-req.body = {
-  id:""投稿のObjectId",index:"何番目を選んだか"
 }
- */

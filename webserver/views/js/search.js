@@ -33,13 +33,13 @@ function updateResult(date){
     const query = date[i].query;
     const answers = date[i].answers;
     const total = date[i].total;
-    const answerType = date[i].answerType;
-    result.appendChild(createQuestionNode(id,query,answers,total,answerType));
+    const type = date[i].type;
+    result.appendChild(createQuestionNode(id,query,answers,total,type));
     resultQuestionAddActionHTML(id);
   }
 }
 
-function createQuestionNode(id,query,aryAnswer,total,answerType){
+function createQuestionNode(id,query,aryAnswer,total,type){
   console.log(total);
   const que = document.createTextNode(query);
 
@@ -85,14 +85,14 @@ function createQuestionNode(id,query,aryAnswer,total,answerType){
     inp.setAttribute("name",id);
     inp.setAttribute("value",aryAnswer[i].answer);
 
-    if(answerType == "ラジオ"){
+    if(type == "radio"){
       inp.setAttribute("type","radio");
 
-    }else if(answerType == "チェック"){
+    }else if(type == "checkbox"){
       inp.setAttribute("type","checkbox");
     }else{
       /****記述式の処理****/
-      console.log(answerType);
+      console.log(type);
     }
 
     //ノードの挿入
