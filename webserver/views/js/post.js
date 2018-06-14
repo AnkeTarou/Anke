@@ -16,7 +16,11 @@ var post = {
     this.addbtn.onclick = this.addAction;
     this.delbtn.onclick = this.delAction;
     this.query.onkeyup = this.change;
-    this.answers[0].onkeyup = this.change;
+    this.query.onkeypress = this.queryLimit;
+    for(let i = 0; i < 2; i++){
+      this.answers[i].onkeyup = this.change;
+      this.answers[i].onkeypress = this.answerLimit;
+    }
   }
 };
 //データベースに接続し処理を行う
@@ -41,14 +45,14 @@ post.route = function (){
 
   connect("/post/",{obj,user},
   function(res){
-    if(res){
+    if(res == "OK"){
       post.query.value = "";
       for(let i of post.answers){
         i.value = "";
       }
       post.change();
     }else{
-      window.alert("投稿処理が正常に行われませんでした。");
+      window.alert("投稿処理が正常に行われませんでした。\nエラーコード" + res);
     }
   });
 
@@ -63,11 +67,14 @@ post.addAction = function (){
   inp.setAttribute("type","text");
   inp.setAttribute("name","inputAnswer");
   inp.onkeyup = post.change;
+  inp.onkeypress = post.answerLimit;
   post.box.appendChild(div);
   div.appendChild(inp);
 
-  if(post.answers.length == 2){
-    answerDelBtnHidActionHTML(post.delbtn);
+  if(post.answers.length == 3){
+    answerBtnHidActionHTML(post.delbtn);
+  }else if(post.answers.length == 48){
+    answerBtnHidActionHTML(post.addbtn);
   }
   post.change();
 };
@@ -75,8 +82,10 @@ post.addAction = function (){
 post.delAction = function(){
   const div = document.getElementById("inputAnswer" + post.answers.length);
   div.remove();
-  if(post.answers.length == 1){
-    answerDelBtnHidActionHTML(post.delbtn);
+  if(post.answers.length == 2){
+    answerBtnHidActionHTML(post.delbtn);
+  }else if(post.answers.length == 47){
+    answerBtnHidActionHTML(post.addbtn);
   }
   post.change();
 }
@@ -96,7 +105,25 @@ post.change = function(){
   }
 }
 
-function answerDelBtnHidActionHTML(hid){
+post.queryLimit = function() {
+  const length = post.query.value.length+1;
+  console.log(length);
+  if(length > 255){
+    console.log("文字数オーバーです");
+    return false;
+  }
+}
+
+post.answerLimit = function(e){
+  const length = e.currentTarget.value.length+1;
+  console.log(length);
+  if(length > 127){
+    console.log("文字数オーバーです");
+    return false;
+  }
+}
+
+function answerBtnHidActionHTML(hid){
   if(hid.className == "off"){//offなら表示する
     hid.style.display = "inline"
     hid.className = "on";
