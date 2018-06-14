@@ -11,7 +11,7 @@ const getid = require('./insertuser');
 const good = require('./good');
 const comment = require('./comment');
 const follow = require('./follow');
-const file = require('./sendfile');
+const sendfile = require('./sendfile');
 const userCheck = require('./userCheck');
 
 router.get('/', function (req, res) {
@@ -49,7 +49,7 @@ router.post('/comment/',comment.post);
 router.post('/follow',follow.post);
 
 //ファイル送信
-router.post('/file/',file.post);
+router.post('/sendfile/',sendfile.post);
 
 //ユーザー認証
 router.post('/userCheck/',userCheck.post);
