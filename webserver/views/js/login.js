@@ -14,6 +14,8 @@ var login = {
      this.inSub.onclick = this.route;
      this.outSub.onclick = this.logout;
      this.outUserStatusSub.onclick = this.outputStatus;
+     this.userIdNode.onkeyup = this.change;
+     this.userPassNode.onkeyup = this.change;
    }
 };
 //cookieをロード
@@ -31,11 +33,13 @@ login.load = function(){
           document.cookie = 'sessionkey=' + user.session + '; max-age=259200';
         }else{
           console.log("userを取得できませんでした");
+          login.outSub.setAttribute("disabled","disabled");
         }
       })
       document.getElementById("inputSub").value = "送信";
     }else{
       user = null;
+      login.outSub.setAttribute("disabled","disabled");
     }
     console.log("before" + document.cookie);
   }
@@ -75,6 +79,15 @@ login.outputStatus = function(){
     console.log("current" + document.cookie);
   }else{
     console.log("ログインしてません")
+  }
+}
+
+login.change = function(){
+  // 選択肢に文字が入力されているかチェック
+  if( (login.userPassNode.value == "") || (login.userIdNode.value == "") ){
+    $("#inputlogin").prop("disabled", true);
+  }else{
+    $("#inputlogin").prop("disabled", false);
   }
 }
 
