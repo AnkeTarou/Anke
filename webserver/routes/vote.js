@@ -32,7 +32,6 @@ exports.post = function(req,res){
     }
     dbo.userCheck(param.user,function(result){
       if(result){
-        console.log("うんこおおおおおおおおおお");
         dbo.vote(param.user, param.id, param.index, responseKey, function(result){
           res.json(result[0]);
         });

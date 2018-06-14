@@ -23,13 +23,14 @@ function userResult(data){
   for(let i = users.length; i<data.length; i++){
     const id = data[i]._id;
     const follow = data[i].follow;
+    const follower = data[i].follower;
 
-    usersection.appendChild(createUserNode(id, follow));
+    usersection.appendChild(createUserNode(id, follow, follower));
     resultUserAddActionHTML(id);
   }
 }
 
-function createUserNode(id,follow){
+function createUserNode(id,follow, follower){
   // ユーザーを表示するresultノード生成
   const resultNode = document.createElement("div");
   resultNode.setAttribute("class","userSlide");
@@ -49,7 +50,8 @@ function createUserNode(id,follow){
   const userlabel = document.createElement("label");
   userlabel.setAttribute("id","userlabel"+id);
   userlabel.setAttribute("for","userlabel");
-  userlabel.textContent = "フォロー数\t" + follow.length + "\t";
+  userlabel.textContent = "フォロー数\t" + follow.length + "\t"
+  + "フォロワー数\t" + follower.length;
 
   //ユーザーノード生成
   const userNode = document.createElement("div");
@@ -69,6 +71,10 @@ function createUserNode(id,follow){
   /**ユーザー認証**/
   connect("/userCheck/",{'user':user},function(res){
     if(res){
+      if(id == user._id){
+        return;
+      }
+
       //　ラベル生成
       const followlabel = document.createElement("label");
       followlabel.setAttribute("id","followlabel"+id);
@@ -101,8 +107,13 @@ function createUserNode(id,follow){
 
         connect("/follow/",{'user':user,'followUserId':id,'follow':followbtn.checked},
         function(resFollow){
+          console.log(resFollow);
           if(resFollow){
-            mylabel.textContent = "フォロー数\t" + resFollow.countFollow + "\t";
+            mylabel.textContent = "フォロー数\t" + resFollow[0].countFollow + "\t"
+            + "フォロワー数\t" + resFollow[0].countFollower;
+
+            userlabel.textContent = "フォロー数\t" + resFollow[1].countFollow + "\t"
+            + "フォロワー数\t" + resFollow[1].countFollower;
 
             // Nodeを更新
             followlabel.textContent = "フォロー";
