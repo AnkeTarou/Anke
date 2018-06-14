@@ -21,13 +21,6 @@ image.test = function(e){
   let file = e.target.files;
   let reader = new FileReader();
 
-  /*var encodedData = window.btoa(file[0]);  // 文字列のエンコード
-  console.log(encodedData);
-  var decodedData = window.atob(encodedData);     // 文字列のデコード
-  console.log(decodedData);
-
-  var decoded = window.atob(image.fileData);
-  console.log(decoded);*/
   //dataURL形式でファイルを読み込む
   reader.readAsDataURL(file[0]);
   //ファイルの読込が終了した時の処理
@@ -39,8 +32,6 @@ image.test = function(e){
 
 // アップロード開始ボタンがクリックされたら
 image.route = function(){
-  /*var decodeString = window.atob(image.fileData);
-  console.log(decodeString);*/
   $.ajax({
     url: "/sendfile/", // 送信先
     type: 'POST',
