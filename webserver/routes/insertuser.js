@@ -6,7 +6,8 @@ exports.post = function(req,res){
   const key = {
     _id:logid,
     pass:logpass,
-    follow:[]
+    follow:[],
+    follower:[]
   }
   dbo.aggregate("UserData","user",[{$match:{_id:logid}}],function(result){
     //console.log(result);

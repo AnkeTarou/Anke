@@ -101,25 +101,35 @@ exports.comment = function(id,sender_id,content,key,callback){
   });
 }
 //folloe状況をデータベースに反映
-exports.follow = function(user_id,followUserId,follow,key,callback){
+exports.follow = function(user_id,followUserId,follow,followKey,followerKey,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
     const dbo = database.db("UserData");
-    let operator;
+    let operator1,operator2;
 
     if(follow == "true"){
-      operator = {$addToSet:{"follow":followUserId}};
+      operator1 = {$addToSet:{"follow":followUserId}};
+      operator2 = {$addToSet:{"follower":user_id}};
     }else{
-      operator = {$pull:{"follow":followUserId}};
+      operator1 = {$pull:{"follow":followUserId}};
+      operator2 = {$pull:{"follower":user_id}};
     }
-    dbo.collection("user").update({_id:user_id},operator,
+    dbo.collection("user").update({_id:user_id},operator1,
     function(err, res) {
       if (err) throw err;
     });
-    dbo.collection("user").aggregate(key).toArray(function(err, result) {
+    dbo.collection("user").update({_id:followUserId},operator2,
+    function(err, res) {
       if (err) throw err;
-      database.close();
-      callback(result);
+    });
+    dbo.collection("user").aggregate(followKey).toArray(function(err, result1) {
+      if (err) throw err;
+      dbo.collection("user").aggregate(followerKey).toArray(function(err, result2) {
+        if (err) throw err;
+        database.close();
+        result1[1] = result2[0];
+        callback(result1);
+      });
     });
   });
 }

@@ -21,27 +21,25 @@ exports.post = function(req,res){
       if(question[0].answerType == "ラジオ"){
         if(count != 1){
           res.json("不正な値が入力されています");
+          return;
         }
       }else if(question[0].answerType == "チェック"){
         if(count < 1){
           res.json("不正な値が入力されています");
+          return;
         }
       }
-      dbo.userCheck(param.user,function(result){
-        if(result){
-          dbo.vote(param.user, param.id, param.index, responseKey, function(result){
-            res.json(result[0]);
-          });
-        }else{
-          res.json(null);
-        }
-      });
-    }else{
-      res.json(null);
     }
-
+    dbo.userCheck(param.user,function(result){
+      if(result){
+        dbo.vote(param.user, param.id, param.index, responseKey, function(result){
+          res.json(result[0]);
+        });
+      }else{
+        res.json(null);
+      }
+    });
   });
-
 };
 /*
 req.body = {

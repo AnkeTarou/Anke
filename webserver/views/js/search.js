@@ -218,24 +218,23 @@ function voteAddActionHTML(id){
 
       // いいねボタンが押されたとき
       goodbtn.onclick = function(){
-        if(goodbtn.checked){
-          // いいねをデータベースに反映
-          connect("/good/",{'user':user,'id':id,'good':true},
-          function(resGood){
-            goodlabel.textContent = "いいね\t" + resGood.good.length + "\t";
-            goodbtn.checked = true;
+        // いいねをデータベースに反映
+        connect("/good/",{'user':user,'id':id,'good':goodbtn.checked},
+        function(resGood){
+          if(resGood){
+            goodlabel.textContent = "いいね\t" + resGood.totalGood + "\t";
+            goodbtn.checked = goodbtn.checked;
             goodlabel.appendChild(goodbtn);
-            console.log("いいねしたよ");
-          });
-        }else{
-          connect("/good/",{'user':user,'id':id,'good':false},
-          function(resGood){
-            goodlabel.textContent = "いいね\t" + resGood.good.length + "\t";
-            goodbtn.checked = false;
-            goodlabel.appendChild(goodbtn);
-            console.log("いいね外したよ");
-          });
-        }
+
+            if(goodbtn.checked){
+              console.log("いいねしたよ");
+            }else {
+              console.log("いいね外したよ");
+            }
+          }else {
+            window.alert("認証に失敗しました。");
+          }
+        });
       }
 
       // コメント機能追加
