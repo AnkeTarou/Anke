@@ -16,6 +16,7 @@ account.route = function(){
   connect("/account/",{_id:account.userIdNode.value,pass:account.userPassNode.value}
   ,function(res){
     if(res!=1){
+      console.log(res);
       //ここでメールを送る
         console.log("登録が完了しました。");
     }else{

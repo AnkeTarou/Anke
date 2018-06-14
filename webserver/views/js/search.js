@@ -26,7 +26,6 @@ search.autoUpdate = function(key){
 
 //送られてきたデータをresultに反映する
 function updateResult(date){
-  console.log("data " + date[0].total);
   const result = document.getElementById('result');
   const articles = document.getElementsByClassName("questionSlide");
   for(let i = articles.length; i<date.length; i++){
@@ -161,221 +160,224 @@ function voteAddActionHTML(id){
   //データベースに反映
   connect("/vote/",{'user':user,'id':id,'index':check},
   function(res){
-    console.log(res);
+    if(res){
+      console.log("投票した");
+      /****クライアント側に結果を表示****/
 
-    /****クライアント側に結果を表示****/
+      const statusTotal = document.getElementById('status'+id);
+      statusTotal.replaceChild(document.createTextNode("投票数\t"+res.total),statusTotal.firstChild);
 
-    const statusTotal = document.getElementById('status'+id);
-    statusTotal.replaceChild(document.createTextNode("投票数\t"+res.total),statusTotal.firstChild);
+      // それぞれのブロックを作成
+      const myVotediv = document.createElement("div");
+      hid.appendChild(myVotediv);
+      const canvasdiv = document.createElement("div");
+      hid.appendChild(canvasdiv);
 
-    // それぞれのブロックを作成
-    const myVotediv = document.createElement("div");
-    hid.appendChild(myVotediv);
-    const canvasdiv = document.createElement("div");
-    hid.appendChild(canvasdiv);
+      const gooddiv = document.createElement("div");
+      gooddiv.setAttribute("class","good");
+      hid.appendChild(gooddiv);
 
-    const gooddiv = document.createElement("div");
-    gooddiv.setAttribute("class","good");
-    hid.appendChild(gooddiv);
+      const commentdiv = document.createElement("div");
+      hid.appendChild(commentdiv);
 
-    const commentdiv = document.createElement("div");
-    hid.appendChild(commentdiv);
-
-    let text = "";
-    for(let i = 0; i<res.answers.length; i++){
-      if(check[i]){
-        text += res.answers[i].answer + "\t";
-      }
-    }
-
-    const myVote = document.createTextNode(text + "に投票しました");
-    myVotediv.appendChild(myVote);
-    const canvas = document.createElement("canvas");
-    canvasdiv.appendChild(canvas);
-
-    /****いいね機能を追加****/
-
-    //　ラベル生成
-    const goodlabel = document.createElement("label");
-    goodlabel.setAttribute("id","goodlabel"+id);
-    goodlabel.textContent = "いいね\t" + res.good.length + "\t";
-    gooddiv.appendChild(goodlabel);
-
-    // 投稿にいいねをしているかを判別
-    let checker = false;
-    for(let i = 0; i<res.good.length; i++){
-      if(user._id == res.good[i]){
-        checker = true;
-      }
-    }
-
-    //　いいねボタンをセット
-    const goodbtn = document.createElement("input");
-    goodbtn.setAttribute("type","checkbox");
-    goodbtn.setAttribute("id","goodbtn"+id);
-    goodbtn.setAttribute("name","goodbtn");
-    goodbtn.checked = checker;
-    goodlabel.appendChild(goodbtn);
-
-    // いいねボタンが押されたとき
-    goodbtn.onclick = function(){
-      if(goodbtn.checked){
-        // いいねをデータベースに反映
-        connect("/good/",{'user':user,'id':id,'good':true},
-        function(resGood){
-          goodlabel.textContent = "いいね\t" + resGood.good.length + "\t";
-          goodbtn.checked = true;
-          goodlabel.appendChild(goodbtn);
-          console.log("いいねしたよ");
-        });
-      }else{
-        connect("/good/",{'user':user,'id':id,'good':false},
-        function(resGood){
-          goodlabel.textContent = "いいね\t" + resGood.good.length + "\t";
-          goodbtn.checked = false;
-          goodlabel.appendChild(goodbtn);
-          console.log("いいね外したよ");
-        });
-      }
-    }
-
-    // コメント機能追加
-    const content = document.createElement("input");
-    content.setAttribute("type","textarea");
-    content.setAttribute("id","content"+id);
-    commentdiv.appendChild(content);
-
-    // コメント送信ボタンをセット
-    const commentsub = document.createElement("input");
-    commentsub.setAttribute("type","submit");
-    commentsub.setAttribute("id","commentsub"+id);
-    commentsub.setAttribute("disabled","disabled");
-    commentsub.setAttribute("value","コメントを送信");
-    commentdiv.appendChild(commentsub);
-
-    // 既にあるコメントをブラウザに表示
-    const div1 = document.createElement("div");
-    div1.setAttribute("class","comment");
-    commentdiv.appendChild(div1);
-    if(res.comment){
-      const comments = res.comment;
-
-      for(let i = comments.length-1; i >= 0; i--){
-        const div2 = document.createElement("div");
-        div2.setAttribute("class","comment");
-        div2.setAttribute("style","border:1px solid red");
-        div1.appendChild(div2);
-
-        const commentval = document.createTextNode(comments[i].content);
-        div2.appendChild(commentval);
-      }
-
-    }
-
-    //　コメント内容が入っているかチェック
-    content.onkeyup = function(){
-      if(content.value == ""){
-        $("#commentsub"+id).prop("disabled", true);
-      }else{
-        $("#commentsub"+id).prop("disabled", false);
-      }
-    }
-
-    // コメントを送信したとき
-    commentsub.onclick = function(){
-      console.log("コメント送信");
-      const come = content.value;
-      connect("/comment/",{'user':user,'id':id,'content':come},
-      function(res){
-        content.value = "";
-        $("#commentsub").prop("disabled", true);
-        // コメント欄の先頭に新しいコメントを挿入
-        const newdiv = document.createElement("div");
-        newdiv.setAttribute("class","comment");
-        newdiv.setAttribute("style","border:1px solid red");
-        div1.insertBefore(newdiv,div1.firstChild);
-
-        const newcomment = res.comment[res.comment.length-1].content;
-
-        const newcontent = document.createTextNode(newcomment);
-        newdiv.appendChild(newcontent);
-      });
-    }
-
-    const ctx = canvas.getContext("2d");
-    const data = function(){
-      const answers = [];
-      const total = [];
-      for(let i in res.answers){
-        answers[i] = res.answers[i].answer;
-        total[i] = res.answers[i].voter.length;
-      }
-      return {"answers":answers,"total":total};
-    }();
-    new Chart(ctx, {
-      // 作成するグラフの種類
-      type: 'bar',
-      // ラベルとデータセットを設定
-      data: {
-        labels: data.answers,
-        datasets: [{
-          data: data.total,
-          backgroundColor: 'rgb(0,0,0)',
-        }]
-      },
-      //オプション設定
-      options: {
-        legend: {
-            display: false,
-        },
-        scales: {                          //軸設定
-          yAxes: [{                    //表示設定
-            scaleLabel: {              //軸ラベル設定
-             display: true,          //表示設定
-             fontSize: 18,           //フォントサイズ
-             fontColor: "rgb(0,0,0)"
-            },
-            ticks: {
-              min: 0,                   //最小値
-              fontSize: 18,             //フォントサイズ
-              stepSize: 10,             //軸間隔
-              fontColor: "rgb(0,0,0)"
-            },
-            gridLines:{           //グリッド設定
-              display:true,
-              color:"rgba(0,0,0,0.8)"
-            }
-          }],
-          xAxes: [{                         //x軸設定
-            display: true,                //表示設定
-            categoryPercentage: 0.6,      //棒グラフ幅
-            scaleLabel: {                 //軸ラベル設定
-              display: true,             //表示設定
-              fontSize: 18               //フォントサイズ
-            },
-            ticks: {
-              fontSize: 16,             //フォントサイズ
-              fontColor:"rgb(15, 15, 15)",
-              tickMarkLength:1
-            },
-            gridLines:{           //グリッド設定
-              display:true,
-              color:"rgba(0,0,0,0.3)",
-            }
-          }],
-        },
-        animation:{
-          duration:1500, //アニメーションにかける時間
-          easing:"easeInQuad"
-        },
-        elements:{
-          line:{
-            backgroundColor:"rgba(0,0,0,0.5)"
-          }
+      let text = "";
+      for(let i = 0; i<res.answers.length; i++){
+        if(check[i]){
+          text += res.answers[i].answer + "\t";
         }
       }
-    });
-  })
+
+      const myVote = document.createTextNode(text + "に投票しました");
+      myVotediv.appendChild(myVote);
+      const canvas = document.createElement("canvas");
+      canvasdiv.appendChild(canvas);
+
+      /****いいね機能を追加****/
+
+      //　ラベル生成
+      const goodlabel = document.createElement("label");
+      goodlabel.setAttribute("id","goodlabel"+id);
+      goodlabel.textContent = "いいね\t" + res.good.length + "\t";
+      gooddiv.appendChild(goodlabel);
+
+      // 投稿にいいねをしているかを判別
+      let checker = false;
+      for(let i = 0; i<res.good.length; i++){
+        if(user._id == res.good[i]){
+          checker = true;
+        }
+      }
+
+      //　いいねボタンをセット
+      const goodbtn = document.createElement("input");
+      goodbtn.setAttribute("type","checkbox");
+      goodbtn.setAttribute("id","goodbtn"+id);
+      goodbtn.setAttribute("name","goodbtn");
+      goodbtn.checked = checker;
+      goodlabel.appendChild(goodbtn);
+
+      // いいねボタンが押されたとき
+      goodbtn.onclick = function(){
+        if(goodbtn.checked){
+          // いいねをデータベースに反映
+          connect("/good/",{'user':user,'id':id,'good':true},
+          function(resGood){
+            goodlabel.textContent = "いいね\t" + resGood.good.length + "\t";
+            goodbtn.checked = true;
+            goodlabel.appendChild(goodbtn);
+            console.log("いいねしたよ");
+          });
+        }else{
+          connect("/good/",{'user':user,'id':id,'good':false},
+          function(resGood){
+            goodlabel.textContent = "いいね\t" + resGood.good.length + "\t";
+            goodbtn.checked = false;
+            goodlabel.appendChild(goodbtn);
+            console.log("いいね外したよ");
+          });
+        }
+      }
+
+      // コメント機能追加
+      const content = document.createElement("input");
+      content.setAttribute("type","textarea");
+      content.setAttribute("id","content"+id);
+      commentdiv.appendChild(content);
+
+      // コメント送信ボタンをセット
+      const commentsub = document.createElement("input");
+      commentsub.setAttribute("type","submit");
+      commentsub.setAttribute("id","commentsub"+id);
+      commentsub.setAttribute("disabled","disabled");
+      commentsub.setAttribute("value","コメントを送信");
+      commentdiv.appendChild(commentsub);
+
+      // 既にあるコメントをブラウザに表示
+      const div1 = document.createElement("div");
+      div1.setAttribute("class","comment");
+      commentdiv.appendChild(div1);
+      if(res.comment){
+        const comments = res.comment;
+
+        for(let i = comments.length-1; i >= 0; i--){
+          const div2 = document.createElement("div");
+          div2.setAttribute("class","comment");
+          div2.setAttribute("style","border:1px solid red");
+          div1.appendChild(div2);
+
+          const commentval = document.createTextNode(comments[i].content);
+          div2.appendChild(commentval);
+        }
+
+      }
+
+      //　コメント内容が入っているかチェック
+      content.onkeyup = function(){
+        if(content.value == ""){
+          $("#commentsub"+id).prop("disabled", true);
+        }else{
+          $("#commentsub"+id).prop("disabled", false);
+        }
+      }
+
+      // コメントを送信したとき
+      commentsub.onclick = function(){
+        console.log("コメント送信");
+        const come = content.value;
+        connect("/comment/",{'user':user,'id':id,'content':come},
+        function(res){
+          content.value = "";
+          $("#commentsub").prop("disabled", true);
+          // コメント欄の先頭に新しいコメントを挿入
+          const newdiv = document.createElement("div");
+          newdiv.setAttribute("class","comment");
+          newdiv.setAttribute("style","border:1px solid red");
+          div1.insertBefore(newdiv,div1.firstChild);
+
+          const newcomment = res.comment[res.comment.length-1].content;
+
+          const newcontent = document.createTextNode(newcomment);
+          newdiv.appendChild(newcontent);
+        });
+      }
+
+      const ctx = canvas.getContext("2d");
+      const data = function(){
+        const answers = [];
+        const total = [];
+        for(let i in res.answers){
+          answers[i] = res.answers[i].answer;
+          total[i] = res.answers[i].voter.length;
+        }
+        return {"answers":answers,"total":total};
+      }();
+      new Chart(ctx, {
+        // 作成するグラフの種類
+        type: 'bar',
+        // ラベルとデータセットを設定
+        data: {
+          labels: data.answers,
+          datasets: [{
+            data: data.total,
+            backgroundColor: 'rgb(0,0,0)',
+          }]
+        },
+        //オプション設定
+        options: {
+          legend: {
+              display: false,
+          },
+          scales: {                          //軸設定
+            yAxes: [{                    //表示設定
+              scaleLabel: {              //軸ラベル設定
+               display: true,          //表示設定
+               fontSize: 18,           //フォントサイズ
+               fontColor: "rgb(0,0,0)"
+              },
+              ticks: {
+                min: 0,                   //最小値
+                fontSize: 18,             //フォントサイズ
+                stepSize: 10,             //軸間隔
+                fontColor: "rgb(0,0,0)"
+              },
+              gridLines:{           //グリッド設定
+                display:true,
+                color:"rgba(0,0,0,0.8)"
+              }
+            }],
+            xAxes: [{                         //x軸設定
+              display: true,                //表示設定
+              categoryPercentage: 0.6,      //棒グラフ幅
+              scaleLabel: {                 //軸ラベル設定
+                display: true,             //表示設定
+                fontSize: 18               //フォントサイズ
+              },
+              ticks: {
+                fontSize: 16,             //フォントサイズ
+                fontColor:"rgb(15, 15, 15)",
+                tickMarkLength:1
+              },
+              gridLines:{           //グリッド設定
+                display:true,
+                color:"rgba(0,0,0,0.3)",
+              }
+            }],
+          },
+          animation:{
+            duration:1500, //アニメーションにかける時間
+            easing:"easeInQuad"
+          },
+          elements:{
+            line:{
+              backgroundColor:"rgba(0,0,0,0.5)"
+            }
+          }
+        }
+      });
+    }else{
+      window,alert("ユーザー認証に失敗しました。");
+    }
+  });
   //閉じてしまったhidを表示
   resultQuestionAddHidActionHTML(hid);
 }

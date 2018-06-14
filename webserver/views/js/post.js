@@ -23,7 +23,7 @@ var post = {
 post.route = function (){
 
   let obj = function(){
-    const obj = {'user':user,query:post.query.value};
+    const obj = {query:post.query.value};
     const answer = [];
     let answertype;
     for(let i = 0;i<post.answers.length;i++){
@@ -39,7 +39,7 @@ post.route = function (){
     return obj;
   }();
 
-  connect("/post/",obj,
+  connect("/post/",{obj,user},
   function(res){
     if(res){
       post.query.value = "";

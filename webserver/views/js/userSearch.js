@@ -69,7 +69,6 @@ function createUserNode(id,follow){
   /**ユーザー認証**/
   connect("/userCheck/",{'user':user},function(res){
     if(res){
-      console.log(res);
       //　ラベル生成
       const followlabel = document.createElement("label");
       followlabel.setAttribute("id","followlabel"+id);
@@ -77,8 +76,8 @@ function createUserNode(id,follow){
 
       // フォローしているユーザーを判別
       let checker = false;
-      for(let i = 0; i<follow.length; i++){
-        if(user._id == follow[i]){
+      for(let i = 0; i<res.follow.length; i++){
+        if(id == res.follow[i]){
           checker = true;
         }
       }
@@ -99,27 +98,23 @@ function createUserNode(id,follow){
         // MyNodeを取得
         const mylabel = document.getElementById("userlabel"+user._id);
         const myNode = document.getElementById("hid"+user._id);
-        let followcheck;
 
-        if(followbtn.checked){
-          followcheck = true;
-        }else {
-          followcheck = false;
-        }
-
-        connect("/follow/",{'user_id':user._id,'followUser_id':id,'follow':followcheck},
+        connect("/follow/",{'user':user,'followUserId':id,'follow':followbtn.checked},
         function(resFollow){
-          mylabel.textContent = "フォロー数\t" + resFollow.countFollow + "\t";
+          if(resFollow){
+            mylabel.textContent = "フォロー数\t" + resFollow.countFollow + "\t";
 
-          // Nodeを更新
-          followlabel.textContent = "フォロー";
-          followbtn.checked = followcheck;
-          followlabel.appendChild(followbtn);
+            // Nodeを更新
+            followlabel.textContent = "フォロー";
+            followlabel.appendChild(followbtn);
 
-          if(followcheck){
-            console.log("フォローしたよ");
-          }else {
-            console.log("フォロー外したよ");
+            if(followbtn.checked){
+              console.log("フォローしたよ");
+            }else {
+              console.log("フォロー外したよ");
+            }
+          }else{
+            window.alert("ユーザー認証できませんでした。");
           }
         });
       }

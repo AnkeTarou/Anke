@@ -3,7 +3,6 @@ const dbo = require('../lib/mongo');
 exports.post = function(req,res){
   const logid = req.body._id;
   const logpass= req.body.pass;
-  console.log(logpass.length);
   const key = {
     _id:logid,
     pass:logpass,
@@ -14,16 +13,20 @@ exports.post = function(req,res){
     let inquiry;
     if(result[0]){
       inquiry=1;
+      res.json(inquiry);
     }/*else if(logid.length<8){
       inquiry=2;
+      res.json(inquiry);
     }else if(logpass.length<8){
       inquiry=3;
+      res.json(inquiry);
     }*/
     else{
-      dbo.insert("UserData","user",key,function(result){
-        inquiry=4;
+      dbo.insert("UserData","user",key,function(JSON){
+        inquiry = 4;
+        console.log("1 " +inquiry);
+        res.json(inquiry);
       });
     }
-    res.json(inquiry);
   });
 };
