@@ -5,6 +5,9 @@ exports.post = function(req,res){
     const dates = new Date() ;
     const time = dates.getTime() ;
     const imagename = time+'.jpg';
+    const key ={
+      objimg:imagename
+    }
     // data:image/jpeg;base64,というデータはBase64ではなくゴミなので排除する。
     const data = imgs.split( ',' );
     // Base64のデータのみが入っている。
@@ -21,8 +24,7 @@ exports.post = function(req,res){
     fs.writeFile('views/image/'+imagename, img, function (err) {
         console.log(err);
     });
-    /*dbo.insert("imagedata","image",time,function(JSON){
-    res.json(time);
-  });*/
-    res.json(imagename);
+    dbo.insert("Imagedata","image",key,function(result){
+      res.json(key);
+    });
 };
