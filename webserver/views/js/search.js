@@ -285,18 +285,22 @@ function voteAddActionHTML(id){
         const come = content.value;
         connect("/comment/",{'user':user,'id':id,'content':come},
         function(res){
-          content.value = "";
-          $("#commentsub").prop("disabled", true);
-          // コメント欄の先頭に新しいコメントを挿入
-          const newdiv = document.createElement("div");
-          newdiv.setAttribute("class","comment");
-          newdiv.setAttribute("style","border:1px solid red");
-          div1.insertBefore(newdiv,div1.firstChild);
+          if(res.result == "OK"){
+            content.value = "";
+            $("#commentsub").prop("disabled", true);
+            // コメント欄の先頭に新しいコメントを挿入
+            const response = res.comment;
+            const newdiv = document.createElement("div");
+            newdiv.setAttribute("class","comment");
+            newdiv.setAttribute("style","border:1px solid red");
+            div1.insertBefore(newdiv,div1.firstChild);
+            const newcomment = response.comment[response.comment.length-1].content;
 
-          const newcomment = res.comment[res.comment.length-1].content;
-
-          const newcontent = document.createTextNode(newcomment);
-          newdiv.appendChild(newcontent);
+            const newcontent = document.createTextNode(newcomment);
+            newdiv.appendChild(newcontent);
+          }else if(res.result == "err"){
+            window.alert("コメントを送信できませんでした　\nエラーコード" + res.err);
+          }
         });
       }
 

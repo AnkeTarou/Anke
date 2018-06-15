@@ -84,12 +84,13 @@ exports.good = function(user,id,good,key,callback){
   });
 }
 //投稿にコメントする
-exports.comment = function(id,sender_id,content,key,callback){
+exports.comment = function(id,sender_id,content,commentId,key,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
     const dbo = database.db("QuestionData");
     const objId = require('mongodb').ObjectID(id);
-    dbo.collection("question").update({_id:objId},{$push:{comment:{'sender_id':sender_id,'content':content}}},
+    dbo.collection("question").update({_id:objId},
+    {$push:{comment:{'sender_id':sender_id,'content':content,'commentId':commentId}}},
     function(err, res) {
       if (err) throw err;
     });
