@@ -2,7 +2,7 @@
 <html>
   <head>
       <meta charset="utf-8" />
-      <title>サーバーサイド非同期通信の定義</title>
+      <title>URL別の動き</title>
       <style>.markdown-preview:not([data-use-github-style]) { padding: 2em; font-size: 1.2em; color: rgb(56, 58, 66); background-color: rgb(250, 250, 250); overflow: auto; }
 .markdown-preview:not([data-use-github-style]) > :first-child { margin-top: 0px; }
 .markdown-preview:not([data-use-github-style]) h1, .markdown-preview:not([data-use-github-style]) h2, .markdown-preview:not([data-use-github-style]) h3, .markdown-preview:not([data-use-github-style]) h4, .markdown-preview:not([data-use-github-style]) h5, .markdown-preview:not([data-use-github-style]) h6 { line-height: 1.2; margin-top: 1.5em; margin-bottom: 0.5em; color: rgb(0, 0, 0); }
@@ -533,160 +533,101 @@ pre.editor-colors .fold-marker:after {
 }
 </style>
   </head>
-  <body class='markdown-preview' data-use-github-style><h1 id="-vote-">/vote/</h1>
+  <body class='markdown-preview' data-use-github-style><h1 id="-">/</h1>
+<h2 id="-">ホーム画面</h2>
+<h3 id="-">リクエスト方法</h3>
+<p>GET・POST</p>
+<h3 id="-">構成</h3>
+<p>フォローしているユーザーの投稿やお気に入りが見れる</p>
+<hr>
+<h1 id="-user-">/(user)</h1>
+<h2 id="-">ユーザーページ</h2>
+<h3 id="-">リクエスト方法</h3>
+<p>GET・POST</p>
+<h3 id="-">構成</h3>
 <ul>
-<li>指定した投稿(アンケート)に投票を行う</li>
+<li>ユーザーの情報<ul>
+<li>フォローしているユーザー数</li>
+<li>フォローされているユーザー数</li>
+<li>そのユーザーのアンケートやお気に入り</li>
+</ul>
+</li>
 </ul>
 <hr>
-<h3 id="-">形式</h3>
-<p><strong>POST</strong></p>
-<hr>
-<h3 id="-">受信オブジェクト</h3>
-<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;id:"投稿ID",</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;index:[0],</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;user:{session:"セッションキー",_id:"ユーザーID"}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><hr>
-<h3 id="-">送信オブジェクト</h3>
-<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;id:"投稿ID",</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;answers:[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//選択肢の配列</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{answer:"選択肢",total:1},&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//選択肢と投票された総数</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{answer:"選択肢",total:1},</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{answer:"選択肢",total:1}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;],</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;comment:[</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;senderId:"コメント送信者ID",</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content:"内容",</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;commentId:"コメントID"</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;}...</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;],</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;favorite:2,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//いいなされた数</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;total:3,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//総投票数</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><hr>
-<h3 id="-">動き</h3>
-<ol>
-<li>ブラウザからリクエスト受け取る</li>
-<li>userの認証が完了</li>
-<li>投稿IDが存在する</li>
-<li>userはその投稿IDに対してまだ投票したことがない</li>
-<li>typeにそったindexになっている</li>
-<li>indexが正しい値を指している</li>
-<li>Data.questionの投稿IDのanswersの<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">index</code>または<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">[index,index...]</code>番目の<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">voter</code>に<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">user</code>の<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">_Id</code>を追加する</li>
-<li>送信オブジェクトを作成しブラウザにレスポンスを行う</li>
-</ol>
-<hr>
-<h3 id="-">エラー</h3>
-<p><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">{state:"error",error:"エラーが起きた番号"}</code>をブラウザに送信する</p>
-<hr>
-<h1 id="-post-">/post/</h1>
+<h1 id="-user-follow">/(user)/follow</h1>
+<h2 id="-">フォロー一覧</h2>
+<h3 id="-">リクエスト方法</h3>
+<p>GET・POST</p>
+<h3 id="-">構成</h3>
 <ul>
-<li>アンケートの投稿を行う。</li>
-<li>ユーザー認証あり</li>
+<li>followしているユーザーの簡単な情報を表示する</li>
 </ul>
 <hr>
-<h3 id="-">形式</h3>
-<p>  <strong>POST</strong></p>
-<hr>
-<h3 id="-">受信オブジェクト</h3>
-<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;query:"アンケート内容"</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;answers:["選択肢1","選択肢2","選択肢3"....],</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;type:"radio"&nbsp;or&nbsp;"checkbox",</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;user:{session:"セッションキー",_id:"ユーザーID"}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><hr>
-<h3 id="-">送信オブジェクト</h3>
-<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;state:"success"&nbsp;or&nbsp;"error"</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><hr>
-<h3 id="-">動き</h3>
-<ol>
-<li>ブラウザからリクエスト受け取る</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">user</code>の認証が完了</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">query</code>の長さが255以下1以上</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">query</code>の値に特殊文字が含まれていれば置換する</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">answers</code>が配列であるかの確認</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">answers</code>の配列の長さが48以下1以上</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">answers</code>の配列の中の値の長さが127以下1以上の文字列</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">answers</code>の配列の中の値に特殊文字が含まれていれば置換する</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">type</code>の値が<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">"radio"</code>,<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">"checkbox"</code>のどちらか</li>
-<li>Data.questionの形式に成型しData.questionに追加する</li>
-<li>追加に成功したら<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">{state:"success"}</code>をブラウザに送信する</li>
-</ol>
-<hr>
-<h3 id="-">エラー</h3>
-<p><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">{state:"error",error:"エラーが起きた番号"}</code>をブラウザに送信する</p>
-<hr>
-<h1 id="-update-">/update/</h1>
+<h1 id="-user-follower">/(user)/follower</h1>
+<h2 id="-">フォロー一覧</h2>
+<h3 id="-">リクエスト方法</h3>
+<p>GET・POST</p>
+<h3 id="-">構成</h3>
 <ul>
-<li>グラフを更新する</li>
-<li>性別・年齢・地域別データで返すことも可能</li>
-<li>ユーザー認証あり</li>
+<li>followされているユーザーの簡単な情報を表示する</li>
 </ul>
 <hr>
-<h3 id="-">形式</h3>
-<p>  <strong>POST</strong></p>
-<hr>
-<h3 id="-">受信オブジェクト</h3>
-<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;user:{session:"セッションキー",_id:"ユーザーID"},</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;update:[</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;//format&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;=&nbsp;nomal,2&nbsp;=&nbsp;gender,3&nbsp;=&nbsp;age,4&nbsp;=&nbsp;area</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;{_id:"更新したい投稿ID",format:"1"},</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;{_id:"更新したい投稿ID",format:"2"},</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;{_id:"更新したい投稿ID",format:"3"}...</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;],</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><h3 id="-">送信オブジェクト</h3>
-<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>[</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;_id:"投稿ID",</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;label:[],</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;date:[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//選択肢の配列</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{value:[],total:40},</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{value:[],total:30},</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{value:[],total:20}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;],</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;total:90&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//投票した人数</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;},</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;_id:"投稿ID",</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;label:["男性","女性"],</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;date:[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//選択肢の配列</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{value:[25,15],total:40},</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{value:[10,20],total:30},</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{value:[5,15],total:20}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;],</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;total:90&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//投票した人数</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;},</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;_id:"投稿ID",</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;label:["10代","20代","30代"...],</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;date:[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//選択肢の配列</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{value:[22,1,14...],total:40},</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{value:[3,1,5...],total:30},</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{value:[5,1,3...],total:20}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;],</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;total:120&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//投票した人数</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>]</span></span></div></pre><hr>
-<h3 id="-">動き</h3>
-<ol>
-<li>ブラウザからリクエスト受け取る</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">user</code>の認証を行う</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">update</code>が配列であることを確認する</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">update</code>の中身のobjectに<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">_id</code>と<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">format</code>があることを確認する</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">update</code>の配列の全ての要素に下記を行う<ol>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">_id</code>と<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">format</code>が存在するかどうかを確認する</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">_id</code>がData.question内にあることを確認する</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">_id</code>にすでに投票したことがあるかを確認する</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">_id</code>の投稿を取得して<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">format</code>に送信オブジェクト作成に必要なデータを収集する</li>
-<li>送信オブジェクトに追加する</li>
-</ol>
-</li>
-<li>送信オブジェクトをブラウザに返す</li>
-</ol>
-<h3 id="-">エラー</h3>
-<p><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">{state:"error",error:"エラーが起きた番号"}</code>をブラウザに送信する</p>
-<h1 id="-follow-">/follow/</h1>
+<h1 id="-user-favorite">/(user)/favorite</h1>
+<h2 id="-">フォロー一覧</h2>
+<h3 id="-">リクエスト方法</h3>
+<p>GET・POST</p>
+<h3 id="-">構成</h3>
 <ul>
-<li>followする</li>
+<li>お気に入りしている投稿の情報を表示する</li>
 </ul>
 <hr>
-<h3 id="-">形式</h3>
-<p>  <strong>POST</strong></p>
-<hr>
-<h3 id="-">受信オブジェクト</h3>
-<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;user:{session:"セッションキー",_id:"ユーザーID"},</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;targetId:"対象ユーザーID",</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;follow:true&nbsp;or&nbsp;false&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//する&nbsp;=&nbsp;true&nbsp;,&nbsp;やめる&nbsp;=&nbsp;false</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><h3 id="-">送信オブジェクト</h3>
-<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;state:"success"&nbsp;or&nbsp;"error"</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><hr>
-<h3 id="-">動き</h3>
-<ol>
-<li>ブラウザからリクエスト受け取る</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">user</code>の認証を行う</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">targetId</code>がData.userの<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">_id</code>に存在するかを確認する</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">follow</code>が<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">true</code>なら1へ、<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">false</code>なら2へ<ol>
-<li><ul>
-<li>Data.user内の_<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">id = user._id</code>の<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">follow</code>の配列に<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">targetId</code>を追加する</li>
-<li>Data.user内の_<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">id = targetId._id</code>の<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">follower</code>の配列に<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">user._id</code>を追加する</li>
-</ul>
-</li>
-<li><ul>
-<li>Data.user内の_<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">id = user._id</code>の<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">follow</code>の配列の中の<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">targetId</code>を削除する(空白は詰める)</li>
-<li>Data.user内の_<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">id = targetId._id</code>の<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">follower</code>の配列の<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">user._id</code>を削除する(空白は詰める)</li>
-</ul>
-</li>
-</ol>
-</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">{state:"success"}</code>をブラウザに返す</li>
-</ol>
-<h3 id="-">エラー</h3>
-<p><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">{state:"error",error:"エラーが起きた番号"}</code>をブラウザに送信する</p>
-<hr>
-<h1 id="-favorite-">/favorite/</h1>
+<h1 id="-search-">/search/</h1>
+<h2 id="-">検索結果画面</h2>
+<h3 id="-">リクエスト方法</h3>
+<p>POSTで検索したい文字列を送信する<br>GETリクエストされた場合ホーム画面にリダイレクトする</p>
+<h3 id="-">構成</h3>
 <ul>
-<li>いいなする</li>
+<li>sessionにuserが保存されていれば認証を行いそれに応じた結果を返す</li>
+<li>検索して表示したアンケートに答えて結果をグラフで見れることが主である。</li>
+<li>アンケートごとに投稿したユーザーのプロフィール画像・ユーザーID・ニックネームが表示されている</li>
+<li>アンケートごとにいいな数・投票数が確認可能であること</li>
+<li>グラフの表示(データ別に表示も可能)<ul>
+<li>男女</li>
+<li>年齢</li>
+<li>地域</li>
+</ul>
+</li>
+<li>質問の投稿が可能</li>
+<li>ログインしていない場合は投票できない。</li>
+<li>結果も表示しない</li>
 </ul>
 <hr>
-<h3 id="-">形式</h3>
-<p>  <strong>POST</strong></p>
+<h1 id="-option">/option</h1>
+<h2 id="-">設定画面</h2>
+<h3 id="-">リクエスト方法</h3>
+<p>GET・POST</p>
+<h3 id="-">構成</h3>
+<ul>
+<li>ユーザーの情報を設定する<ul>
+<li>ニックネーム</li>
+<li>ユーザーID</li>
+<li>パスワード</li>
+<li>地域</li>
+<li>プロフィール画像</li>
+</ul>
+</li>
+<li>sessionにuserが保存されていなければホーム画面にリダイレクト</li>
+<li>保存されていれば認証を行い設定画面を表示する</li>
+</ul>
 <hr>
-<h3 id="-">受信オブジェクト</h3>
-<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;user:{session:"セッションキー",_id:"ユーザーID"},</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;targetId:"投稿ID",</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;favorite:true&nbsp;or&nbsp;false&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//する&nbsp;=&nbsp;true&nbsp;,&nbsp;やめる&nbsp;=&nbsp;false</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><h3 id="-">送信オブジェクト</h3>
-<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;state:"success"&nbsp;or&nbsp;"error"</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><hr>
-<h3 id="-">動き</h3>
-<ol>
-<li>ブラウザからリクエスト受け取る</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">user</code>の認証を行う</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">targetId</code>がData.questionの<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">_id</code>に存在するかを確認する</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">favorite</code>が<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">true</code>なら1へ、<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">false</code>なら2へ<ol>
-<li><ul>
-<li>Data.user内の_<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">id = user._id</code>の<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">favorite</code>の配列に<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">targetId</code>を追加する</li>
-<li>Data.question内の_<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">id = targetId</code>の<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">favorite</code>の配列に<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">user._id</code>を追加する</li>
-</ul>
-</li>
-<li><ul>
-<li>Data.user内の_<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">id = user._id</code>の<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">favorite</code>の配列の中の<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">targetId</code>を削除する(空白は詰める)</li>
-<li>Data.question内の_<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">id = targetId</code>の<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">favorite</code>の配列の<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">user._id</code>を削除する(空白は詰める)</li>
-</ul>
-</li>
-</ol>
-</li>
-<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">{state:"success"}</code>をブラウザに返す</li>
-</ol>
-<h3 id="-">エラー</h3>
-<p><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">{state:"error",error:"エラーが起きた番号"}</code>をブラウザに送信する</p></body>
+<h1 id="-account">/account</h1>
+<h2 id="-">ユーザー登録</h2>
+<h3 id="-">リクエスト方法</h3>
+<p>GET・POST</p>
+<p>###　構成</p>
+<ul>
+<li>ユーザの登録を行う</li>
+<li>sessionにユーザーが保存されていればホーム画面にリダイレクト</li>
+<li>登録情報の入力をしてもらう</li>
+</ul></body>
 </html>
