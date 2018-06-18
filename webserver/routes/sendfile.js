@@ -4,9 +4,9 @@ exports.post = function(req,res){
     const imgs =req.body.img;
     const dates = new Date() ;
     const time = dates.getTime() ;
-    const imagename = time+'.jpg';
+    const imagepath = 'image/'+time+'.jpg';
     const key ={
-      objimg:imagename
+      objimg:imagepath
     }
     // data:image/jpeg;base64,というデータはBase64ではなくゴミなので排除する。
     const data = imgs.split( ',' );
@@ -21,11 +21,8 @@ exports.post = function(req,res){
     // npm i fs でインストールしたモジュール。
     const fs = require('fs');
     // ファイルを保存。
-    fs.writeFile('views/image/'+imagename, img, function (err) {
+    fs.writeFile('views/'+imagepath, img, function (err) {
         console.log(err);
     });
-    //Mongoに画像の情報を保存
-    dbo.insert("Imagedata","image",key,function(result){
-      res.json(key);
-    });
+    res.json(key);
 };

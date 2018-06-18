@@ -5,27 +5,28 @@ var user = null;
 var image = {
    init:function(){
      this.upload = document.getElementById("upload");
-     this.letsbutton = document.getElementById("letsbutton");
      this.tmpfile = document.getElementById("tmpfile");
      this.imageget = document.getElementById("imageget");
      this.imgdisplay = document.getElementById("imgdisplay");
-     this.image = undefined;
      this.fileData = undefined;
-     this.file = null; // 選択されるファイル
-     this.blob = null; // 画像(BLOBデータ)
 
      this.imageget.onclick = this.imgget;
      this.tmpfile.onchange = image.test;
      this.upload.onclick = this.route;
-     this.letsbutton.onclick = this.button;
    }
 };
 image.test = function(e){
-  let file = e.target.files;
+  console.log(e);
+  let file = e.target.files[0];
   let reader = new FileReader();
-
+  // 選択されたファイルが画像かどうか判定
+  if (file.type != 'image/jpeg' && file.type != 'image/png') {
+    // 画像でない場合は終了
+    alert("画像ファイルを選択してください");
+    return;
+  }
   //dataURL形式でファイルを読み込む
-  reader.readAsDataURL(file[0]);
+  reader.readAsDataURL(file);
   //ファイルの読込が終了した時の処理
   reader.onload = function(){
     image.fileData = reader.result;
@@ -67,7 +68,7 @@ image.imgget = function(){
     }()
   })
   .done(function(res) {
-    image.imgdisplay.src ="image/"+res;
+    image.imgdisplay.src =res;
     alert("送信成功");
   })
   .fail(function(res) {
