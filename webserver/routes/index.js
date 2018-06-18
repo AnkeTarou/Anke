@@ -13,6 +13,7 @@ const comment = require('./comment');
 const follow = require('./follow');
 const sendfile = require('./sendfile');
 const userCheck = require('./userCheck');
+const imageget = require('./imageget');
 
 router.get('/', function (req, res) {
   res.render("index",{animal:"dog"});
@@ -53,5 +54,8 @@ router.post('/sendfile/',sendfile.post);
 
 //ユーザー認証
 router.post('/userCheck/',userCheck.post);
+
+//imageの画像を取り出す
+router.post('/imageget/',imageget.post);
 
 module.exports = router;
