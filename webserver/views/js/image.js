@@ -8,6 +8,7 @@ var image = {
      this.letsbutton = document.getElementById("letsbutton");
      this.tmpfile = document.getElementById("tmpfile");
      this.imageget = document.getElementById("imageget");
+     this.imgdisplay = document.getElementById("imgdisplay");
      this.image = undefined;
      this.fileData = undefined;
      this.file = null; // 選択されるファイル
@@ -45,6 +46,7 @@ image.route = function(){
   })
   .done(function(res) {
     image.file=res;
+    console.log(res);
     alert("送信成功");
   })
   .fail(function(res) {
@@ -53,22 +55,23 @@ image.route = function(){
   });
 };
 
-//Mongoから画像を取り出す
+//Mongoから画像を取り出す(表示がクリックされたら)
 image.imgget = function(){
   $.ajax({
     url: "/imageget/", // 送信先
     type: 'POST',
     dataType: 'json',
     data:function(){
-      //console.log("ajax",image.fileData);
+      console.log("ajax",image.file);
       return {img:image.file};
     }()
   })
   .done(function(res) {
-    console.log(res);
+    image.imgdisplay.src ="image/"+res;
     alert("送信成功");
   })
   .fail(function(res) {
+    console.log(res);
     // 送信失敗
     alert("送信失敗");
   });

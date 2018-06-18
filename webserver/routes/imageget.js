@@ -1,5 +1,6 @@
 const dbo = require('../lib/mongo');
 
 exports.post = function(req,res){
-    res.json(req);
+  const img=req.body.img.objimg;
+  res.json(img);
 };

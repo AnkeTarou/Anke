@@ -20,10 +20,11 @@ exports.post = function(req,res){
 
     // npm i fs でインストールしたモジュール。
     const fs = require('fs');
-    // 試しにファイルをsample.jpgにして保存。Canvasではjpeg指定でBase64エンコードしている。
+    // ファイルを保存。
     fs.writeFile('views/image/'+imagename, img, function (err) {
         console.log(err);
     });
+    //Mongoに画像の情報を保存
     dbo.insert("Imagedata","image",key,function(result){
       res.json(key);
     });
