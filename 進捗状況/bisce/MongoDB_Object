@@ -1,0 +1,73 @@
+
+## データベースに保存する形式
+
+### Data.question
+
+```
+{
+	_id:投稿ID,				//MongoDBのObjectIdをそのまま使う
+	senderId:"Data.userの_id",
+	img:["url","url"...],
+	type:"投稿形式",			//radio or checkbox
+	query:"アンケート内容",
+	answers:[
+		{answer:"選択肢１",voter:["投票者のユーザーID","投票者のユーザーID"]},
+		{answer:"選択肢２",voter:["投票者のユーザーID","投票者のユーザーID"]},
+		{answer:"選択肢３",voter:[]},
+		{answer:"選択肢４",voter:["投票者のユーザーID"]},
+	],
+	comment:[
+		{
+			senderId:"コメント送信者ID",
+			content:"内容",
+			commentId:"コメントID"     //new ObjectID 重複しない (ensureIndex)
+		}...
+	],
+	voters:["投票者のユーザーID","投票者のユーザーID"],
+	good:["いいなしたユーザーID","いいなしたユーザーID"],
+	time:ISODate("2018-06-12T00:53:55.393Z")			//new Date()でできる
+}
+```
+ #### チェック項目
+- [ ] `_id`が一意に決まる
+- [ ] `senderId`がData.userの`_id`の中に存在する
+- [ ] `query`の長さが255以下1以上
+- [ ] `answerType`が`"radio"`、`"checkbox"`のどちらかである
+- [ ] `answers`の長さが48以下2以上
+- [ ] `answer`の長さが127以下1以上
+- [ ] `voters`の中身が配列で存在しないユーザーIDまたは同じユーザーIDが入らない
+- [ ] `good`の中身が配列で存在しないユーザーIDまたは同じユーザーIDが入らない
+- [ ] `time`が空でない
+- [ ] `comment`の`senderId`がData.user内に存在する
+- [ ] `comment`の`content`の内容に特殊文字があれば置換処理を行う
+- [ ] `commentId`が重複することがあればエラーを吐くようになっているか
+
+***
+
+### Data.user
+```
+{
+	_id:ユーザーID,
+	nickname:"初期値は_id",					//重複可能
+	img:"画像URL",
+	sessionKey:"セッションキー",
+	follow:["フォローしたユーザーID"...],
+	follower:["フォローされたユーザーID"...]
+	good:["投稿ID"...],
+	pass:"パスワード",
+	gender:1 or 2,					//性別	１= 男, ２= 女
+	age:20,
+	area:"地域",
+	birthday:"誕生日"
+}
+```
+
+チェック項目
+- [ ] `_id`が一意に決まる
+- [ ] `_id`が空白にならない
+- [ ] `pass`が空白にならない
+- [ ] `gender`が空白にならない
+- [ ] `gender`が`1`か`2`どちらか
+- [ ] `age`が空白にならない
+- [ ] `area`が空白にならない
+- [ ] `birthday`が空白にならない
