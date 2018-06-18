@@ -7,11 +7,13 @@ var image = {
      this.upload = document.getElementById("upload");
      this.letsbutton = document.getElementById("letsbutton");
      this.tmpfile = document.getElementById("tmpfile");
+     this.imageget = document.getElementById("imageget");
      this.image = undefined;
      this.fileData = undefined;
      this.file = null; // 選択されるファイル
      this.blob = null; // 画像(BLOBデータ)
 
+     this.imageget.onclick = this.imgget;
      this.tmpfile.onchange = image.test;
      this.upload.onclick = this.route;
      this.letsbutton.onclick = this.button;
@@ -42,7 +44,7 @@ image.route = function(){
     }()
   })
   .done(function(res) {
-    console.log(res);
+    image.file=res;
     alert("送信成功");
   })
   .fail(function(res) {
@@ -50,3 +52,24 @@ image.route = function(){
     alert("送信失敗");
   });
 };
+
+//Mongoから画像を取り出す
+image.imgget = function(){
+  $.ajax({
+    url: "/imageget/", // 送信先
+    type: 'POST',
+    dataType: 'json',
+    data:function(){
+      //console.log("ajax",image.fileData);
+      return {img:image.file};
+    }()
+  })
+  .done(function(res) {
+    console.log(res);
+    alert("送信成功");
+  })
+  .fail(function(res) {
+    // 送信失敗
+    alert("送信失敗");
+  });
+}
