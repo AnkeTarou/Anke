@@ -5,6 +5,8 @@ var search = {
     init:function(){
       this.searchValueNode = document.getElementById("searchValue");
       this.subNode = document.getElementById("searchSub");
+      this.sort = document.getElementById("sort");
+      this.order = document.getElementsByName("order");
       this.subNode.onclick = this.route;
     }
 }
@@ -12,9 +14,26 @@ var search = {
 //サーバに接続し検索した後,結果を画面に反映する
 //その後、検索したキーで更新があれば自動で反映される
 search.route = function (){
-  connect("/search/",{value:search.searchValueNode.value},updateResult);
-  search.autoUpdate({value:search.searchValueNode.value});
+  console.log();
+  search.searchCheck(search.searchValueNode.value);
+  connect("/search/",search.obj(),updateResult);
+  search.autoUpdate({'user':user,value:search.searchValueNode.value});
 };
+
+search.obj = function(){
+  let obj = {
+    'user':user,
+    'value':search.searchValueNode.value,
+    'sort':search.sort.value
+  }
+
+  for(let i = 0;i<search.order.length;i++){
+    if(search.order[i].checked){
+      obj.order = search.order[i].value;
+    }
+  }
+  return obj;
+}
 
 search.autoUpdate = function(key){
   clearInterval(this.current);
@@ -386,4 +405,7 @@ function voteAddActionHTML(id){
 }
 function random(max, min){
   return Math.floor( Math.random() * (max + 1 - min) ) + min;
+}
+search.searchCheck = function(value){
+  console.log(value);
 }

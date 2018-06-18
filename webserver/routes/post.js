@@ -1,7 +1,6 @@
 const dbo = require('../lib/mongo');
 
 exports.post = function(req,res){
-  console.log("でーた ",req.body);
   const key = req.body.obj;
   const ans = [];
   let check = true;

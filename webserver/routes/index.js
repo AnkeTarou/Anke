@@ -15,7 +15,7 @@ const sendfile = require('./sendfile');
 const userCheck = require('./userCheck');
 
 router.get('/', function (req, res) {
-  res.render("index",{});
+  res.render("index",{animal:"dog"});
 });
 
 //検索

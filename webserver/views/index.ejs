@@ -30,16 +30,16 @@
 <body>
   <section id="inputBox">
     <div id="queryBox">
-      アンケート内容：<input type="text" id="inputQuery"/>
+      アンケート内容：<input type="text" id="inputQuery" required/>
     </div>
     <div id="answerBox">
       <div id="inputAnswer1">
         回答選択肢１：
-        <input type="text" name="inputAnswer" />
+        <input type="text" name="inputAnswer" required/>
       </div>
       <div id="inputAnswer2">
         回答選択肢２：
-        <input type="text" name="inputAnswer" />
+        <input type="text" name="inputAnswer" required/>
       </div>
     </div>
     <div id="answerTypeBox">
@@ -64,6 +64,19 @@
     <div id="searchBox">
       <input type="text" id="searchValue" />
       <input type="submit" id="searchSub" value="投稿を取得" />
+      <p>ソート：
+          <select id="sort">
+            <option value="total">投票数</option>
+            <option value="good">いいね数</option>
+            <option value="date">日付</option>
+          </select>
+          <label>
+            <input type="radio" name="order" value="1" checked> 昇順
+          </label>
+          <label>
+            <input type="radio" name="order" value="-1"> 降順
+          </label>
+        </p>
     </div>
   </section>
   <section id="usersection">
@@ -90,7 +103,7 @@
     <br>
   </section>
   <section id="mail">
-    <input type="text" id="inputmailadress">
+    <input type="email" id="inputmailadress">
     <br>
     <input type="submit" id="inputmail" value="メール送信">
   </section>
