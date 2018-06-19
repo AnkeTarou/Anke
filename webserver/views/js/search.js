@@ -17,7 +17,7 @@ search.route = function (){
   console.log();
   search.searchCheck(search.searchValueNode.value);
   connect("/search/",search.obj(),updateResult);
-  search.autoUpdate({'user':user,value:search.searchValueNode.value});
+  search.autoUpdate(search.obj());
 };
 
 search.obj = function(){
