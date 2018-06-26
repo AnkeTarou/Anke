@@ -36,7 +36,6 @@ image.test = function(e){
 
 // アップロード開始ボタンがクリックされたら
 image.route = function(){
-  connect("/sendfile/");
   $.ajax({
     url: "/sendfile/", // 送信先
     type: 'POST',
