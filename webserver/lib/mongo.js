@@ -107,7 +107,7 @@ exports.comment = function(id,sender_id,content,commentId,key,callback){
 exports.follow = function(user_id,followUserId,follow,followKey,followerKey,callback){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
-    const dbo = database.db("UserData");
+    const dbo = database.db("Data");
     let operator1,operator2;
 
     if(follow == "true"){
@@ -117,6 +117,7 @@ exports.follow = function(user_id,followUserId,follow,followKey,followerKey,call
       operator1 = {$pull:{"follow":followUserId}};
       operator2 = {$pull:{"follower":user_id}};
     }
+    console.log(user_id);
     dbo.collection("user").update({_id:user_id},operator1,
     function(err, res) {
       if (err) throw err;
@@ -152,7 +153,7 @@ exports.userCheck = function(checkuser){
   return new Promise(function(resolve,reject){
     MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
       if(error) reject(error);
-      const dbo = database.db("UserData");
+      const dbo = database.db("Data");
       const key = [{$match:{sessionkey:checkuser.session}}];
       dbo.collection("user").aggregate(key).toArray(function(err, result) {
         if (err) reject(err);

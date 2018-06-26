@@ -71,7 +71,7 @@ function createUserNode(id,follow, follower){
   /**ユーザー認証**/
   connect("/userCheck/",{'user':user},function(res){
     if(res){
-      if(id == user._id){
+      if(id == res._id){
         return;
       }
 
@@ -141,7 +141,6 @@ function resultUserAddActionHTML(id){
   const sub = document.getElementById('sub'+ id);
   btn.onclick = function(){
     resultUserAddHidActionHTML(hid);
-
   }
 
 }

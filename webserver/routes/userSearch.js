@@ -6,7 +6,8 @@ exports.post = function(req,res){
     {$match:{$or:[{_id:key}]}},
     {$project:{_id:1,follow:1,follower:1}}
   ];
-  dbo.aggregate("UserData","user",keyObj,function(JSON){
-    res.json(JSON);
-  });
+  dbo.aggregate("user",keyObj)
+  .then(function(result){
+    res.json(result);
+  })
 }
