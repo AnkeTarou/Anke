@@ -2,93 +2,117 @@ const dbo = require('../lib/mongo');
 
 // 検索処理　１単語のみの検索に対応
 exports.post = function(req,res){
-  const key = {$regex:".*"+req.body.value+".*"};
-  let usercheck;
+  
 
-  let check = sortCheck(req.body.sort) && orderCheck(req.body.order);
-  let keyObj = createKeyObj(req.body.sort,req.body.order,key);
+  // 検索キーを生成
+  let keyObj = createKeyObj(
+    sortCheck(req.body.sort),
+    orderCheck(req.body.order),
+    req.body.searchText
+  );
 
+  //  未ログインなら検索結果だけを返す
+  if(!req.body.user){
+    dbo.aggregate("QuestionData","question",keyObj)
+    .then(function(result){
+      console.log(result);
+      res.render("search",{json:result});
+    });
+  }
   // ログイン状態かチェック
   if(req.body.user){
-    const promise = new Promise(function(resolve,reject) {
-      //　ユーザー認証
-      usercheck = userCheck(req.body.user);
-      resolve();
+    dbo.userCheck(req.body.user)
+    .then(function(usercheck){
+      if(usercheck){
+        return true;
+      }else{
+        return false;
+      }
     })
-    .then(function() {
-      setTimeout(function() {
-        if(usercheck && check){
-          // ユーザー認証成功
-
-          // ここにkeyの更新処理を書く
-
-          //検索して結果を返す
-          dbo.aggregate("QuestionData","question",keyObj,function(JSON){
-            res.json(JSON);
-          });
-        }else{
-          // ユーザー認証失敗ならerrを返す
-          err = 1;
-          res.json(null);
-        }
-      },10);
+    .then(function(usercheck) {
+      if(usercheck){
+        // ユーザー認証成功
+        //検索キーを更新
+        keyObj[1].$project.voters = 1;
+        //検索して結果を返す
+        dbo.aggregate("QuestionData","question",keyObj)
+        .then(function(result){
+          // 検索結果を整形する
+          for(let i in result){
+            result[i].result = false;
+            for(let j = 0; j < result[i].voters.length; j++){
+              if(result[i].voters[j] = req.body.user._id){
+                result[i].result = true;
+              }
+            }
+          }
+          res.json(result);
+        });
+      }else{
+        // ユーザー認証失敗ならnullを返す
+        res.json(null);
+      }
     })
     .catch(function(error) {
       console.log(error);
     });
-  }else{
-    //  未ログインなら検索結果だけを返す
-    dbo.aggregate("QuestionData","question",keyObj,function(JSON){
-      res.json(JSON);
-    });
   }
-
-  function userCheck(user) {
-    dbo.userCheck(user,function(result){
-      if(result){
-        usercheck = true;
-      }else{
-        usercheck = false;
-      }
-    });
-  }
-
 };
 
-// req.body.sortを引数でもらう
+/**
+ *sortの形式をチェック
+ *引数param
+ *@ req.body.sort <String>
+ *return total or sort <String>
+**/
 function sortCheck(sort) {
-  if((sort == "total") || (sort == "good") || (sort == "date")){
-    return true;
+  let check = (sort == "total") || (sort == "good") || (sort == "date");
+  if(!check){
+    return "total";
   }else{
-    return false;
+    return sort;
   }
 }
 
-// req.body.rderをもらう
+/**
+ *orderの形式をチェック
+ *引数param
+ *@ req.body.order <int>
+ *return -1 or order <int>
+**/
 function orderCheck(order) {
-  if( (order == 1) || (order == -1) ){
-    return true;
+  let check = (order == 1) || (order == -1);
+  if(!check){
+    return -1;
   }else{
-    return false;
+    return order;
   }
 }
 
-// req.body.sort,req.body.order,keyを引数にもらう
-function createKeyObj(sort,order,key) {
+/**
+ *検索キーを生成して返す
+ *引数param
+ *@ req.body.sort <String>
+ *@ req.body.order <int>
+ *@ req.body.value <String>
+ *return keyObj <object>
+**/
+function createKeyObj(sort,order,value) {
+  value = value.toString();
+  const key = {$regex:".*"+value+".*"};
   let keyObj = [
     {$match:{$or:[{query:key},{"answers.answer":key}]}},
-    {$project:{query:1,type:1,[`answers.answer`]:1,total:{$size:"$voters"},good:{$size:"$good"},time:1}}
+    {$project:{query:1,type:1,[`answers.answer`]:1,total:{$size:"$voters"},good:{$size:"$good"},time:1}},
+    {$limit:15}
   ];
   order = parseInt(order, 10);
 
-  if(sort == "total"){
-    keyObj[2] = {$sort:{total:order}};
+  if(sort == "date"){
+    keyObj[3] = {$sort:{time:order}};
   }else if(sort == "good"){
-    keyObj[2] = {$sort:{good:order}};
-  }else if(sort == "date"){
-    keyObj[2] = {$sort:{time:order}};
-  }else{
-    keyObj[2] = null;
+    keyObj[3] = {$sort:{good:order}};
+  }else if(sort == "total"){
+    keyObj[3] = {$sort:{total:order}};
   }
   return keyObj;
 }

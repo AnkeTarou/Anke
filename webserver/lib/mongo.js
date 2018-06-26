@@ -2,16 +2,18 @@ const MongoClient = require('mongodb').MongoClient;
 const ip = require("../ip.js");
 const url = 'mongodb://'+ ip.ip +':27017';
 //callback関数に検索結果を適用する。
-exports.aggregate = function(dbName,collectionName,key,callback){
-  MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
-    if (error) throw error;
-    const dbo = database.db(dbName);
-    dbo.collection(collectionName).aggregate(key).toArray(function(err, result) {
-      if (err) throw err;
-      database.close();
-      callback(result);
+exports.aggregate = function(collectionName,key){
+  return new Promise(function(resolve,reject){
+    MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
+      if (error) reject(error);
+      const dbo = database.db("Data");
+      dbo.collection(collectionName).aggregate(key).toArray(function(err, result) {
+        if (err) reject(err);
+        database.close();
+        resolve(result)
+      });
     });
-  });
+  })
 };
 
 //ObjectをDBに挿入する
@@ -138,7 +140,7 @@ exports.follow = function(user_id,followUserId,follow,followKey,followerKey,call
 exports.session = function(id,sessionkey){
   MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
     if (error) throw error;
-    const dbo = database.db("UserData");
+    const dbo = database.db("Data");
     dbo.collection("user").update({_id:id},{$set:{'sessionkey':sessionkey}},
     function(err, res) {
       if (err) throw err;
@@ -146,19 +148,24 @@ exports.session = function(id,sessionkey){
   });
 }
 // userの認証
-exports.userCheck = function(checkuser,callback){
-  MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
-    const dbo = database.db("UserData");
-    const key = [{$match:{sessionkey:checkuser.session}}];
-    dbo.collection("user").aggregate(key).toArray(function(err, result) {
-      if (err) throw err;
-      database.close();
-      user = result[0];
-      if(user && (user._id == checkuser._id) ){
-        callback(user);
-      }else {
-        callback(null);
-      }
+exports.userCheck = function(checkuser){
+  return new Promise(function(resolve,reject){
+    MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
+      if(error) reject(error);
+      const dbo = database.db("UserData");
+      const key = [{$match:{sessionkey:checkuser.session}}];
+      dbo.collection("user").aggregate(key).toArray(function(err, result) {
+        if (err) reject(err);
+        database.close();
+        user = result[0];
+        if(user && (user._id == checkuser._id) ){
+          resolve(result)
+        }else {
+          resolve(null);
+        }
+      });
     });
-  });
+  }).catch(function(err){
+    console.log(err);
+  })
 }
