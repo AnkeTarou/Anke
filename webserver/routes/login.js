@@ -15,7 +15,8 @@ exports.post = function(req,res){
     session = req.body.session;
     key = [{$match:{sessionkey:session}}];
   }
-  dbo.aggregate("UserData","user",key,function(result){
+  dbo.aggregate("user",key)
+  .then(function(result){
     //console.log(result);
     const user = result[0];
     let inquiry;

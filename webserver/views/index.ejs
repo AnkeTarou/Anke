@@ -62,21 +62,23 @@
   </section>
   <section id="result">
     <div id="searchBox">
-      <input type="text" id="searchValue" />
-      <input type="submit" id="searchSub" value="投稿を取得" />
-      <p>ソート：
-          <select id="sort">
-            <option value="total">投票数</option>
-            <option value="good">いいね数</option>
-            <option value="date">日付</option>
-          </select>
-          <label>
-            <input type="radio" name="order" value="1" checked> 昇順
-          </label>
-          <label>
-            <input type="radio" name="order" value="-1"> 降順
-          </label>
-        </p>
+      <!--<form action="search" method="post" name="searchForm">-->
+        <input type="text" id="searchValue" />
+        <input type="submit" id="searchSub" value="投稿を取得" />
+        <p>ソート：
+            <select id="sort">
+              <option value="total">投票数</option>
+              <option value="good">いいね数</option>
+              <option value="date">日付</option>
+            </select>
+            <label>
+              <input type="radio" name="order" value="1" checked> 昇順
+            </label>
+            <label>
+              <input type="radio" name="order" value="-1"> 降順
+            </label>
+          </p>
+      <!--</form>-->
     </div>
   </section>
   <section id="usersection">

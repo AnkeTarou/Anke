@@ -13,7 +13,8 @@ exports.post = function(req,res){
     follow:[],
     follower:[]
   }
-  dbo.aggregate("UserData","user",[{$match:{_id:logid}}],function(result){
+  dbo.aggregate("user",[{$match:{_id:logid}}])
+  .then(function(result){
     //console.log(result);
     let inquiry;
     if(result[0]){
@@ -39,7 +40,7 @@ exports.post = function(req,res){
       res.json(inquiry);
     }*/
     else{
-      dbo.insert("UserData","user",key,function(JSON){
+      dbo.insert("Data","user",key,function(JSON){
         inquiry = 4;
         res.json(inquiry);
       });
