@@ -2,18 +2,23 @@ const dbo = require('../lib/mongo');
 
 // 検索処理　１単語のみの検索に対応
 exports.post = function(req,res){
-  
+  req.body.user = {
+    //テスト用ユーザー
+    _id:"sho",
+    sessionkey:"9704uppd97"
+  };
 
   // 検索キーを生成
   let keyObj = createKeyObj(
     sortCheck(req.body.sort),
     orderCheck(req.body.order),
-    req.body.searchText
+    textCheck(req.body.text),
+    req.body.user
   );
 
   //  未ログインなら検索結果だけを返す
   if(!req.body.user){
-    dbo.aggregate("QuestionData","question",keyObj)
+    dbo.aggregate("question",keyObj)
     .then(function(result){
       console.log(result);
       res.render("search",{json:result});
@@ -33,20 +38,20 @@ exports.post = function(req,res){
       if(usercheck){
         // ユーザー認証成功
         //検索キーを更新
-        keyObj[1].$project.voters = 1;
+        keyObj[3].$project["answers.total"] = 1;
         //検索して結果を返す
-        dbo.aggregate("QuestionData","question",keyObj)
+        dbo.aggregate("question",keyObj)
         .then(function(result){
           // 検索結果を整形する
-          for(let i in result){
-            result[i].result = false;
-            for(let j = 0; j < result[i].voters.length; j++){
-              if(result[i].voters[j] = req.body.user._id){
-                result[i].result = true;
+          for(let i = 0; i < result.length; i++){
+            if(!result[i].result){
+              for(let j = 0; j < result[i].answers.length; j++){
+                result[i].answers[j].total = null;
               }
             }
           }
-          res.json(result);
+          console.log(result[0])
+          res.render("search",{result:result});
         });
       }else{
         // ユーザー認証失敗ならnullを返す
@@ -60,10 +65,23 @@ exports.post = function(req,res){
 };
 
 /**
+ *textの形式をチェック
+ *引数param
+ *@ <String> req.body.text
+ *return <String> text
+**/
+function textCheck(text){
+  if(text == undefined){
+    text = "";
+  }
+  return text.toString();
+}
+
+/**
  *sortの形式をチェック
  *引数param
- *@ req.body.sort <String>
- *return total or sort <String>
+ *@ <String> req.body.sort
+ *return <String> total or sort
 **/
 function sortCheck(sort) {
   let check = (sort == "total") || (sort == "good") || (sort == "date");
@@ -77,8 +95,8 @@ function sortCheck(sort) {
 /**
  *orderの形式をチェック
  *引数param
- *@ req.body.order <int>
- *return -1 or order <int>
+ *@ <int> req.body.order
+ *return <int> -1 or order
 **/
 function orderCheck(order) {
   let check = (order == 1) || (order == -1);
@@ -92,27 +110,62 @@ function orderCheck(order) {
 /**
  *検索キーを生成して返す
  *引数param
- *@ req.body.sort <String>
- *@ req.body.order <int>
- *@ req.body.value <String>
- *return keyObj <object>
+ *@ <String> req.body.sort
+ *@ <int> req.body.order
+ *@ <String> req.body.text
+ *return <object> keyObj
 **/
-function createKeyObj(sort,order,value) {
-  value = value.toString();
-  const key = {$regex:".*"+value+".*"};
+function createKeyObj(sort,order,text,user) {
+  text = text.toString() || "";
+  const key = {$regex:".*"+text+".*"};
   let keyObj = [
     {$match:{$or:[{query:key},{"answers.answer":key}]}},
-    {$project:{query:1,type:1,[`answers.answer`]:1,total:{$size:"$voters"},good:{$size:"$good"},time:1}},
+    {$unwind:"$answers"},
+    {$group:{
+      _id:"$_id",
+      senderId:{$first:"$senderId"},
+      query:{$first:"$query"},
+      type:{$first:"$type"},
+      answers:{$push:{
+        answer:"$answers.answer",
+        total:{$size:"$answers.voter"}
+      }},
+      voters:{$first:"$voters"},
+      total:{$first:{$size:"$voters"}},
+      comment:{$first:{$size:"$comment"}},
+      favorite:{$first:{$size:"$favorite"}},
+      date:{$first:"$date"}
+    }},
+    {$project:{
+      _id:1,
+      senderId:1,
+      query:1,
+      type:1,
+      voters:"$$REMOVE",
+      total:1,
+      "answers.answer":1,
+      comment:1,
+      favorite:1,
+      date:1,
+      result:{
+        $cond:{
+          if:{$in:[user._id,"$voters"]},
+          then:true,
+          else:false
+        }
+      }
+    }},
     {$limit:15}
   ];
+
   order = parseInt(order, 10);
 
   if(sort == "date"){
-    keyObj[3] = {$sort:{time:order}};
-  }else if(sort == "good"){
-    keyObj[3] = {$sort:{good:order}};
+    keyObj[5] = {$sort:{date:order}};
+  }else if(sort == "favorite"){
+    keyObj[5] = {$sort:{favorite:order}};
   }else if(sort == "total"){
-    keyObj[3] = {$sort:{total:order}};
+    keyObj[5] = {$sort:{total:order}};
   }
   return keyObj;
 }

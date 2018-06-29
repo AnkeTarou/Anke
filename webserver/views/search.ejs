@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.2.3.min.js"></script>
+    <script src="js/lib.js"></script>
+    <script src="nav.js" type="text/javascript"></script>
+    <title>検索画面</title>
+
+    <style media="screen">
+        .card .card-header a[data-toggle="collapse"] {
+            display: block;
+            padding: .75rem 1.25rem;
+            margin: -.75rem -1.25rem;
+        }
+
+        .card .card-header a[data-toggle="collapse"]:active,
+        .card .card-header a[data-toggle="collapse"]:hover,
+        .card .card-header a[data-toggle="collapse"]:focus {
+            text-decoration: none; //リンクテキストの下線を消す
+        }
+    </style>
+
+</head>
+
+<body style="min-width :650px; background-color:#EEEEEE">
+    <nav id="nav" class="navbar navbar-expand navbar-dark bg-primary">
+
+    </nav>
+    <div class="row align-items-start" >
+        <div class="col-sm-1"></div>
+        <!--投稿表示-->
+        <div class="col-sm-10" >
+            <div class="accordion" role="tablist" aria-multiselectable="true">
+              <%
+              for(let i = 0;i<result.length;i++){
+              %>
+                <div class="card" style="margin-top:10px;">
+                    <div class="card-header" role="tab" id="headingOne" style="background-color:white">
+                        <img class="rounded-circle" height="46" src="a.jpg" align="top" /><label><%= result[i].senderId %></label><label class="text-center text-muted">@<%= result[i].senderId%></label>
+                        <a class="text-body" data-toggle="collapse" href=<%= '#'+ result[i]._id %> role="button" aria-expanded="false" aria-controls="collapseOne"><%= result[i].query%></a><br>
+                        <div class="form-check-inline">
+                            <i class="far fa-chart-bar"><%= result[i].total%></i>
+                            <button type="button" class="btn btn-light btn-sm"><i class="far fa-heart"><%= result[i].favorite%></i></button>
+                        </div>
+                    </div>
+                    <div id=<%= result[i]._id %> class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+                        <div class="card-body">
+                            <table class="table">
+                                <tbody>
+                                  <%
+                                  for(let j = 0; j<result[i].answers.length; j++){
+                                  %>
+                                    <tr>
+                                        <td>
+                                            <div class="custom-control custom-<%= result[i].type %>">
+                                                <input id=<%= result[i]._id + j %> name="customRadio" type=<%= result[i].type %> class="custom-control-input">
+                                                <label class="custom-control-label" for=<%= result[i]._id + j %>><%= result[i].answers[j].answer %></label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                  <%
+                                  }
+                                  %>
+                                </tbody>
+                            </table>
+                            <button type="button" class="btn btn-primary" id="aaas">投票</button>
+                            <div class="border-top"></div>
+                        </div>
+                    </div>
+                </div>
+              <%
+              }
+              %>
+            </div>
+        </div>
+        <div class="col-sm-1"></div>
+    </div>
+    <script type="text/javascript">
+        document.getElementById('aaas').onclick = function() {
+            let aaa =
+                '<div class="" style="height:400px">グラフ</div><p><button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">表示設定</button></p><div class="collapse" id="collapseExample"><div class="card card-body"><div class="form-check"><input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked><label class="form-check-label" for="exampleRadios1">性別</label></div><div class="form-check"><input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2"><label class="form-check-label" for="exampleRadios2">年齢</label></div><div class="form-check"><input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2"><label class="form-check-label" for="exampleRadios2">地域</label></div></div></div><div class="border-top"></div><div class="input-group" style="margin-top:10px;width:80%"><label>コメント</label><input type="text" class="form-control"><button class="btn btn-default" type="submit"id="opop"><i class="fas fa-pencil-alt"></i></button></div><br><div class="komento" style="border:solid 1px #DDDDDD;"><img class="rounded-circle" height="35" src="a.jpg" align="top" /><label>名前</label><label class="text-center text-muted">@id</label><br><p style="margin-left:40px">adadadadadada<p></div><div class="komento" style="border:solid 1px #DDDDDD;"><img class="rounded-circle" height="35" src="a.jpg" align="top" /><label>名前</label><label class="text-center text-muted">@id</label><br><p style="margin-left:40px">adadadadadada<p></div></div>';
+            document.getElementById('aaa1').innerHTML = aaa;
+        };
+    </script>
+</body>
+
+</html>

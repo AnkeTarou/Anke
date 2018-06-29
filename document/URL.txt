@@ -1,8 +1,0 @@
-名前			URL
-ホームページ		/
-ユーザーページ		/(userid)/
-設定画面			/option/
-検索結果			/search/
-フォロー			/(userid)/follow
-フォロワー			/(userid)/follower
-いいなした投稿一覧		/(userid)/good
