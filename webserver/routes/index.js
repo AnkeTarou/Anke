@@ -5,7 +5,7 @@ const post = require('./post');
 const search = require('./search');
 
 router.get('/', function (req, res) {
-  res.render("index",{});
+  res.render("home",{});
 });
 
 router.post('/post/',post.post);

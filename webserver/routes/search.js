@@ -2,12 +2,7 @@ const dbo = require('../lib/mongo');
 
 // 検索処理　１単語のみの検索に対応
 exports.post = function(req,res){
-  req.body.user = {
-    //テスト用ユーザー
-    _id:"sho",
-    sessionkey:"9704uppd97"
-  };
-
+  
   // 検索キーを生成
   let keyObj = createKeyObj(
     sortCheck(req.body.sort),
@@ -21,7 +16,7 @@ exports.post = function(req,res){
     dbo.aggregate("question",keyObj)
     .then(function(result){
       console.log(result);
-      res.render("search",{json:result});
+      res.render("search",{result:result});
     });
   }
   // ログイン状態かチェック
@@ -116,6 +111,9 @@ function orderCheck(order) {
  *return <object> keyObj
 **/
 function createKeyObj(sort,order,text,user) {
+  if(!user){
+    user = {_id:""};
+  }
   text = text.toString() || "";
   const key = {$regex:".*"+text+".*"};
   let keyObj = [
