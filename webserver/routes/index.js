@@ -10,6 +10,7 @@ router.get('/', function (req, res) {
 
 router.post('/post/',post.post);
 
+router.get('/search/',search.post);
 router.post('/search/',search.post);
 
 module.exports = router;
