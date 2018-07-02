@@ -62,8 +62,8 @@
                                     <tr>
                                         <td>
                                             <div class="custom-control custom-<%= result[i].type %>">
-                                                <input id=<%= result[i]._id + j %> name="customRadio" type=<%= result[i].type %> class="custom-control-input">
-                                                <label class="custom-control-label" for=<%= result[i]._id + j %>><%= result[i].answers[j].answer %></label>
+                                                <input id=<%= result[i]._id + "-" + j %> name=<%= result[i]._id + "-answer" %> type=<%= result[i].type %> class="custom-control-input">
+                                                <label class="custom-control-label" for=<%= result[i]._id + "-" +j %>><%= result[i].answers[j].answer %></label>
                                             </div>
                                         </td>
                                     </tr>
@@ -72,7 +72,7 @@
                                   %>
                                 </tbody>
                             </table>
-                            <button type="button" class="btn btn-primary" id="aaas">投票</button>
+                            <button type="button" class="btn btn-primary" name="vote">投票</button>
                             <div class="border-top"></div>
                         </div>
                     </div>
@@ -85,11 +85,29 @@
         <div class="col-sm-1"></div>
     </div>
     <script type="text/javascript">
-        document.getElementById('aaas').onclick = function() {
-            let aaa =
-                '<div class="" style="height:400px">グラフ</div><p><button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">表示設定</button></p><div class="collapse" id="collapseExample"><div class="card card-body"><div class="form-check"><input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked><label class="form-check-label" for="exampleRadios1">性別</label></div><div class="form-check"><input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2"><label class="form-check-label" for="exampleRadios2">年齢</label></div><div class="form-check"><input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2"><label class="form-check-label" for="exampleRadios2">地域</label></div></div></div><div class="border-top"></div><div class="input-group" style="margin-top:10px;width:80%"><label>コメント</label><input type="text" class="form-control"><button class="btn btn-default" type="submit"id="opop"><i class="fas fa-pencil-alt"></i></button></div><br><div class="komento" style="border:solid 1px #DDDDDD;"><img class="rounded-circle" height="35" src="a.jpg" align="top" /><label>名前</label><label class="text-center text-muted">@id</label><br><p style="margin-left:40px">adadadadadada<p></div><div class="komento" style="border:solid 1px #DDDDDD;"><img class="rounded-circle" height="35" src="a.jpg" align="top" /><label>名前</label><label class="text-center text-muted">@id</label><br><p style="margin-left:40px">adadadadadada<p></div></div>';
-            document.getElementById('aaa1').innerHTML = aaa;
-        };
+        window.onload = function(){
+          const btns = document.getElementsByName("vote");
+          for(let btn of btns){
+            btn.addEventListener("click",function(e){
+              const id = e.target.parentElement.parentElement.id;
+              const answers = document.getElementsByName(id + "-answer");
+              const obj = {
+                id:id,
+                index:[]
+              }
+              for(let answer of answers){
+                if(answer.checked){
+                  obj.index.push(1);
+                }else{
+                  obj.index.push(0);
+                }
+              }
+              connect("/vote/",obj,function(res){
+                console.log(res)
+              })
+            })
+          }
+        }
     </script>
 </body>
 
