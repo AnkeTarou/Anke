@@ -45,11 +45,11 @@
               %>
                 <div class="card" style="margin-top:10px;">
                     <div class="card-header" role="tab" id="headingOne" style="background-color:white">
-                        <img class="rounded-circle" height="46" src="a.jpg" align="top" /><label><%= result[i].senderId %></label><label class="text-center text-muted">@<%= result[i].senderId%></label>
-                        <a class="text-body" data-toggle="collapse" href=<%= '#'+ result[i]._id %> role="button" aria-expanded="false" aria-controls="collapseOne"><%= result[i].query%></a><br>
+                        <img class="rounded-circle" height="46" src="a.jpg" align="top" /><label class="ml-3"><%= result[i].senderId %></label><label class="text-center text-muted">@<%= result[i].senderId%></label>
+                        <a class="text-body ml-5" data-toggle="collapse" href=<%= '#'+ result[i]._id %> role="button" aria-expanded="false" aria-controls="collapseOne"><%= result[i].query%></a><br>
                         <div class="form-check-inline">
                             <i class="far fa-chart-bar"><%= result[i].total%></i>
-                            <button type="button" class="btn btn-light btn-sm"><i class="far fa-heart"><%= result[i].favorite%></i></button>
+                            <button type="button" class="btn btn-link btn-sm"><i class="far fa-heart"style="color:#000000"><%= result[i].favorite%></i></button>
                         </div>
                     </div>
                     <div id=<%= result[i]._id %> class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
