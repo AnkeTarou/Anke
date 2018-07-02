@@ -5,9 +5,9 @@ const post = require('./post');
 const search = require('./search');
 const vote = require('./vote');
 const favorite = require('./favorite');
-router.get('/', function (req, res) {
-  res.render("home",{});
-});
+const home = require('./home');
+
+router.get('/',home.post);
 
 router.post('/vote/',vote.post);
 

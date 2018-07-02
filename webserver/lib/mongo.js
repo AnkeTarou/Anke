@@ -42,8 +42,6 @@ exports.insert = function(collection,key){
 // userの認証
 exports.userCheck = function(checkuser){
   return new Promise(function(resolve,reject){
-    open()
-    .then()
     MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
       if(error) reject(error);
       const dbo = database.db("Data");

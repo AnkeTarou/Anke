@@ -44,11 +44,12 @@
             <div class="col-3 col-lg-2 " style="max-width:200px;margin-top:10px;background-color:white;">
                 <img class="rounded-circle img-fluid" src="a.jpg" />
                 <div class="text-center">name</div>
-                <div class="text-center text-muted">@id</div>
-                <input type="button" class="profil btn btn-outline-primary btn-sm" value="投稿数 1200" onClick="location.href='#'">
-                <input type="button" class="profil btn btn-outline-primary btn-sm" value="いいな数 5000" onClick="location.href='#'">
-                <input type="button" class="profil btn btn-outline-primary btn-sm" value="フォロー"  onClick="location.href='follow.html'">
-                <input type="button" class="profil btn btn-outline-primary btn-sm" value="フォロワー"  onClick="location.href='follow.html'">
+                <div class="text-center text-muted"><%= _id %></div>
+                <!-- IDつけます -->
+                <input type="button" class="profil btn btn-outline-primary btn-sm" value="投稿数 " onClick="location.href='https://www.google.co.jp'">
+                <input type="button" class="profil btn btn-outline-primary btn-sm" value="いいな数 <%= favoritecount %>" onClick="location.href='#'">
+                <input type="button" class="profil btn btn-outline-primary btn-sm" value= "フォロー <%= followcount %>"  onClick="location.href='follow.html'">
+                <input type="button" class="profil btn btn-outline-primary btn-sm" value="フォロワー <%= followercount %>"  onClick="location.href='follow.html'">
             </div>
 
             <!--投稿表示-->
