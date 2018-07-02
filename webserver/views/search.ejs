@@ -10,6 +10,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/jquery-2.2.3.min.js"></script>
     <script src="js/lib.js"></script>
     <script src="nav.js" type="text/javascript"></script>
@@ -45,11 +46,11 @@
               %>
                 <div class="card" style="margin-top:10px;">
                     <div class="card-header" role="tab" id="headingOne" style="background-color:white">
-                        <img class="rounded-circle" height="46" src="a.jpg" align="top" /><label><%= result[i].senderId %></label><label class="text-center text-muted">@<%= result[i].senderId%></label>
-                        <a class="text-body" data-toggle="collapse" href=<%= '#'+ result[i]._id %> role="button" aria-expanded="false" aria-controls="collapseOne"><%= result[i].query%></a><br>
+                        <img class="rounded-circle" height="46" src="a.jpg" align="top" /><label class="ml-3"><%= result[i].senderId %></label><label class="text-center text-muted">@<%= result[i].senderId%></label>
+                        <a class="text-body ml-5" data-toggle="collapse" href=<%= '#'+ result[i]._id %> role="button" aria-expanded="false" aria-controls="collapseOne"><%= result[i].query%></a><br>
                         <div class="form-check-inline">
                             <i class="far fa-chart-bar"><%= result[i].total%></i>
-                            <button type="button" class="btn btn-light btn-sm"><i class="far fa-heart"><%= result[i].favorite%></i></button>
+                            <button type="button" class="btn btn-link btn-sm"><i class="far fa-heart"style="color:#000000"><%= result[i].favorite%></i></button>
                         </div>
                     </div>
                     <div id=<%= result[i]._id %> class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
@@ -89,10 +90,10 @@
           const btns = document.getElementsByName("vote");
           for(let btn of btns){
             btn.addEventListener("click",function(e){
-              const id = e.target.parentElement.parentElement.id;
-              const answers = document.getElementsByName(id + "-answer");
+              const card = e.target.parentElement.parentElement;
+              const answers = document.getElementsByName(card.id + "-answer");
               const obj = {
-                id:id,
+                id:card.id,
                 index:[]
               }
               for(let answer of answers){
@@ -103,7 +104,85 @@
                 }
               }
               connect("/vote/",obj,function(res){
-                console.log(res)
+                card.innerHTML = "";
+                const canvas = document.createElement("canvas");
+                card.appendChild(canvas);
+
+                const ctx = canvas.getContext("2d");
+                const chartData = function(data){
+                  const obj = {
+                    labels:[],
+                    datasets:[
+                      {
+                        label:"なし",
+                        data:[]
+                      }
+                    ]
+                  };
+                  for(let d of data.answers){
+                    obj.label
+
+                    s.push(d.answer);
+
+                    obj.datasets[0].data.push(d.total);
+                  }
+                  return obj;
+                }(res)
+                new Chart(ctx, {
+                  // 作成するグラフの種類
+                  type: 'bar',
+                  // ラベルとデータセットを設定
+                  data: chartData,
+                  //オプション設定
+                  options: {
+                    legend: {
+                        display: true,            //詳細ラベルの表示
+                    },
+                    scales: {                      //軸設定
+                      yAxes: [{                    //表示設定
+                        stacked: true,
+                        //y軸の数字
+                        ticks: {
+                          min: 0,                   //最小値
+                          fontSize: 18,             //フォントサイズ
+                          stepSize: 10,             //軸間隔
+                          fontColor: "#00f"
+                        },
+                        //y軸グリッド
+                        gridLines:{           //グリッド設定
+                          display:true,
+                          color:"rgba(0,0,0,0.8)"
+                        }
+                      }],
+                      xAxes: [{                         //x軸設定
+                        stacked: true,
+                        categoryPercentage: 0.4,      //棒グラフ幅
+                        scaleLabel: {                 //軸ラベル設定
+                          display: true,             //表示設定
+                          fontSize: 18               //フォントサイズ
+                        },
+                        //x軸の数字
+                        ticks: {
+                          fontSize: 16,             //フォントサイズ
+                          fontColor:"#fff",
+                          tickMarkLength:1
+                        },
+                        //x軸グリッド
+                        gridLines:{           //グリッド設定
+                          display:true,
+                          color:"rgba(0,0,0,0.3)",
+                        }
+                      }],
+                    },
+                    animation:{
+                      duration:1500, //アニメーションにかける時間
+                      easing:"easeInQuad"
+                    },
+                    tooltips:{
+                      mode:'label' //マウスオーバー時に表示されるtooltip
+                    }
+                  }
+                });
               })
             })
           }
