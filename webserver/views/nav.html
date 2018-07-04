@@ -35,12 +35,12 @@
             </div>
         </form>
         <!--投稿-->
-        <button type="button" class="btn btn-dark badge-pill ml-5"data-toggle="modal" data-target="#exampleModalCenter">
+        <button type="button" id="openmodal" class="btn btn-dark badge-pill ml-5">
             作成
         </button>
         <!--モーダル-->
-        <div class="modal fade" id="exampleModalCenter"data-toggle="modal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog " role="document" style="min-height:700px;min-width:500px">
+        <div class="modal fade" id="exampleModalCenter"style="">
+            <div class="modal-dialog " role="document"style="z-index: 150000000">
                 <div class="modal-content" style="min-height:700px;min-width:500px">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalCenterTitle">投稿設定</h5>
@@ -92,6 +92,14 @@
         </div>
     </div>
 </div>
+<script>
+  $(document).ready(function(){
+    $("#openmodal").click(function(){
+      $("#exampleModalCenter").modal();
+    });
+  });
+</script>
+
 
 <script>
     const box = document.getElementById("post-answerBox");
