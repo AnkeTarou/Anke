@@ -26,7 +26,9 @@ app.use(function(req,res,next){
   console.log("url\n"+req.url);
   req.session.user = {id:"testuser",sessionKey:"sessionキー"};
   console.log("セッション\n"+JSON.stringify(req.session));
-  console.log("受信データ\n"+JSON.stringify(req.body));
+  console.log("受信データ\n");
+  console.log("POST\n",JSON.stringify(req.body));
+  console.log("GET\n",JSON.stringify(req.query));
   next();
 });
 app.set('view engine', 'ejs');

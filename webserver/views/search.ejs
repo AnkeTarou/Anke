@@ -57,12 +57,9 @@
             order:"<%= order %>"
           };
           connect("/search/",key,function(res){
-            console.log(res);
             const result = document.getElementById("result");
-            console.log(result)
             for(let i = 0;i<res.length;i++){
               result.innerHTML +=
-
               `<div class="card" style="margin-top:10px;">
                   <div class="card-header" role="tab" id="headingOne" style="background-color:white">
                       <img class="rounded-circle" height="46" src="a.jpg" align="top" /><label class="ml-3">` + res[i].senderId + `</label><label class="text-center text-muted">@` + res[i].senderId + `</label>

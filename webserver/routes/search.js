@@ -3,9 +3,9 @@ const dbo = require('../lib/mongo');
 // 検索処理　１単語のみの検索に対応
 exports.get = function(req,res){
   let obj = {
-    sort:sortCheck(req.body.sort),
-    order:orderCheck(req.body.order),
-    text:textCheck(req.body.text)
+    sort:sortCheck(req.query.sort),
+    order:orderCheck(req.query.order),
+    text:textCheck(req.query.text)
   }
   res.render("search",obj);
 }
@@ -22,7 +22,6 @@ exports.post = function(req,res){
   if(!req.body.user){
     dbo.aggregate("question",keyObj)
     .then(function(result){
-      console.log(result);
       res.json(result);
     });
   }
@@ -52,7 +51,6 @@ exports.post = function(req,res){
               }
             }
           }
-          console.log(result[0])
           res.json(result);
         });
       }else{
