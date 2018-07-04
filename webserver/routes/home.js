@@ -24,4 +24,8 @@ exports.post = function(req,res){
       res.render("../views/home",homekey);
     })
   })
+  .catch(function(err){
+    console.log(err);
+    res.render("../views/home");
+  })
 }
