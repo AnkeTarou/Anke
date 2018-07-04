@@ -113,7 +113,7 @@ exports.vote = function (user,id,index){
         let prom = Promise.resolve();
         for(let i = 0; i<index.length; i++){
           if(index[i] == "1"){
-            let update = {$addToSet:{[`answers.${i}.voter`]: user.id}};
+            let update = {$addToSet:{[`answers.${i}.voter`]: user._id}};
             prom = prom.then(()=>{
               return userCollection.updateOne(key,update);
             })
@@ -122,11 +122,12 @@ exports.vote = function (user,id,index){
         return prom
     })
     .then(()=>{
-        return userCollection.update(key,{$addToSet:{voters:user.id}})
+        return userCollection.update(key,{$addToSet:{voters:user._id}})
     })
     .then(()=>{
         const matchKey = [
-          { $unwind:"$answers"},
+          {$match:key},
+          {$unwind:"$answers"},
           {$group:{
             _id:"$_id",
             answers:{$push:{

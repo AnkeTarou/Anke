@@ -13,7 +13,7 @@ exports.post = function(req,res){
       {$match:{_id:id}},
       {$addFields:{
         voted:{
-          $in:[req.session.user.id,"$voters"]
+          $in:[req.session.user._id,"$voters"]
         }
       }}
     ]
