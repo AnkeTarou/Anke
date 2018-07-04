@@ -57,148 +57,157 @@
             order:"<%= order %>"
           };
           connect("/search/",key,function(res){
+            console.log(res)
             const result = document.getElementById("result");
             for(let i = 0;i<res.length;i++){
               result.innerHTML +=
               `<div class="card" style="margin-top:10px;">
                   <div class="card-header" role="tab" id="headingOne" style="background-color:white">
                       <img class="rounded-circle" height="46" src="a.jpg" align="top" /><label class="ml-3">` + res[i].senderId + `</label><label class="text-center text-muted">@` + res[i].senderId + `</label>
-                      <a class="text-body ml-5" data-toggle="collapse" href=` + '#'+ res[i]._id + `role="button" aria-expanded="false" aria-controls="collapseOne">` + res[i].query + `</a><br>
+                      <a class="text-body ml-5" data-toggle="collapse" href=` + '#'+ res[i]._id + ` role="button" aria-expanded="false" aria-controls="collapseOne">` + res[i].query + `</a><br>
                       <div class="form-check-inline">
                           <i class="far fa-chart-bar">` + res[i].total + `</i>
                           <button type="button" class="btn btn-link btn-sm"><i class="far fa-heart"style="color:#000000">` + res[i].favorite + `</i></button>
                       </div>
                   </div>
-                  <div id=` + res[i]._id + `class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
-                      <div class="card-body">
-                          <table class="table">
-                              <tbody>`
-                              +
-                              function(){
-                                let answers = "";
-                                for(let j = 0; j<res[i].answers.length; j++){
-                                  answers +=
-                                  `<tr>
-                                      <td>
-                                          <div class="custom-control custom-` + res[i].type + `">
-                                              <input id=` + res[i]._id + "-" + j + ` name=` + res[i]._id + "-answer" + ` type=` + res[i].type + ` class="custom-control-input">
-                                              <label class="custom-control-label" for=` + res[i]._id + "-" + j +`>` + res[i].answers[j].answer + `</label>
-                                          </div>
-                                      </td>
-                                  </tr>`
-                                }
-                                return answers;
-                              }()
-                              +
-                              `</tbody>
-                          </table>
-                          <button type="button" class="btn btn-primary" name="vote">投票</button>
-                          <div class="border-top"></div>
-                      </div>
+                  <div id=` + res[i]._id + ` class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body">
+                    </div>
                   </div>
-              </div>`
+              </div>`;
+              const contents = document.getElementById(res[i]._id).children[0];
+              console.log(contents)
+              if(!res[i].result){
+                const canvas = document.createElement("canvas");
+                contents.appendChild(canvas);
+                console.log(contents)
+                graph(canvas,res[i])
+              }else{
+                contents.innerHTML =
+                `<table class="table">
+                  <tbody>`
+                  +
+                  function(){
+                    let answers = "";
+                    for(let j = 0; j<res[i].answers.length; j++){
+                      answers +=
+                      `<tr>
+                        <td>
+                          <div class="custom-control custom-` + res[i].type + `">
+                            <input id=` + res[i]._id + "-" + j + ` name=` + res[i]._id + "-answer" + ` type=` + res[i].type + ` class="custom-control-input">
+                            <label class="custom-control-label" for=` + res[i]._id + "-" + j +`>` + res[i].answers[j].answer + `</label>
+                          </div>
+                        </td>
+                      </tr>`
+                    }
+                    return answers;
+                  }()
+                  +
+                  `</tbody>
+                </table>
+                <button type="button" class="btn btn-primary" name="vote">投票</button>
+                <div class="border-top"></div>`
+              }
+            }
+            const btns = document.getElementsByName("vote");
+            for(let btn of btns){
+              btn.addEventListener("click",function(e){
+                console.log(e)
+                const card = e.target.parentElement.parentElement;
+                const answers = document.getElementsByName(card.id + "-answer");
+                const obj = {
+                  id:card.id,
+                  index:[]
+                }
+                for(let answer of answers){
+                  if(answer.checked){
+                    obj.index.push(1);
+                  }else{
+                    obj.index.push(0);
+                  }
+                }
+                connect("/vote/",obj,function(res){
+                  card.innerHTML = "";
+                  const canvas = document.createElement("canvas");
+                  card.appendChild(canvas);
+                })
+              })
             }
           })
-
-          const btns = document.getElementsByName("vote");
-          for(let btn of btns){
-            btn.addEventListener("click",function(e){
-              const card = e.target.parentElement.parentElement;
-              const answers = document.getElementsByName(card.id + "-answer");
-              const obj = {
-                id:card.id,
-                index:[]
-              }
-              for(let answer of answers){
-                if(answer.checked){
-                  obj.index.push(1);
-                }else{
-                  obj.index.push(0);
+        }
+        function graph(canvas,data){
+          const ctx = canvas.getContext("2d");
+          const chartData = function(data){
+            const obj = {
+              labels:[],
+              datasets:[
+                {
+                  label:"なし",
+                  data:[]
                 }
+              ]
+            };
+            for(let d of data.answers){
+              obj.labels.push(d.answer);
+              obj.datasets[0].data.push(d.total);
+            }
+            return obj;
+          }(data)
+          new Chart(ctx, {
+            // 作成するグラフの種類
+            type: 'bar',
+            // ラベルとデータセットを設定
+            data: chartData,
+            //オプション設定
+            options: {
+              legend: {
+                  display: true,            //詳細ラベルの表示
+              },
+              scales: {                      //軸設定
+                yAxes: [{                    //表示設定
+                  stacked: true,
+                  //y軸の数字
+                  ticks: {
+                    min: 0,                   //最小値
+                    fontSize: 18,             //フォントサイズ
+                    stepSize: 10,             //軸間隔
+                    fontColor: "#00f"
+                  },
+                  //y軸グリッド
+                  gridLines:{           //グリッド設定
+                    display:true,
+                    color:"rgba(0,0,0,0.8)"
+                  }
+                }],
+                xAxes: [{                         //x軸設定
+                  stacked: true,
+                  categoryPercentage: 0.4,      //棒グラフ幅
+                  scaleLabel: {                 //軸ラベル設定
+                    display: true,             //表示設定
+                    fontSize: 18               //フォントサイズ
+                  },
+                  //x軸の数字
+                  ticks: {
+                    fontSize: 16,             //フォントサイズ
+                    fontColor:"#fff",
+                    tickMarkLength:1
+                  },
+                  //x軸グリッド
+                  gridLines:{           //グリッド設定
+                    display:true,
+                    color:"rgba(0,0,0,0.3)",
+                  }
+                }],
+              },
+              animation:{
+                duration:1500, //アニメーションにかける時間
+                easing:"easeInQuad"
+              },
+              tooltips:{
+                mode:'label' //マウスオーバー時に表示されるtooltip
               }
-              connect("/vote/",obj,function(res){
-                card.innerHTML = "";
-                const canvas = document.createElement("canvas");
-                card.appendChild(canvas);
-
-                const ctx = canvas.getContext("2d");
-                const chartData = function(data){
-                  const obj = {
-                    labels:[],
-                    datasets:[
-                      {
-                        label:"なし",
-                        data:[]
-                      }
-                    ]
-                  };
-                  for(let d of data.answers){
-                    obj.label
-
-                    s.push(d.answer);
-
-                    obj.datasets[0].data.push(d.total);
-                  }
-                  return obj;
-                }(res)
-                new Chart(ctx, {
-                  // 作成するグラフの種類
-                  type: 'bar',
-                  // ラベルとデータセットを設定
-                  data: chartData,
-                  //オプション設定
-                  options: {
-                    legend: {
-                        display: true,            //詳細ラベルの表示
-                    },
-                    scales: {                      //軸設定
-                      yAxes: [{                    //表示設定
-                        stacked: true,
-                        //y軸の数字
-                        ticks: {
-                          min: 0,                   //最小値
-                          fontSize: 18,             //フォントサイズ
-                          stepSize: 10,             //軸間隔
-                          fontColor: "#00f"
-                        },
-                        //y軸グリッド
-                        gridLines:{           //グリッド設定
-                          display:true,
-                          color:"rgba(0,0,0,0.8)"
-                        }
-                      }],
-                      xAxes: [{                         //x軸設定
-                        stacked: true,
-                        categoryPercentage: 0.4,      //棒グラフ幅
-                        scaleLabel: {                 //軸ラベル設定
-                          display: true,             //表示設定
-                          fontSize: 18               //フォントサイズ
-                        },
-                        //x軸の数字
-                        ticks: {
-                          fontSize: 16,             //フォントサイズ
-                          fontColor:"#fff",
-                          tickMarkLength:1
-                        },
-                        //x軸グリッド
-                        gridLines:{           //グリッド設定
-                          display:true,
-                          color:"rgba(0,0,0,0.3)",
-                        }
-                      }],
-                    },
-                    animation:{
-                      duration:1500, //アニメーションにかける時間
-                      easing:"easeInQuad"
-                    },
-                    tooltips:{
-                      mode:'label' //マウスオーバー時に表示されるtooltip
-                    }
-                  }
-                });
-              })
-            })
-          }
+            }
+          });
         }
     </script>
 </body>
