@@ -9,7 +9,8 @@ exports.post = function(req,res){
       followcount:{$size:"$follow"},
       followercount:{$size:"$follower"},
       favoritecount:{$size:"$favorite"},
-      nickname:1
+      nickname:1,
+      img:1
     }}
   ]
   dbo.aggregate("user",key)

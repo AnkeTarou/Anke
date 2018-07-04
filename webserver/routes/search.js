@@ -103,7 +103,7 @@ function orderCheck(order) {
   if(!check){
     return -1;
   }else{
-    return order;
+    return parseInt(order);
   }
 }
 
