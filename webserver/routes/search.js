@@ -15,19 +15,19 @@ exports.post = function(req,res){
     sortCheck(req.body.sort),
     orderCheck(req.body.order),
     textCheck(req.body.text),
-    req.body.user
+    req.session.user
   );
 
   //  未ログインなら検索結果だけを返す
-  if(!req.body.user){
+  if(!req.session.user){
     dbo.aggregate("question",keyObj)
     .then(function(result){
       res.json(result);
     });
   }
   // ログイン状態かチェック
-  if(req.body.user){
-    dbo.userCheck(req.body.user)
+  if(req.session.user){
+    dbo.userCheck(req.session.user)
     .then(function(usercheck){
       if(usercheck){
         return true;
@@ -103,7 +103,7 @@ function orderCheck(order) {
   if(!check){
     return -1;
   }else{
-    return order;
+    return parseInt(order);
   }
 }
 
@@ -137,7 +137,7 @@ function createKeyObj(sort,order,text,user) {
       total:{$first:{$size:"$voters"}},
       comment:{$first:{$size:"$comment"}},
       favorite:{$first:{$size:"$favorite"}},
-      date:{$first:"$date"}
+      date:{$first:"$date"},
     }},
     {$project:{
       _id:1,
@@ -160,8 +160,6 @@ function createKeyObj(sort,order,text,user) {
     }},
     {$limit:15}
   ];
-
-  order = parseInt(order, 10);
 
   if(sort == "date"){
     keyObj[5] = {$sort:{date:order}};

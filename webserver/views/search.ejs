@@ -12,10 +12,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
+<<<<<<< HEAD
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
     <script src="js/lib.js" type="text/javascript"></script>
     <script src="nav.js" type="text/javascript"></script>
+=======
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.2.3.min.js"></script>
+    <script src="js/lib.js"></script>
+>>>>>>> fbeccf8c2e2cbdd1ba6c5e547de3bc3efc6a5c59
     <title>検索画面</title>
 
     <style media="screen">
@@ -54,17 +59,16 @@
         <div class="col-sm-1"></div>
     </div>
     <script type="text/javascript">
-
-        window.onload = function(){
+        window.addEventListener("DOMContentLoaded",function(){
           var key = {
             text:"<%= text %>",
             sort:"<%= order %>",
             order:"<%= order %>"
           };
+
           connect("/search/",key,function(res){
-            console.log(res)
             const result = document.getElementById("result");
-            for(let i = 0;i<res.length;i++){
+            for(let i in res){
               result.innerHTML +=
               `<div class="card" style="margin-top:10px;">
                   <div class="card-header" role="tab" id="headingOne" style="background-color:white">
@@ -75,16 +79,15 @@
                           <button type="button" class="btn btn-link btn-sm"><i class="far fa-heart"style="color:#000000">` + res[i].favorite + `</i></button>
                       </div>
                   </div>
-                  <div id=` + res[i]._id + ` class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
-                    <div class="card-body">
-                    </div>
+                  <div id=` + res[i]._id + ` class="card-body collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
                   </div>
               </div>`;
-              const contents = document.getElementById(res[i]._id).children[0];
-              if(!res[i].result){
+            }
+            for(let i in res){
+              const contents = document.getElementById(res[i]._id);
+              if(res[i].result){
                 const canvas = document.createElement("canvas");
                 contents.appendChild(canvas);
-                console.log(contents)
                 graph(canvas,res[i])
               }else{
                 contents.innerHTML =
@@ -93,7 +96,7 @@
                   +
                   function(){
                     let answers = "";
-                    for(let j = 0; j<res[i].answers.length; j++){
+                    for(let j in res[i].answers){
                       answers +=
                       `<tr>
                         <td>
@@ -110,14 +113,13 @@
                   `</tbody>
                 </table>
                 <button type="button" class="btn btn-primary" name="vote">投票</button>
-                <div class="border-top"></div>`
+                <div class="border-top"></div>`;
               }
             }
             const btns = document.getElementsByName("vote");
             for(let btn of btns){
               btn.addEventListener("click",function(e){
-                console.log(e)
-                const card = e.target.parentElement.parentElement;
+                const card = e.target.parentElement;
                 const answers = document.getElementsByName(card.id + "-answer");
                 const obj = {
                   id:card.id,
@@ -134,85 +136,87 @@
                   card.innerHTML = "";
                   const canvas = document.createElement("canvas");
                   card.appendChild(canvas);
+                  graph(canvas,res)
                 })
               })
             }
           })
-        }
-        function graph(canvas,data){
-          const ctx = canvas.getContext("2d");
-          const chartData = function(data){
-            const obj = {
-              labels:[],
-              datasets:[
-                {
-                  label:"なし",
-                  data:[]
-                }
-              ]
-            };
-            for(let d of data.answers){
-              obj.labels.push(d.answer);
-              obj.datasets[0].data.push(d.total);
-            }
-            return obj;
-          }(data)
-          new Chart(ctx, {
-            // 作成するグラフの種類
-            type: 'bar',
-            // ラベルとデータセットを設定
-            data: chartData,
-            //オプション設定
-            options: {
-              legend: {
-                  display: true,            //詳細ラベルの表示
-              },
-              scales: {                      //軸設定
-                yAxes: [{                    //表示設定
-                  stacked: true,
-                  //y軸の数字
-                  ticks: {
-                    min: 0,                   //最小値
-                    fontSize: 18,             //フォントサイズ
-                    stepSize: 10,             //軸間隔
-                    fontColor: "#00f"
-                  },
-                  //y軸グリッド
-                  gridLines:{           //グリッド設定
-                    display:true,
-                    color:"rgba(0,0,0,0.8)"
+
+          function graph(canvas,res){
+            const ctx = canvas.getContext("2d");
+            const chartData = function(data){
+              const obj = {
+                labels:[],
+                datasets:[
+                  {
+                    label:"なし",
+                    data:[]
                   }
-                }],
-                xAxes: [{                         //x軸設定
-                  stacked: true,
-                  categoryPercentage: 0.4,      //棒グラフ幅
-                  scaleLabel: {                 //軸ラベル設定
-                    display: true,             //表示設定
-                    fontSize: 18               //フォントサイズ
-                  },
-                  //x軸の数字
-                  ticks: {
-                    fontSize: 16,             //フォントサイズ
-                    fontColor:"#fff",
-                    tickMarkLength:1
-                  },
-                  //x軸グリッド
-                  gridLines:{           //グリッド設定
-                    display:true,
-                    color:"rgba(0,0,0,0.3)",
-                  }
-                }],
-              },
-              animation:{
-                duration:1500, //アニメーションにかける時間
-                easing:"easeInQuad"
-              },
-              tooltips:{
-                mode:'label' //マウスオーバー時に表示されるtooltip
+                ]
+              };
+              for(let d of data.answers){
+                obj.labels.push(d.answer);
+                obj.datasets[0].data.push(d.total);
               }
-            }
-          });
-        }
+              return obj;
+            }(res)
+            new Chart(ctx, {
+              // 作成するグラフの種類
+              type: 'bar',
+              // ラベルとデータセットを設定
+              data: chartData,
+              //オプション設定
+              options: {
+                legend: {
+                    display: false,            //詳細ラベルの表示
+                },
+                scales: {                      //軸設定
+                  yAxes: [{                    //表示設定
+                    stacked: false,
+                    //y軸の数字
+                    ticks: {
+                      min: 0,                   //最小値
+                      fontSize: 18,             //フォントサイズ
+                      stepSize: 10,             //軸間隔
+                      fontColor: "#00f"
+                    },
+                    //y軸グリッド
+                    gridLines:{           //グリッド設定
+                      display:true,
+                      color:"rgba(0,0,0,0.8)"
+                    }
+                  }],
+                  xAxes: [{                         //x軸設定
+                    stacked: false,
+                    categoryPercentage: 0.4,      //棒グラフ幅
+                    scaleLabel: {                 //軸ラベル設定
+                      display: true,             //表示設定
+                      fontSize: 18               //フォントサイズ
+                    },
+                    //x軸の数字
+                    ticks: {
+                      fontSize: 16,             //フォントサイズ
+                      fontColor:"#fff",
+                      tickMarkLength:1
+                    },
+                    //x軸グリッド
+                    gridLines:{           //グリッド設定
+                      display:true,
+                      color:"rgba(0,0,0,0.3)",
+                    }
+                  }],
+                },
+                animation:{
+                  duration:1500, //アニメーションにかける時間
+                  easing:"easeInQuad"
+                },
+                tooltips:{
+                  mode:'label' //マウスオーバー時に表示されるtooltip
+                }
+              }
+            });
+          }
+        })
     </script>
 </body>
 

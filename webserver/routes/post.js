@@ -9,8 +9,7 @@ exports.post = function(req,res){
   let check = querycheck(key.query) && answersCheck(key.answers) && typeCheck(key.type);
 
   // ユーザー認証
-  //dbo.userCheck(req.body.user)
-  Promise.resolve({_id:"sho"})
+  dbo.userCheck(req.session.user)
   .then(
   function(user) {
     //全ての認証に通ればDBに投稿内容を挿入する
