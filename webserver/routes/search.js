@@ -15,19 +15,20 @@ exports.post = function(req,res){
     sortCheck(req.body.sort),
     orderCheck(req.body.order),
     textCheck(req.body.text),
-    req.body.user
+    req.session.user
   );
+  console.log(req.session.user)
 
   //  未ログインなら検索結果だけを返す
-  if(!req.body.user){
+  if(!req.session.user){
     dbo.aggregate("question",keyObj)
     .then(function(result){
       res.json(result);
     });
   }
   // ログイン状態かチェック
-  if(req.body.user){
-    dbo.userCheck(req.body.user)
+  if(req.session.user){
+    dbo.userCheck(req.session.user)
     .then(function(usercheck){
       if(usercheck){
         return true;

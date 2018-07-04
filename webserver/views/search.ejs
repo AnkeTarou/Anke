@@ -78,7 +78,7 @@
                   </div>
               </div>`;
               const contents = document.getElementById(res[i]._id).children[0];
-              if(!res[i].result){
+              if(res[i].result){
                 const canvas = document.createElement("canvas");
                 contents.appendChild(canvas);
                 console.log(contents)
