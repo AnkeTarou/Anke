@@ -26,7 +26,7 @@
             text-decoration: none; //リンクテキストの下線を消す
         }
         .profil{
-          width:100%;
+          width:90%;
           font-size:small;
           margin-top:5px
 
@@ -35,20 +35,25 @@
 
 </head>
 
-<body style="min-width :650px;background-color:#EEEEEE;padding-top:6rem;">
+<body style="min-width :650px;background-color:#EEEEEE;padding-top:5.5rem;">
     <%- include('./nav') %>
     <div class="container-fluid">
         <div class="row">
+
             <!--プロフィール  align-items-start -->
-            <div class="col-3 col-lg-2 " style="max-width:200px;margin-top:10px;background-color:white;">
-                <img class="rounded-circle img-fluid"src= "<%= img %>" onerror="this.onerror = null;this.src = 'image/default.png'">
+            <div class="col-3 col-lg-2 " style="margin-top:10px;">
+              <div style="background-color:white; text-align:center;">
+            <!--  <div style="max-width:200px;"> -->
+                <img class="rounded-circle img-fluid mt-2"src= "<%= img %>" onerror="this.onerror = null;this.src = 'image/default.png'">
                 <div class="text-center"><%= nickname %></div>
                 <div class="text-center text-muted"><%= _id %></div>
                 <!-- IDつけます -->
                 <input type="button" class="profil btn btn-outline-success btn-sm" value="投稿数 <%= votecount %>" onClick="location.href='https://www.google.co.jp'">
                 <input type="button" class="profil btn btn-outline-success btn-sm" value="いいな数 <%= favoritecount %>" onClick="location.href='#'">
                 <input type="button" class="profil btn btn-outline-success btn-sm" value= "フォロー <%= followcount %>"  onClick="location.href='follow.html'">
-                <input type="button" class="profil btn btn-outline-success btn-sm" value="フォロワー <%= followercount %>"  onClick="location.href='follow.html'">
+                <input type="button" class="profil btn btn-outline-success btn-sm mb-1" value="フォロワー <%= followercount %>"  onClick="location.href='follow.html'">
+              <!--  </div>-->
+              </div>
             </div>
 
             <!--投稿表示-->
@@ -101,6 +106,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </body>
