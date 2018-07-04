@@ -17,7 +17,6 @@ exports.post = function(req,res){
     textCheck(req.body.text),
     req.session.user
   );
-  console.log(req.session.user)
 
   //  未ログインなら検索結果だけを返す
   if(!req.session.user){
@@ -138,7 +137,7 @@ function createKeyObj(sort,order,text,user) {
       total:{$first:{$size:"$voters"}},
       comment:{$first:{$size:"$comment"}},
       favorite:{$first:{$size:"$favorite"}},
-      date:{$first:"$date"}
+      date:{$first:"$date"},
     }},
     {$project:{
       _id:1,
@@ -161,8 +160,6 @@ function createKeyObj(sort,order,text,user) {
     }},
     {$limit:15}
   ];
-
-  order = parseInt(order, 10);
 
   if(sort == "date"){
     keyObj[5] = {$sort:{date:order}};

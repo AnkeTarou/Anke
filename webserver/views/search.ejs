@@ -50,17 +50,16 @@
         <div class="col-sm-1"></div>
     </div>
     <script type="text/javascript">
-
-        window.onload = function(){
+        window.addEventListener("DOMContentLoaded",function(){
           var key = {
             text:"<%= text %>",
             sort:"<%= order %>",
             order:"<%= order %>"
           };
+
           connect("/search/",key,function(res){
-            console.log(res)
             const result = document.getElementById("result");
-            for(let i = 0;i<res.length;i++){
+            for(let i in res){
               result.innerHTML +=
               `<div class="card" style="margin-top:10px;">
                   <div class="card-header" role="tab" id="headingOne" style="background-color:white">
@@ -71,17 +70,20 @@
                           <button type="button" class="btn btn-link btn-sm"><i class="far fa-heart"style="color:#000000">` + res[i].favorite + `</i></button>
                       </div>
                   </div>
-                  <div id=` + res[i]._id + ` class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
-                    <div class="card-body">
-                    </div>
+                  <div id=` + res[i]._id + ` class="card-body collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+
                   </div>
               </div>`;
-              const contents = document.getElementById(res[i]._id).children[0];
+            }
+            for(let i in res){
+              const contents = document.getElementById(res[i]._id);
+              console.log(contents);
               if(res[i].result){
+                contents.innerHTML = "";
                 const canvas = document.createElement("canvas");
                 contents.appendChild(canvas);
-                console.log(contents)
                 graph(canvas,res[i])
+
               }else{
                 contents.innerHTML =
                 `<table class="table">
@@ -89,7 +91,7 @@
                   +
                   function(){
                     let answers = "";
-                    for(let j = 0; j<res[i].answers.length; j++){
+                    for(let j in res[i].answers){
                       answers +=
                       `<tr>
                         <td>
@@ -106,14 +108,13 @@
                   `</tbody>
                 </table>
                 <button type="button" class="btn btn-primary" name="vote">投票</button>
-                <div class="border-top"></div>`
+                <div class="border-top"></div>`;
               }
             }
             const btns = document.getElementsByName("vote");
             for(let btn of btns){
               btn.addEventListener("click",function(e){
-                console.log(e)
-                const card = e.target.parentElement.parentElement;
+                const card = e.target.parentElement;
                 const answers = document.getElementsByName(card.id + "-answer");
                 const obj = {
                   id:card.id,
@@ -135,81 +136,82 @@
               })
             }
           })
-        }
-        function graph(canvas,data){
-          const ctx = canvas.getContext("2d");
-          const chartData = function(data){
-            const obj = {
-              labels:[],
-              datasets:[
-                {
-                  label:"なし",
-                  data:[]
-                }
-              ]
-            };
-            for(let d of data.answers){
-              obj.labels.push(d.answer);
-              obj.datasets[0].data.push(d.total);
-            }
-            return obj;
-          }(data)
-          new Chart(ctx, {
-            // 作成するグラフの種類
-            type: 'bar',
-            // ラベルとデータセットを設定
-            data: chartData,
-            //オプション設定
-            options: {
-              legend: {
-                  display: true,            //詳細ラベルの表示
-              },
-              scales: {                      //軸設定
-                yAxes: [{                    //表示設定
-                  stacked: true,
-                  //y軸の数字
-                  ticks: {
-                    min: 0,                   //最小値
-                    fontSize: 18,             //フォントサイズ
-                    stepSize: 10,             //軸間隔
-                    fontColor: "#00f"
-                  },
-                  //y軸グリッド
-                  gridLines:{           //グリッド設定
-                    display:true,
-                    color:"rgba(0,0,0,0.8)"
+
+          function graph(canvas,res){
+            const ctx = canvas.getContext("2d");
+            const chartData = function(data){
+              const obj = {
+                labels:[],
+                datasets:[
+                  {
+                    label:"なし",
+                    data:[]
                   }
-                }],
-                xAxes: [{                         //x軸設定
-                  stacked: true,
-                  categoryPercentage: 0.4,      //棒グラフ幅
-                  scaleLabel: {                 //軸ラベル設定
-                    display: true,             //表示設定
-                    fontSize: 18               //フォントサイズ
-                  },
-                  //x軸の数字
-                  ticks: {
-                    fontSize: 16,             //フォントサイズ
-                    fontColor:"#fff",
-                    tickMarkLength:1
-                  },
-                  //x軸グリッド
-                  gridLines:{           //グリッド設定
-                    display:true,
-                    color:"rgba(0,0,0,0.3)",
-                  }
-                }],
-              },
-              animation:{
-                duration:1500, //アニメーションにかける時間
-                easing:"easeInQuad"
-              },
-              tooltips:{
-                mode:'label' //マウスオーバー時に表示されるtooltip
+                ]
+              };
+              for(let d of data.answers){
+                obj.labels.push(d.answer);
+                obj.datasets[0].data.push(d.total);
               }
-            }
-          });
-        }
+              return obj;
+            }(res)
+            new Chart(ctx, {
+              // 作成するグラフの種類
+              type: 'bar',
+              // ラベルとデータセットを設定
+              data: chartData,
+              //オプション設定
+              options: {
+                legend: {
+                    display: true,            //詳細ラベルの表示
+                },
+                scales: {                      //軸設定
+                  yAxes: [{                    //表示設定
+                    stacked: true,
+                    //y軸の数字
+                    ticks: {
+                      min: 0,                   //最小値
+                      fontSize: 18,             //フォントサイズ
+                      stepSize: 10,             //軸間隔
+                      fontColor: "#00f"
+                    },
+                    //y軸グリッド
+                    gridLines:{           //グリッド設定
+                      display:true,
+                      color:"rgba(0,0,0,0.8)"
+                    }
+                  }],
+                  xAxes: [{                         //x軸設定
+                    stacked: true,
+                    categoryPercentage: 0.4,      //棒グラフ幅
+                    scaleLabel: {                 //軸ラベル設定
+                      display: true,             //表示設定
+                      fontSize: 18               //フォントサイズ
+                    },
+                    //x軸の数字
+                    ticks: {
+                      fontSize: 16,             //フォントサイズ
+                      fontColor:"#fff",
+                      tickMarkLength:1
+                    },
+                    //x軸グリッド
+                    gridLines:{           //グリッド設定
+                      display:true,
+                      color:"rgba(0,0,0,0.3)",
+                    }
+                  }],
+                },
+                animation:{
+                  duration:1500, //アニメーションにかける時間
+                  easing:"easeInQuad"
+                },
+                tooltips:{
+                  mode:'label' //マウスオーバー時に表示されるtooltip
+                }
+              }
+            });
+          }
+        })
     </script>
 </body>
 
