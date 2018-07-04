@@ -15,7 +15,7 @@ router.post('/favorite/',favorite.post);
 
 router.post('/post/',post.post);
 
-router.get('/search/',search.post);
+router.get('/search/',search.get);
 router.post('/search/',search.post);
 
 module.exports = router;

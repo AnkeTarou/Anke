@@ -1,8 +1,15 @@
 const dbo = require('../lib/mongo');
 
 // 検索処理　１単語のみの検索に対応
+exports.get = function(req,res){
+  let obj = {
+    sort:sortCheck(req.body.sort),
+    order:orderCheck(req.body.order),
+    text:textCheck(req.body.text)
+  }
+  res.render("search",obj);
+}
 exports.post = function(req,res){
-  
   // 検索キーを生成
   let keyObj = createKeyObj(
     sortCheck(req.body.sort),
@@ -16,7 +23,7 @@ exports.post = function(req,res){
     dbo.aggregate("question",keyObj)
     .then(function(result){
       console.log(result);
-      res.render("search",{result:result});
+      res.json(result);
     });
   }
   // ログイン状態かチェック
@@ -46,7 +53,7 @@ exports.post = function(req,res){
             }
           }
           console.log(result[0])
-          res.render("search",{result:result});
+          res.json(result);
         });
       }else{
         // ユーザー認証失敗ならnullを返す
