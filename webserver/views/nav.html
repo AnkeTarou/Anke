@@ -35,11 +35,11 @@
             </div>
         </form>
         <!--投稿-->
-        <button type="button" class="btn btn-dark badge-pill ml-1" data-toggle="modal" data-target="#exampleModalCenter">
-              作成
-            </button>
+        <button type="button" class="btn btn-dark badge-pill ml-5"data-bind="click: open" data-target="#exampleModalCenter">
+            作成
+        </button>
         <!--モーダル-->
-        <div class="modal fade" id="exampleModalCenter" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" id="exampleModalCenter"data-toggle="modal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog " role="document" style="min-height:700px;min-width:500px">
                 <div class="modal-content" style="min-height:700px;min-width:500px">
                     <div class="modal-header">
@@ -49,13 +49,13 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p class="mx-auto" for="Textarea" style="width: 300px; color: #364e96;border: solid 3px #364e96;padding: 0.5em;border-radius: 0.5em;">
+                        <p class="mx-auto" for="Textarea" style="width: 300px; color: #364e96;border: solid 3px green;padding: 0.5em;border-radius: 0.5em;">
                           投稿文
                         </p>
                         <div class="mx-auto" style="width:200px;margin-top:10px;height:100px;">
                             <input id="post-query"type="text" class="form-control" placeholder="...">
                         </div>
-                        <p class="mx-auto" for="Textarea" style="width: 300px; color: #364e96;border: solid 3px #364e96;padding: 0.5em;border-radius: 0.5em;">
+                        <p class="mx-auto" for="Textarea" style="width: 300px; color: #364e96;border: solid 3px green;padding: 0.5em;border-radius: 0.5em;">
                           投票形式
                         </p>
                         <div class="mx-auto" style="width:200px;margin-top:10px;height:100px;">
@@ -68,7 +68,7 @@
                                 <label class="form-check-label custom-control-label" for="Radios2">チェック</label>
                             </div><br>
                         </div>
-                        <p for="Textarea" class="mx-auto" for="Textarea" style="width: 300px; color: #364e96;border:solid 3px #364e96;padding: 0.5em;border-radius: 0.5em;">テキストエリア</p>
+                        <p for="Textarea" class="mx-auto" for="Textarea" style="width: 300px; color: #364e96;border:solid 3px green;padding: 0.5em;border-radius: 0.5em;">テキストエリア</p>
                         <div class="mx-auto" style="width:300px;margin-top:10px">
                             <div class="input-group mb-3">
                                 <input name="post-answer"type="text" class="form-control" placeholder="...">
@@ -77,14 +77,14 @@
                                 <input name="post-answer"type="text" class="form-control" placeholder="...">
                             </div>
                             <div class="form-group mx-auto" style="width: 50px;margin-top:10px">
-                                <button type="button" id="addbtn" class="btn btn-primary badge-pill ">
+                                <button type="button" id="addbtn" class="btn btn-success badge-pill ">
                                   追加
                                 </button>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-light" data-dismiss="modal">閉じる</button>
-                            <button id="submit" type="submit" class="btn btn-primary" data-dismiss="modal">決定</button>
+                            <button id="submit" type="submit" class="btn btn-success" data-dismiss="modal">決定</button>
                         </div>
                     </div>
                 </div>
