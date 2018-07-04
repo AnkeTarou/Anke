@@ -72,19 +72,15 @@
                       </div>
                   </div>
                   <div id=` + res[i]._id + ` class="card-body collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
-
                   </div>
               </div>`;
             }
             for(let i in res){
               const contents = document.getElementById(res[i]._id);
-              console.log(contents);
               if(res[i].result){
-                contents.innerHTML = "";
                 const canvas = document.createElement("canvas");
                 contents.appendChild(canvas);
                 graph(canvas,res[i])
-
               }else{
                 contents.innerHTML =
                 `<table class="table">
@@ -164,11 +160,11 @@
               //オプション設定
               options: {
                 legend: {
-                    display: true,            //詳細ラベルの表示
+                    display: false,            //詳細ラベルの表示
                 },
                 scales: {                      //軸設定
                   yAxes: [{                    //表示設定
-                    stacked: true,
+                    stacked: false,
                     //y軸の数字
                     ticks: {
                       min: 0,                   //最小値
@@ -183,7 +179,7 @@
                     }
                   }],
                   xAxes: [{                         //x軸設定
-                    stacked: true,
+                    stacked: false,
                     categoryPercentage: 0.4,      //棒グラフ幅
                     scaleLabel: {                 //軸ラベル設定
                       display: true,             //表示設定
