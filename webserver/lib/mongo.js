@@ -76,15 +76,15 @@ exports.favorite = function (userId,targetId,favorite){
     })
     .then((data)=>{
         Data = data;
-        if(favorite === "1"){
+        if(favorite === 1){
           return Promise.all([
-            Data.collection("question").update({_id:targetObjId},{$addToSet:{"favorite":userId}}),
-            Data.collection("user").update({_id:userId},{$addToSet:{"favorite":targetId}})
-          ]);
-        }else if(favorite === "0"){
+            Data.collection("question").updateOne({_id:targetObjId},{$addToSet:{"favorite":userId}}),
+            Data.collection("user").updateOne({_id:userId},{$addToSet:{"favorite":targetId}})
+          ])
+        }else if(favorite === 0){
           return Promise.all([
-            Data.collection("question").update({_id:targetObjId},{$pull:{"favorite":userId}}),
-            Data.collection("user").update({_id:userId},{$pull:{"favorite":targetId}})
+            Data.collection("question").updateOne({_id:targetObjId},{$pull:{"favorite":userId}}),
+            Data.collection("user").updateOne({_id:userId},{$pull:{"favorite":targetId}})
           ])
         }
     })
