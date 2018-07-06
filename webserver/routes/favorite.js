@@ -14,9 +14,8 @@ exports.post = function(req,res){
     return Promise.reject("favoriteが正しい値ではありません:"+req.body.favorite);
   })
   .then((result)=>{
-    console.log(result)
     if(result[0]){
-      return db.favorite(req.session.user.id,req.body.targetId,req.body.favorite);
+      return db.favorite(req.session.user._id,req.body.targetId,req.body.favorite);
     }
     return Promise.reject("targetIdが存在しません:"+req.body.targetId);
   })
@@ -30,7 +29,7 @@ exports.post = function(req,res){
 
 }
 function favoriteCheck(favorite){
-  if(favorite === "1" || favorite === "0"){
+  if(favorite === 1 || favorite === 0){
     return true;
   }
   return false;
