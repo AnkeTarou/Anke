@@ -72,7 +72,7 @@
           })
 
 
-          $(window).on('scroll', function(){
+          window.onscroll = function(){
             var docHeight = $(document).innerHeight(), //ドキュメントの高さ
             windowHeight = $(window).innerHeight() + 10, //ウィンドウの高さ
             pageBottom = docHeight - windowHeight; //ドキュメントの高さ - ウィンドウの高さ
@@ -81,7 +81,7 @@
               conFlg = false;
               connect("/search/",key,updateResult);
             }
-          });
+          };
 
           function updateResult(res){
             const result = document.getElementById("result");

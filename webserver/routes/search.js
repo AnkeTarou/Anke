@@ -54,7 +54,6 @@ exports.post = function(req,res){
                 result[i].answers[j].total = null;
               }
             }
-            result[i].favorites = null;
           }
           res.json(result);
         });
@@ -165,6 +164,7 @@ function createKeyObj(sort,order,text,index,user) {
       query:1,
       type:1,
       voters:"$$REMOVE",
+      favorites:"$$REMOVE",
       total:1,
       "answers.answer":1,
       comment:1,
