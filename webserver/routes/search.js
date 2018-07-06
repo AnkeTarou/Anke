@@ -54,6 +54,7 @@ exports.post = function(req,res){
                 result[i].answers[j].total = null;
               }
             }
+            result[i].favorites = null;
           }
           res.json(result);
         });
@@ -154,6 +155,7 @@ function createKeyObj(sort,order,text,index,user) {
       voters:{$first:"$voters"},
       total:{$first:{$size:"$voters"}},
       comment:{$first:{$size:"$comment"}},
+      favorites:{$first:"$favorite"},
       favorite:{$first:{$size:"$favorite"}},
       date:{$first:"$date"},
     }},
@@ -171,6 +173,13 @@ function createKeyObj(sort,order,text,index,user) {
       result:{
         $cond:{
           if:{$in:[user._id,"$voters"]},
+          then:true,
+          else:false
+        }
+      },
+      myfavorite:{
+        $cond:{
+          if:{$in:[user._id,"$favorites"]},
           then:true,
           else:false
         }
