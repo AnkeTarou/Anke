@@ -55,10 +55,35 @@
           var key = {
             text:"<%= text %>",
             sort:"<%= order %>",
-            order:"<%= order %>"
+            order:"<%= order %>",
+            index:0
           };
 
+          var conFlg = false;
+
           connect("/search/",key,function(res){
+            updateResult(res);
+
+            /*clearInterval(this.current);
+            this.current = setInterval(function(){
+              connect.log = false;
+              connect("/search/",key,updateResult);
+            },7000);*/
+          })
+
+
+          $(window).on('scroll', function(){
+            var docHeight = $(document).innerHeight(), //ドキュメントの高さ
+            windowHeight = $(window).innerHeight() + 10, //ウィンドウの高さ
+            pageBottom = docHeight - windowHeight; //ドキュメントの高さ - ウィンドウの高さ
+            if(pageBottom <= $(window).scrollTop() && conFlg) {
+              //ウィンドウの一番下までスクロールした時に実行
+              conFlg = false;
+              connect("/search/",key,updateResult);
+            }
+          });
+
+          function updateResult(res){
             const result = document.getElementById("result");
             for(let i in res){
               result.innerHTML +=
@@ -132,7 +157,11 @@
                 })
               })
             }
-          })
+            if(res.length == 15){
+              conFlg = true;
+            }
+            key.index += 15;
+          }
 
           function graph(canvas,res){
             const ctx = canvas.getContext("2d");
@@ -154,7 +183,7 @@
             }(res)
             new Chart(ctx, {
               // 作成するグラフの種類
-              type: 'horizontalBar',
+              type: 'bar',
               // ラベルとデータセットを設定
               data: chartData,
               //オプション設定

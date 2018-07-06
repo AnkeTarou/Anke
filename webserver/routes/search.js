@@ -5,17 +5,21 @@ exports.get = function(req,res){
   let obj = {
     sort:sortCheck(req.query.sort),
     order:orderCheck(req.query.order),
-    text:textCheck(req.query.text)
+    text:textCheck(req.query.text),
+    index:0
   }
   res.render("search",obj);
 }
+
 exports.post = function(req,res){
   // 検索キーを生成
   let keyObj = createKeyObj(
     sortCheck(req.body.sort),
     orderCheck(req.body.order),
     textCheck(req.body.text),
+    indexCheck(req.body.index),
     req.session.user
+
   );
 
   //  未ログインなら検索結果だけを返す
@@ -86,7 +90,7 @@ function textCheck(text){
 function sortCheck(sort) {
   let check = (sort == "total") || (sort == "good") || (sort == "date");
   if(!check){
-    return "total";
+    return "date";
   }else{
     return sort;
   }
@@ -108,6 +112,20 @@ function orderCheck(order) {
 }
 
 /**
+ *indexの形式をチェック
+ *引数param
+ *@ <int> req.body.index
+ *return <int> 0 or index
+**/
+function indexCheck(num){
+  let index;
+  if(Number.isNaN(index = parseInt(num))){
+    return 0;
+  }
+  return index;
+}
+
+/**
  *検索キーを生成して返す
  *引数param
  *@ <String> req.body.sort
@@ -115,7 +133,7 @@ function orderCheck(order) {
  *@ <String> req.body.text
  *return <object> keyObj
 **/
-function createKeyObj(sort,order,text,user) {
+function createKeyObj(sort,order,text,index,user) {
   if(!user){
     user = {_id:""};
   }
@@ -157,16 +175,19 @@ function createKeyObj(sort,order,text,user) {
           else:false
         }
       }
-    }},
-    {$limit:15}
+    }}
   ];
 
   if(sort == "date"){
-    keyObj[5] = {$sort:{date:order}};
+    keyObj[4] = {$sort:{date:order}};
   }else if(sort == "favorite"){
-    keyObj[5] = {$sort:{favorite:order}};
+    keyObj[4] = {$sort:{favorite:order}};
   }else if(sort == "total"){
-    keyObj[5] = {$sort:{total:order}};
+    keyObj[4] = {$sort:{total:order}};
   }
+
+  keyObj[5] = {$skip:index};
+  keyObj[6] = {$limit:15};
+
   return keyObj;
 }
