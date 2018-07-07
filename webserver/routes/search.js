@@ -47,15 +47,32 @@ exports.post = function(req,res){
         //検索して結果を返す
         dbo.aggregate("question",keyObj)
         .then(function(result){
-          // 検索結果を整形する
-          for(let i = 0; i < result.length; i++){
+          /**** 検索結果を整形する ****/
+          let conFlg = (result.length == 15); //次の該当項目が存在するかどうか
+          let size = result.length;
+          for(let i = 0; i < size; i++){
+            if(result[i]._id == req.body.topId){
+              console.log("topId削除");
+              result.splice(i, size-i);
+              break;
+            }
+            if(result[i]._id == req.body.bottomId){
+              result.splice(0, i+1);
+              i = 0;
+              size = result.length;
+            }
             if(!result[i].result){
               for(let j = 0; j < result[i].answers.length; j++){
                 result[i].answers[j].total = null;
               }
             }
           }
-          res.json(result);
+          //　レスポンスオブジェクトの生成
+          const response = {
+            result:result,
+            conFlg:conFlg
+          }
+          res.json(response);
         });
       }else{
         // ユーザー認証失敗ならnullを返す

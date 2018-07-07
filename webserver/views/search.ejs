@@ -59,12 +59,17 @@
             text:"<%= text %>",
             sort:"<%= order %>",
             order:"<%= order %>",
+            topId:"1",
+            bottomId:"-1",
             index:0
           };
 
           var conFlg = false;
 
+          const result = document.getElementById("result");
+
           connect("/search/",key,function(res){
+            console.log(res.conFlg);
             updateResult(res);
 
             /*clearInterval(this.current);
@@ -88,11 +93,11 @@
             }
           };
 
-          function updateResult(res){
-            const result = document.getElementById("result");
+          function updateResult(response){
+            const res = response.result;
             for(let i in res){
               result.innerHTML +=
-              `<div class="card" style="margin-top:10px;" key="` + res[i]._id + `">
+              `<div id="` + res[i]._id + `-card" class="card" style="margin-top:10px;" key="` + res[i]._id + `">
                   <div class="card-header" role="tab" style="background-color:white">
                       <img class="rounded-circle" height="46" src="a.jpg" align="top" /><label class="ml-3">` + res[i].senderId + `</label><label class="text-center text-muted">@` + res[i].senderId + `</label>
                       <a class="text-body ml-5" data-toggle="collapse" href=` + '#'+ res[i]._id + ` role="button" aria-expanded="false" aria-controls="collapseOne">` + res[i].query + `</a><br>
@@ -101,7 +106,7 @@
                           <label for="` + res[i]._id + "-favorite" + `"><input id="` + res[i]._id + "-favorite" + `" type="checkbox" style="display:none;" onclick="favorite(this)"><i class="far fa-heart"style="color:#000000">` + res[i].favorite + `</i></label>
                       </div>
                   </div>
-                  <div id=` + res[i]._id + ` class="card-body collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+                  <div id="` + res[i]._id + `" class="card-body collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
                   </div>
               </div>`;
             }
@@ -162,12 +167,12 @@
                 })
               })
             }
-            if(res.length == 15){
-              conFlg = true;
-            }
-            document.getElementById("loader").setAttribute('style','display:none;');
-            console.log("done");
             key.index += 15;
+            key.topId = result.firstElementChild.lastElementChild.id;
+            key.bottomId = result.lastElementChild.lastElementChild.id;
+            document.getElementById("loader").setAttribute('style','display:none;');
+            conFlg = response.conFlg;
+            console.log("done");
           }
 
           function graph(canvas,res){
