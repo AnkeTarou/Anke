@@ -97,6 +97,7 @@
                   }
                   // 存在しない場合配列にdataを追加
                   if(!check) {
+                    key.index += 1;
                     newResultBox.push(data);
                   }
                 }
@@ -105,7 +106,7 @@
               }
             });
             key.type = "search";
-          },7000);
+          },3000);
 
           //  ウインドウの下まで行けばデータを自動取得
           window.onscroll = function(){
@@ -128,8 +129,10 @@
               const card = createCard(res[index]);
 
               result.appendChild(card);
+
               createBody(res,res[index]);
             }
+            setActionVote();
             key.index += res.length;
             key.bottomId = res[res.length-1]._id;
             document.getElementById("loader").setAttribute('style','display:none;');
@@ -141,7 +144,6 @@
             const result = document.getElementById("result");
             for(let index in newResultBox){
               const child = document.getElementById(key.topId + "-card");
-
               const card = createCard(newResultBox[index]);
 
               result.insertBefore(card,child);
@@ -149,6 +151,7 @@
 
               createBody(newResultBox,newResultBox[index]);
             }
+            setActionVote();
             newResultBox.length = 0;
             this.setAttribute("style","display: none;");
           }
@@ -264,6 +267,9 @@
               <button type="button" class="btn btn-primary" name="vote">投票</button>
               <div class="border-top"></div>`;
             }
+          }
+
+          function setActionVote(){
             const btns = document.getElementsByName("vote");
             for(let btn of btns){
               btn.addEventListener("click",function(e){
@@ -280,11 +286,11 @@
                     obj.index.push(0);
                   }
                 }
-                connect("/vote/",obj,function(array){
+                connect("/vote/",obj,function(newResultBox){
                   card.innerHTML = "";
                   const canvas = document.createElement("canvas");
                   card.appendChild(canvas);
-                  graph(canvas,array);
+                  graph(canvas,newResultBox);
                 })
               })
             }
