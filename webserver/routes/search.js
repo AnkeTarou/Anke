@@ -17,7 +17,7 @@ exports.post = function(req,res){
     sortCheck(req.body.sort),
     orderCheck(req.body.order),
     textCheck(req.body.text),
-    indexCheck(req.body.index),
+    indexCheck(req.body.index,req.body.type),
     req.session.user
 
   );
@@ -51,16 +51,20 @@ exports.post = function(req,res){
           let conFlg = (result.length == 15); //次の該当項目が存在するかどうか
           let size = result.length;
           for(let i = 0; i < size; i++){
-            if(result[i]._id == req.body.topId){
-              console.log("topId削除");
-              result.splice(i, size-i);
-              break;
+            // どのリクエストからか判別
+            if(req.body.type == "new"){
+              if(result[i]._id == req.body.topId){
+                result.splice(i, size-i);
+                break;
+              }
+            }else{
+              if(result[i]._id == req.body.bottomId){
+                result.splice(0, i+1);
+                i = 0;
+                size = result.length;
+              }
             }
-            if(result[i]._id == req.body.bottomId){
-              result.splice(0, i+1);
-              i = 0;
-              size = result.length;
-            }
+
             if(!result[i].result){
               for(let j = 0; j < result[i].answers.length; j++){
                 result[i].answers[j].total = null;
@@ -132,11 +136,12 @@ function orderCheck(order) {
  *indexの形式をチェック
  *引数param
  *@ <int> req.body.index
+ *@ <String> req.body.type
  *return <int> 0 or index
 **/
-function indexCheck(num){
+function indexCheck(num,type){
   let index;
-  if(Number.isNaN(index = parseInt(num))){
+  if(Number.isNaN(index = parseInt(num)) || type == "new"){
     return 0;
   }
   return index;
