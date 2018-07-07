@@ -47,8 +47,8 @@
 
             -->
           </div>
-          <div class="mx-auto"style="width:200px">
-            <img src="/image/yamauti.jpg" alt="Now Loading..." />
+          <div  class="mx-auto" style="width:200px">
+            <img id="loader" src="/image/Loading.gif" width="40" height="40" alt="Now Loading..."/>
           </div>
         </div>
         <div class="col-sm-1"></div>
@@ -82,6 +82,8 @@
             if(pageBottom <= $(window).scrollTop() && conFlg) {
               //ウィンドウの一番下までスクロールした時に実行
               conFlg = false;
+              console.log("load");
+              document.getElementById("loader").setAttribute('style','display: block;');
               connect("/search/",key,updateResult);
             }
           };
@@ -163,6 +165,8 @@
             if(res.length == 15){
               conFlg = true;
             }
+            document.getElementById("loader").setAttribute('style','display:none;');
+            console.log("done");
             key.index += 15;
           }
 
