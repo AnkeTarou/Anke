@@ -6,6 +6,7 @@ exports.get = function(req,res){
     sort:sortCheck(req.query.sort),
     order:orderCheck(req.query.order),
     text:textCheck(req.query.text),
+    page:"search",
     index:0
   }
   res.render("search",obj);
@@ -18,6 +19,7 @@ exports.post = function(req,res){
     orderCheck(req.body.order),
     textCheck(req.body.text),
     indexCheck(req.body.index,req.body.type),
+    pageCheck(req.body.page),
     req.session.user
 
   );
@@ -140,6 +142,20 @@ function indexCheck(num,type){
 }
 
 /**
+ *pageの形式をチェック
+ *引数param
+ *@ <String> req.body.page
+ *return <String> "search" or page
+**/
+function pageCheck(page){
+  if(page == "user" || page == "home"){
+    return page.toString();
+  }else{
+    return "search";
+  }
+}
+
+/**
  *検索キーを生成して返す
  *引数param
  *@ <String> req.body.sort
@@ -149,64 +165,69 @@ function indexCheck(num,type){
  *@ <object> req.session.user
  *return <object> keyObj
 **/
-function createKeyObj(sort,order,text,index,user) {
+function createKeyObj(sort,order,text,index,page,user) {
   if(!user){
     user = {_id:""};
   }
-  text = text.toString() || "";
   const key = {$regex:".*"+text+".*"};
-  let keyObj = [
-    {$match:{$or:[{query:key},{"answers.answer":key}]}},
-    {$unwind:"$answers"},
-    {$group:{
-      _id:"$_id",
-      senderId:{$first:"$senderId"},
-      query:{$first:"$query"},
-      type:{$first:"$type"},
-      answers:{$push:{
-        answer:"$answers.answer",
-        total:{$size:"$answers.voter"}
-      }},
-      answer:{$push:{
-        answer:"$answers.answer"
-      }},
-      voters:{$first:"$voters"},
-      comment:{$first:{$size:"$comment"}},
-      favorite:{$first:"$favorite"},
-      date:{$first:"$date"},
+  let keyObj = [];
+  if(page == "user"){
+    keyObj[0] = {$match:{"senderId":user._id}};
+  }else{
+    keyObj[0] = {$match:{$or:[{query:key},{"answers.answer":key},{"senderId":key}]}};
+  }
+
+  keyObj[1] = {$unwind:"$answers"};
+
+  keyObj[2] = {$group:{
+    _id:"$_id",
+    senderId:{$first:"$senderId"},
+    query:{$first:"$query"},
+    type:{$first:"$type"},
+    answers:{$push:{
+      answer:"$answers.answer",
+      total:{$size:"$answers.voter"}
     }},
-    {$project:{
-      _id:1,
-      senderId:1,
-      query:1,
-      type:1,
-      total:{$size:"$voters"},
-      comment:1,
-      favorite:{$size:"$favorite"},
-      date:1,
-      answers:{
-        $cond:{
-          if:{$in:[user._id,"$voters"]},
-          then:"$answers",
-          else:"$answer"
-        }
-      },
-      result:{
-        $cond:{
-          if:{$in:[user._id,"$voters"]},
-          then:true,
-          else:false
-        }
-      },
-      myfavorite:{
-        $cond:{
-          if:{$in:[user._id,"$favorite"]},
-          then:true,
-          else:false
-        }
+    answer:{$push:{
+      answer:"$answers.answer"
+    }},
+    voters:{$first:"$voters"},
+    comment:{$first:{$size:"$comment"}},
+    favorite:{$first:"$favorite"},
+    date:{$first:"$date"},
+  }};
+
+  keyObj[3] = {$project:{
+    _id:1,
+    senderId:1,
+    query:1,
+    type:1,
+    total:{$size:"$voters"},
+    comment:1,
+    favorite:{$size:"$favorite"},
+    date:1,
+    answers:{
+      $cond:{
+        if:{$in:[user._id,"$voters"]},
+        then:"$answers",
+        else:"$answer"
       }
-    }}
-  ];
+    },
+    result:{
+      $cond:{
+        if:{$in:[user._id,"$voters"]},
+        then:true,
+        else:false
+      }
+    },
+    myfavorite:{
+      $cond:{
+        if:{$in:[user._id,"$favorite"]},
+        then:true,
+        else:false
+      }
+    }
+  }};
 
   if(sort == "date"){
     keyObj[4] = {$sort:{date:order}};

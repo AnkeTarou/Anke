@@ -68,10 +68,10 @@ exports.post = function(req,res){
       //検索して結果を返す
       dbo.aggregate("user",userKey)
       .then(function(result){
-        console.log("follow",result[0].follow);
+        console.log("result",result);
         const index = indexCheck(req.body.index,req.body.type);
         const questionKey = [
-          {$match:{"senderId":user._id}},
+          {$match:{$or:[{"senderId":user._id},{"senderId":{$in:result[0].follow}}]}},
           {$unwind:"$answers"},
           {$group:{
             _id:"$_id",
