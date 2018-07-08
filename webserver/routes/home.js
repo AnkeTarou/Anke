@@ -71,8 +71,15 @@ exports.post = function(req,res){
         console.log("result",result);
         const index = indexCheck(req.body.index,req.body.type);
         const questionKey = [
+          {$lookup:{
+              from:"user",
+              let:{senderId:"$senderId"},
+              pipeline:[{$match:{$expr:{$eq:["$$senderId","$_id"]}}}],
+              as:"inventory"
+          }},
           {$match:{$or:[{"senderId":user._id},{"senderId":{$in:result[0].follow}}]}},
           {$unwind:"$answers"},
+          {$unwind:"$inventory"},
           {$group:{
             _id:"$_id",
             senderId:{$first:"$senderId"},
@@ -89,6 +96,7 @@ exports.post = function(req,res){
             comment:{$first:{$size:"$comment"}},
             favorite:{$first:"$favorite"},
             date:{$first:"$date"},
+            inventory:{$first:"$inventory"}
           }},
           {$project:{
             _id:1,
@@ -99,6 +107,8 @@ exports.post = function(req,res){
             comment:1,
             favorite:{$size:"$favorite"},
             date:1,
+            "inventory.nickname":1,
+            "inventory.img":1,
             answers:{
               $cond:{
                 if:{$in:[user._id,"$voters"]},

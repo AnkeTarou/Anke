@@ -71,14 +71,18 @@ exports.post = function(req,res){
             conFlg:conFlg
           }
           res.json(response);
+        })
+        .catch(function(error) {
+          console.log("question aggregateエラー",error);
         });
       }else{
         // ユーザー認証失敗ならnullを返す
+        console.log("user認証失敗",user);
         res.json(null);
       }
     })
     .catch(function(error) {
-      console.log(error);
+      console.log("userCheckエラー",error);
     });
   }
 };
@@ -171,15 +175,25 @@ function createKeyObj(sort,order,text,index,page,user) {
   }
   const key = {$regex:".*"+text+".*"};
   let keyObj = [];
+
+  keyObj[0] = {$lookup:{
+      from:"user",
+      let:{senderId:"$senderId"},
+      pipeline:[{$match:{$expr:{$eq:["$$senderId","$_id"]}}}],
+      as:"inventory"
+  }};
+
   if(page == "user"){
-    keyObj[0] = {$match:{"senderId":user._id}};
+    keyObj[1] = {$match:{"senderId":user._id}};
   }else{
-    keyObj[0] = {$match:{$or:[{query:key},{"answers.answer":key},{"senderId":key}]}};
+    keyObj[1] = {$match:{$or:[{query:key},{"answers.answer":key},{"senderId":key}]}};
   }
 
-  keyObj[1] = {$unwind:"$answers"};
+  keyObj[2] = {$unwind:"$answers"};
 
-  keyObj[2] = {$group:{
+  keyObj[3] = {$unwind:"$inventory"};
+
+  keyObj[4] = {$group:{
     _id:"$_id",
     senderId:{$first:"$senderId"},
     query:{$first:"$query"},
@@ -195,9 +209,10 @@ function createKeyObj(sort,order,text,index,page,user) {
     comment:{$first:{$size:"$comment"}},
     favorite:{$first:"$favorite"},
     date:{$first:"$date"},
+    inventory:{$first:"$inventory"}
   }};
 
-  keyObj[3] = {$project:{
+  keyObj[5] = {$project:{
     _id:1,
     senderId:1,
     query:1,
@@ -206,6 +221,8 @@ function createKeyObj(sort,order,text,index,page,user) {
     comment:1,
     favorite:{$size:"$favorite"},
     date:1,
+    "inventory.nickname":1,
+    "inventory.img":1,
     answers:{
       $cond:{
         if:{$in:[user._id,"$voters"]},
@@ -230,15 +247,15 @@ function createKeyObj(sort,order,text,index,page,user) {
   }};
 
   if(sort == "date"){
-    keyObj[4] = {$sort:{date:order}};
+    keyObj[6] = {$sort:{date:order}};
   }else if(sort == "favorite"){
-    keyObj[4] = {$sort:{favorite:order}};
+    keyObj[6] = {$sort:{favorite:order}};
   }else if(sort == "total"){
-    keyObj[4] = {$sort:{total:order}};
+    keyObj[6] = {$sort:{total:order}};
   }
 
-  keyObj[5] = {$skip:index};
-  keyObj[6] = {$limit:15};
+  keyObj[7] = {$skip:index};
+  keyObj[8] = {$limit:15};
 
   return keyObj;
 }
