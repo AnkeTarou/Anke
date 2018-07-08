@@ -42,8 +42,6 @@ exports.post = function(req,res){
     .then(function(usercheck) {
       if(usercheck){
         // ユーザー認証成功
-        //検索キーを更新
-        keyObj[3].$project["answers.total"] = 1;
         //検索して結果を返す
         dbo.aggregate("question",keyObj)
         .then(function(result){
@@ -62,12 +60,6 @@ exports.post = function(req,res){
                 result.splice(0, i+1);
                 i = 0;
                 size = result.length;
-              }
-            }
-
-            if(!result[i].result){
-              for(let j = 0; j < result[i].answers.length; j++){
-                result[i].answers[j].total = null;
               }
             }
           }
@@ -173,11 +165,12 @@ function createKeyObj(sort,order,text,index,user) {
         answer:"$answers.answer",
         total:{$size:"$answers.voter"}
       }},
+      answer:{$push:{
+        answer:"$answers.answer"
+      }},
       voters:{$first:"$voters"},
-      total:{$first:{$size:"$voters"}},
       comment:{$first:{$size:"$comment"}},
-      favorites:{$first:"$favorite"},
-      favorite:{$first:{$size:"$favorite"}},
+      favorite:{$first:"$favorite"},
       date:{$first:"$date"},
     }},
     {$project:{
@@ -185,13 +178,17 @@ function createKeyObj(sort,order,text,index,user) {
       senderId:1,
       query:1,
       type:1,
-      voters:"$$REMOVE",
-      favorites:"$$REMOVE",
-      total:1,
-      "answers.answer":1,
+      total:{$size:"$voters"},
       comment:1,
-      favorite:1,
+      favorite:{$size:"$favorite"},
       date:1,
+      answers:{
+        $cond:{
+          if:{$in:[user._id,"$voters"]},
+          then:"$answers",
+          else:"$answer"
+        }
+      },
       result:{
         $cond:{
           if:{$in:[user._id,"$voters"]},
@@ -201,7 +198,7 @@ function createKeyObj(sort,order,text,index,user) {
       },
       myfavorite:{
         $cond:{
-          if:{$in:[user._id,"$favorites"]},
+          if:{$in:[user._id,"$favorite"]},
           then:true,
           else:false
         }
