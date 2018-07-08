@@ -44,6 +44,7 @@
         <div class="col-sm-10" >
           <div class="accordion" role="tablist" aria-multiselectable="true" id="result">
             <button type="button" class="btn btn-primary" id="newResultbtn" style="display: none;width: 100%;">新しい投稿があります</button>
+            <text type="text" class="text text-primary" id="noResulttext" style="display: none;width: 100%;">検索結果に一致するものがありませんでした。</text>
             <!--
 
             -->
@@ -60,9 +61,9 @@
             text:"<%= text %>",
             sort:"<%= sort %>",
             order:"<%= order %>",
+            index:<%= index %>,
             topId:"1",
             bottomId:"-1",
-            index:0,
             type:"search"
           };
 
@@ -73,8 +74,13 @@
 
           //  画面読み込み時にajaxでデータ取得
           connect("/search/",key,function(res){
-            key.topId = res.result[0]._id;
-            updateResult(res);
+            if(res.result.length > 0){
+              key.topId = res.result[0]._id;
+              updateResult(res);
+            }else {
+              document.getElementById("loader").setAttribute('style','display:none;');
+              document.getElementById("noResulttext").setAttribute("style","display: block;width: 100%;");
+            }
           })
 
           //オートアップデート開始
@@ -154,6 +160,7 @@
             setActionVote();
             newResultBox.length = 0;
             this.setAttribute("style","display: none;");
+            document.getElementById("noResulttext").setAttribute("style","display: none;");
           }
 
           function createCard(data){

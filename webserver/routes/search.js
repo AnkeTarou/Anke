@@ -145,6 +145,8 @@ function indexCheck(num,type){
  *@ <String> req.body.sort
  *@ <int> req.body.order
  *@ <String> req.body.text
+ *@ <int> req.body.index
+ *@ <object> req.session.user
  *return <object> keyObj
 **/
 function createKeyObj(sort,order,text,index,user) {
