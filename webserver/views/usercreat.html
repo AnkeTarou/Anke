@@ -25,44 +25,105 @@
         .card .card-header a[data-toggle="collapse"]:focus {
             text-decoration: none; //リンクテキストの下線を消す
         }
+        .container {
+          min-width: 850px;
+          max-width: 850px;
+        }
+
     </style>
 </head>
 
-<body style="min-width :650px; background-color:#EEEEEE">
-    <nav id="nav" class="navbar navbar-expand navbar-dark bg-primary">
-    </nav>
+<body style="background-color:#fff">
+<div class="container mx-auto">
     <div class="row">
-        <div class="col-6 mx-auto">
+        <div class="col- mx-auto">
+          <div style="text-align: center">
+            <h1 style="border-bottom: solid 3px black;">アカウント作成</h1>
+          </div>
             <form class="needs-validation" novalidate>
-                <div class="form-group">
-                    <label for="exampleFormControlInput1">Eメールアドレス</label>
-                    <input type="email" id="validationCustom01" class="form-control" id="exampleFormControlInput1" value="123@123" required>
-                    <div class="invalid-feedback">
-                        メールアドレスを入力してください
-                    </div>
-                </div>
-                <div class="form-group">
+              <div class="form-group">
+                  <label for="exampleFormControlInput1">メールアドレス</label>
+                  <input type="email" id="validationCustom01" class="form-control" id="exampleFormControlInput1" value="123@123" required>
+                  <div class="invalid-feedback">
+                      メールアドレスを入力してください
+                  </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-6">
                     <label for="Password" class="col-form-label">パスワード</label>
-                    <input type="password" id="validationCustom02" class="form-control" id="Password" value="パスワード" required>
                     <input type="password" id="validationCustom02" class="form-control" id="Password" value="パスワード" required>
                     <div class="invalid-feedback">
                         パスワードを入力してください
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="File">プロフィール画像</label>
-                    <input type="file" class="form-control-file" id="File">
+                <div class="form-group col-6">
+                    <label for="Password" class="col-form-label">再入力</label>
+                    <input type="password" id="validationCustom02" class="form-control" id="Password" value="パスワード" required>
+                    <div class="invalid-feedback">
+                        パスワードを入力してください
+                    </div>
                 </div>
+              </div >
+              <label class="text-center text-muted small">?文字以上</label>
 
+                <div class="form-group mt-2">
+                    <label for="File">ID</label>
+                    <input type="text" class="form-control" value="ID" required>
+                </div>
                 <div class="form-group">
                     <label for="File">ユーザーネーム</label>
                     <input type="text" class="form-control" value="ユーザーネーム" required>
                 </div>
+                                      <label for="inputState">生年月日</label>
+                <div class="row">
+                  <div class="form-group col-4">
+                      <select id="inputState" class="form-control">
+                            <option selected>年</option>
+                                    <option></option>
+                                    <option></option>
+                                </select>
+                  </div>
+                  <div class="form-group col-4">
+
+                      <select id="inputState" class="form-control">
+                        <option selected>月</option>
+                                <option value="1" >1月</option>
+                                <option value="2" >2月</option>
+                                <option value="3" >3月</option>
+                                <option value="4" >4月</option>
+                                <option value="5" >5月</option>
+                                <option value="6" >6月</option>
+                                <option value="7" >7月</option>
+                                <option value="8" >8月</option>
+                                <option value="9" >9月</option>
+                                <option value="10" >10月</option>
+                                <option value="11" >11月</option>
+                                <option value="12" >12月</option>
+                            </select>
+                  </div>
+                  <div class="form-group col-4">
+
+                      <select id="inputState" class="form-control">
+                          <option selected>日</option>
+                          <option></option>
+                          <option></option>
+                          <option></option>
+                          </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputState">性別</label>
+                    <select id="inputState" class="form-control">
+                        <option selected>選択してください</option>
+                        <option>男性</option>
+                        <option>女性</option>
+                        <option>その他</option>
+                        </select>
+                </div>
                 <div class="form-group">
                     <label for="inputState">都道府県</label>
                     <select id="inputState" class="form-control">
-                        <option selected>選択...</option>
+                        <option selected>選択してください</option>
                         <option>北海道</option>
                 				<option>青森</option>
                 				<option>岩手</option>
@@ -112,12 +173,17 @@
                 				<option>沖縄</option>
                         </select>
                 </div>
+                <div class="form-group">
+                    <label for="File">プロフィール画像</label>
+                    <input type="file" class="form-control-file" id="File">
+                </div>
                 <div class="form-group mx-auto" style="width:100px">
-                    <button type="submit" class="btn btn-success badge-pill">変更</button>
+                    <button type="submit" class="btn btn-primary badge-pill">決定</button>
                 </div>
             </form>
         </div>
     </div>
+  </div>
     <script>
         // 赤くする　仮
         (function() {
