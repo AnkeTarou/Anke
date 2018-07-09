@@ -1,5 +1,5 @@
 const dbo = require('../lib/mongo');
 
 exports.get = function(req,res){
-  res.render('follow');
+  res.render("follow",{result:"ssss"});
 }

@@ -96,7 +96,7 @@
         newResultbtn.onclick = addNewResult;
 
         //  画面読み込み時にajaxでデータ取得
-        connect("/home/",key,function(res){
+        connect("/search",key,function(res){
           if(res.result.length > 0){
             key.topId = res.result[0]._id;
             updateResult(res);
@@ -111,7 +111,8 @@
         this.current = setInterval(function(){
           connect.log = false;
           key.type = "new";
-          connect("/home/",key,function(response){
+          connect("/search",key,function(response){
+            console.log(response);
             const res = response.result;
             if(res.length > 0){
               for(let data of res){
@@ -152,6 +153,7 @@
         };
 
         function updateResult(response){
+          console.log(response)
           const res = response.result;
           const result = document.getElementById("result");
           for(let index in res){

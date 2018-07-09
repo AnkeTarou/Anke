@@ -11,6 +11,7 @@ const follow = require('./follow');
 //const follow = require('./follow');
 
 router.use(function(req,res,next){
+  /*
   if(req.session.user){
     console.log(req.session.user);
     next();
@@ -21,6 +22,8 @@ router.use(function(req,res,next){
       res.redirect('/login');
     }
   }
+  */
+  next();
 });
 
 router.get('/',home.get);
@@ -41,7 +44,7 @@ router.get('/login',function(req,res){
   if(req.session.user){
     res.redirect('/');
   }else {
-    res.render('/login');
+    res.render('login');
   }
 });
 

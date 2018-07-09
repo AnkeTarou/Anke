@@ -27,16 +27,16 @@ exports.get = function(req,res){
       console.log(result1[0]);
       console.log(result[0])
       const homekey = Object.assign(result1[0],result[0]);
-      res.render("../views/home",homekey);
+      res.render("home",homekey);
     })
     .catch(function(err){
       console.log(err);
-      res.render("../views/home")
+      res.render("home")
     })
   })
   .catch(function(err){
     console.log(err);
-    res.render("../views/home");
+    res.render("home");
   })
 }
 

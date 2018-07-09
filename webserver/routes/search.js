@@ -45,6 +45,7 @@ exports.post = function(req,res){
           }
         }
       }
+      console.log(result);
       //　レスポンスオブジェクトの生成
       const response = {
         result:result,
