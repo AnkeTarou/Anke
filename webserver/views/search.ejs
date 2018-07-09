@@ -57,11 +57,16 @@
         <div class="col-sm-1"></div>
         <!--投稿表示-->
         <div class="col-sm-10" >
-            <div class="accordion" role="tablist" aria-multiselectable="true" id="result">
-              <!--
+          <div class="accordion" role="tablist" aria-multiselectable="true" id="result">
+            <button type="button" class="btn btn-primary" id="newResultbtn" style="display: none;width: 100%;">新しい投稿があります</button>
+            <text type="text" class="text text-primary" id="noResulttext" style="display: none;width: 100%;">検索結果に一致するものがありませんでした。</text>
+            <!--
 
-              -->
-            </div>
+            -->
+          </div>
+          <div  class="mx-auto" style="width:200px">
+            <img id="loader" src="/image/Loading.gif" width="40" height="40" alt="Now Loading..."/>
+          </div>
         </div>
         <div class="col-sm-1"></div>
     </div>
@@ -69,37 +74,80 @@
         window.addEventListener("DOMContentLoaded",function(){
           var key = {
             text:"<%= text %>",
-            sort:"<%= order %>",
+            sort:"<%= sort %>",
             order:"<%= order %>",
-            index:0
+            page:"<%= page %>",
+            index:<%= index %>,
+            topId:"1",
+            bottomId:"-1",
+            type:"search"
           };
 
           var conFlg = false;
+          var newResultBox = [];
+          const newResultbtn = document.getElementById("newResultbtn");
+          newResultbtn.onclick = addNewResult;
 
+          //  画面読み込み時にajaxでデータ取得
           connect("/search/",key,function(res){
-            updateResult(res);
-
-            /*clearInterval(this.current);
-            this.current = setInterval(function(){
-              connect.log = false;
-              connect("/search/",key,updateResult);
-            },7000);*/
+            if(res.result.length > 0){
+              key.topId = res.result[0]._id;
+              updateResult(res);
+            }else {
+              document.getElementById("loader").setAttribute('style','display:none;');
+              document.getElementById("noResulttext").setAttribute("style","display: block;width: 100%;");
+            }
           })
 
+          //オートアップデート開始
+          clearInterval(this.current);
+          this.current = setInterval(function(){
+            connect.log = false;
+            key.type = "new";
+            connect("/search/",key,function(response){
+              const res = response.result;
+              if(res.length > 0){
+                for(let data of res){
+                  // 更新データに重複がないかチェック
+                  let check = false;
+                  // 配列の最後までループ
+                  for (let i = 0; i < newResultBox.length; i++) {
+                    if (data._id == newResultBox[i]._id) {
+                      // 存在したらtrueを返す
+                      check = true;
+                    }
+                  }
+                  // 存在しない場合配列にdataを追加
+                  if(!check) {
+                    key.index += 1;
+                    newResultBox.push(data);
+                  }
+                }
+                newResultbtn.innerHTML = "新しい投稿が" + newResultBox.length + "件あります";
+                newResultbtn.setAttribute("style","display: block;width: 100%;");
+              }
+            });
+            key.type = "search";
+          },3000);
 
+          //  ウインドウの下まで行けばデータを自動取得
           window.onscroll = function(){
             var docHeight = $(document).innerHeight(), //ドキュメントの高さ
-            windowHeight = $(window).innerHeight() + 10, //ウィンドウの高さ
+            windowHeight = $(window).innerHeight() + 2, //ウィンドウの高さ
             pageBottom = docHeight - windowHeight; //ドキュメントの高さ - ウィンドウの高さ
             if(pageBottom <= $(window).scrollTop() && conFlg) {
               //ウィンドウの一番下までスクロールした時に実行
               conFlg = false;
+              console.log("load");
+              document.getElementById("loader").setAttribute('style','display: block;');
               connect("/search/",key,updateResult);
             }
           };
 
-          function updateResult(res){
+          function updateResult(response){
+            const res = response.result;
             const result = document.getElementById("result");
+<<<<<<< HEAD
             for(let i in res){
               result.innerHTML +=
               `<div class="card" style="margin-top:10px;" key="` + res[i]._id + `">
@@ -114,40 +162,154 @@
                   <div id=` + res[i]._id + ` class="card-body collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
                   </div>
               </div>`;
+=======
+            for(let index in res){
+              const card = createCard(res[index]);
+
+              result.appendChild(card);
+
+              createBody(res,res[index]);
+>>>>>>> 49017e221fe4e24af02ec4869b07de03e7a80e85
             }
-            for(let i in res){
-              const contents = document.getElementById(res[i]._id);
-              if(res[i].result){
-                const canvas = document.createElement("canvas");
-                contents.appendChild(canvas);
-                graph(canvas,res[i])
-              }else{
-                contents.innerHTML =
-                `<table class="table">
-                  <tbody>`
-                  +
-                  function(){
-                    let answers = "";
-                    for(let j in res[i].answers){
-                      answers +=
-                      `<tr>
-                        <td>
-                          <div class="custom-control custom-` + res[i].type + `">
-                            <input id=` + res[i]._id + "-" + j + ` name=` + res[i]._id + "-answer" + ` type=` + res[i].type + ` class="custom-control-input">
-                            <label class="custom-control-label" for=` + res[i]._id + "-" + j +`>` + res[i].answers[j].answer + `</label>
-                          </div>
-                        </td>
-                      </tr>`
-                    }
-                    return answers;
-                  }()
-                  +
-                  `</tbody>
-                </table>
-                <button type="button" class="btn btn-primary" name="vote">投票</button>
-                <div class="border-top"></div>`;
-              }
+            setActionVote();
+            key.index += res.length;
+            key.bottomId = res[res.length-1]._id;
+            document.getElementById("loader").setAttribute('style','display:none;');
+            conFlg = response.conFlg;
+            console.log("done");
+          }
+
+          function addNewResult(){
+            const result = document.getElementById("result");
+            for(let index in newResultBox){
+              const child = document.getElementById(key.topId + "-card");
+              const card = createCard(newResultBox[index]);
+
+              result.insertBefore(card,child);
+              key.topId = newResultBox[index]._id;
+
+              createBody(newResultBox,newResultBox[index]);
             }
+            setActionVote();
+            newResultBox.length = 0;
+            this.setAttribute("style","display: none;");
+            document.getElementById("noResulttext").setAttribute("style","display: none;");
+          }
+
+          function createCard(data){
+            const card = document.createElement("div");
+            card.setAttribute("id",data._id + "-card");
+            card.setAttribute("class","card");
+            card.setAttribute("style","margin-top:10px;");
+            card.setAttribute("key",data._id);
+
+            const header = document.createElement("div");
+            header.setAttribute("class","card-header");
+            header.setAttribute("role","tab");
+            header.setAttribute("style","background-color:white");
+
+            const img = document.createElement("img");
+            img.setAttribute("class","rounded-circle");
+            img.setAttribute("height","46");
+            img.setAttribute("src","a.jpg");
+            img.setAttribute("align","top");
+            header.appendChild(img);
+
+            const label1 = document.createElement("label");
+            label1.setAttribute("class","ml-3");
+            label1.innerHTML = data.senderId;
+            header.appendChild(label1);
+
+            const label2 = document.createElement("label");
+            label2.setAttribute("class","text-center text-muted");
+            label2.innerHTML = "@" + data.senderId;
+            header.appendChild(label2);
+
+            const a = document.createElement("a");
+            a.setAttribute("class","text-body ml-5");
+            a.setAttribute("data-toggle","collapse");
+            a.setAttribute("href","#" + data._id);
+            a.setAttribute("role","button");
+            a.setAttribute("aria-expanded","false");
+            a.setAttribute("aria-controls","collapseOne");
+            a.innerHTML = data.query;
+            header.appendChild(a);
+
+            const form = document.createElement("div");
+            form.setAttribute("class","form-check-inline");
+            header.appendChild(form);
+
+            const i = document.createElement("i");
+            i.setAttribute("class","far fa-chart-bar");
+            i.innerHTML = data.total;
+            form.appendChild(i);
+
+            const label3 = document.createElement("label");
+            label3.setAttribute("for",data._id + "-favorite");
+
+            const inp = document.createElement("input");
+            inp.setAttribute("id",data._id + "-favorite");
+            inp.setAttribute("type","checkbox");
+            inp.setAttribute("style","display:none;");
+            inp.setAttribute("onclick","favorite(this)");
+            label3.appendChild(inp);
+
+            const i2 = document.createElement("i");
+            i2.setAttribute("class","far fa-heart");
+            i2.setAttribute("style","color:#000000");
+            i2.innerHTML = data.favorite;
+            label3.appendChild(i2);
+
+            form.appendChild(label3);
+
+            const body = document.createElement("div");
+            body.setAttribute("id",data._id);
+            body.setAttribute("class","card-body collapse");
+            body.setAttribute("role","tabpanel");
+            body.setAttribute("aria-labelledby","headingOne");
+            body.setAttribute("data-parent","#accordion");
+
+            card.appendChild(header);
+            card.appendChild(body);
+
+            return card;
+          }
+
+          function createBody(array,data){
+            const contents = document.getElementById(data._id);
+            if(data.result){
+              const canvas = document.createElement("canvas");
+              contents.appendChild(canvas);
+              graph(canvas,data)
+            }else{
+              contents.innerHTML =
+              `<table class="table">
+                <tbody>`
+                +
+                function(){
+                  let answers = "";
+                  for(let j in data.answers){
+                    answers +=
+                    `<tr>
+                      <td>
+                        <div class="custom-control custom-` + data.type + `">
+                          <input id=` + data._id + "-" + j + ` name=` + data._id + "-answer" + ` type=` + data.type + ` class="custom-control-input">
+                          <label class="custom-control-label" for=` + data._id + "-" + j +`>` + data.answers[j].answer + `</label>
+                        </div>
+                      </td>
+                    </tr>`
+                  }
+                  return answers;
+                }()
+                +
+                `</tbody>
+              </table>
+              <button type="button" class="btn btn-primary" name="vote">投票</button>
+              <div class="border-top"></div>`;
+            }
+          }
+
+          function setActionVote(){
             const btns = document.getElementsByName("vote");
             for(let btn of btns){
               btn.addEventListener("click",function(e){
@@ -164,21 +326,17 @@
                     obj.index.push(0);
                   }
                 }
-                connect("/vote/",obj,function(res){
+                connect("/vote/",obj,function(newResultBox){
                   card.innerHTML = "";
                   const canvas = document.createElement("canvas");
                   card.appendChild(canvas);
-                  graph(canvas,res)
+                  graph(canvas,newResultBox);
                 })
               })
             }
-            if(res.length == 15){
-              conFlg = true;
-            }
-            key.index += 15;
           }
 
-          function graph(canvas,res){
+          function graph(canvas,array){
             const ctx = canvas.getContext("2d");
             const chartData = function(data){
               const obj = {
@@ -195,7 +353,7 @@
                 obj.datasets[0].data.push(d.total);
               }
               return obj;
-            }(res)
+            }(array)
             new Chart(ctx, {
               // 作成するグラフの種類
               type: 'bar',

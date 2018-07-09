@@ -7,7 +7,8 @@ const vote = require('./vote');
 const favorite = require('./favorite');
 const home = require('./home');
 
-router.get('/',home.post);
+router.get('/',home.get);
+router.post('/home/',home.post);
 
 router.post('/vote/',vote.post);
 
