@@ -21,14 +21,36 @@ exports.post = function(req,res){
     indexCheck(req.body.index,req.body.type),
     pageCheck(req.body.page),
     req.session.user
-
   );
 
   //  未ログインなら検索結果だけを返す
   if(!req.session.user){
     dbo.aggregate("question",keyObj)
     .then(function(result){
-      res.json(result);
+      /**** 検索結果を整形する ****/
+      let conFlg = (result.length == 15); //次の該当項目が存在するかどうか
+      let size = result.length;
+      for(let i = 0; i < size; i++){
+        // どのリクエストからか判別
+        if(req.body.type == "new"){
+          if(result[i]._id == req.body.topId){
+            result.splice(i, size-i);
+            break;
+          }
+        }else{
+          if(result[i]._id == req.body.bottomId){
+            result.splice(0, i+1);
+            i = 0;
+            size = result.length;
+          }
+        }
+      }
+      //　レスポンスオブジェクトの生成
+      const response = {
+        result:result,
+        conFlg:conFlg
+      }
+      res.json(response);
     });
   }
   // ログイン状態かチェック
