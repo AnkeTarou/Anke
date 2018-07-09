@@ -49,9 +49,9 @@
             <div class="col-3 "style="margin-top:10px;">
               <div style="background-color:white; text-align:center;">
             <!--  <div style="max-width:200px;"> -->
-                <img class="rounded-circle img-fluid mt-2"src= "<%= img %>" onerror="this.onerror = null;this.src = 'image/default.png'">
-                <div class="text-center"><%= nickname %></div>
-                <div class="text-center text-muted"><%= _id %></div>
+                <img class="rounded-circle img-fluid mt-2"src= "<%== img %>" onerror="this.onerror = null;this.src = 'image/default.png'">
+                <div class="text-center"><%== nickname %></div>
+                <div class="text-center text-muted"><%== _id %></div>
                 <!-- IDつけます -->
                 <input type="button" class="profil btn btn-outline-success btn-sm" value="投稿数 <%= votecount %>" onClick="location.href='https://www.google.co.jp'">
                 <input type="button" class="profil btn btn-outline-success btn-sm" value="いいな数 <%= favoritecount %>" onClick="location.href='#'">

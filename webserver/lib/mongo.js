@@ -89,8 +89,15 @@ exports.favorite = function (userId,targetId,favorite){
         }
     })
     .then(()=>{
-      database.close()
-      resolve({status:"success"})
+      const matchKey = [
+        {$match:{_id:targetObjId}},
+        {$project:{favorite:{$size:"$favorite"}}}
+      ];
+      Data.collection("question").aggregate(matchKey).toArray((err,result)=>{
+        if(err) reject(err);
+        database.close()
+        resolve({status:"success",favorite:result[0].favorite})
+      })
     })
     .catch((err)=>{
       if(database) database.close();
