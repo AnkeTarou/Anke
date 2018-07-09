@@ -401,6 +401,14 @@
         //レスポンスが返ってきたときの処理
         req.addEventListener("load",function(e) {
           console.log(req.response)
+          if(req.response.status == "success"){
+            document.getElementById(data.targetId + "-favorite").parentElement.lastElementChild.textContent = req.response.favorite;
+            if(data.favorite === 1){
+              document.getElementById(data.targetId + "-favorite").parentElement.lastElementChild.setAttribute("style","color:red;");
+            }else {
+              document.getElementById(data.targetId + "-favorite").parentElement.lastElementChild.setAttribute("style","color:#000000;");
+            }
+          }
         })
         req.responseType = "json"
         req.open('POST', 'favorite');
