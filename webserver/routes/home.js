@@ -19,8 +19,8 @@ exports.get = function(req,res){
   dbo.aggregate("user",key)
   .then(function(result1){
     const key = [
-      {$match:{voters:user._id}},
-      {$count:"votecount"}
+      {$match:{"senderId":user._id}},
+      {$count:"postcount"}
     ]
     dbo.aggregate("question",key)
     .then(function(result){
