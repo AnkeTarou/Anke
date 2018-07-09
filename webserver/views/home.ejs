@@ -51,8 +51,8 @@
                 <!-- IDつけます -->
                 <input type="button" class="profil btn btn-outline-success btn-sm" value="投稿数 <%= postcount %>" onClick="location.href='https://www.google.co.jp'">
                 <input type="button" class="profil btn btn-outline-success btn-sm" value="いいな数 <%= favoritecount %>" onClick="location.href='#'">
-                <input type="button" class="profil btn btn-outline-success btn-sm" value= "フォロー <%= followcount %>"  onClick="location.href='follow.html'">
-                <input type="button" class="profil btn btn-outline-success btn-sm mb-1" value="フォロワー <%= followercount %>"  onClick="location.href='follow.html'">
+                <input type="button" class="profil btn btn-outline-success btn-sm" value= "フォロー <%= followcount %>"  onClick="location.href='follow'">
+                <input type="button" class="profil btn btn-outline-success btn-sm mb-1" value="フォロワー <%= followercount %>"  onClick="location.href='follow'">
               <!--  </div>-->
               </div>
             </div>
@@ -61,9 +61,9 @@
             <div class="col-9 col-lg-10 right-contents">
               <!--星見本-->
               <div style="background-color:white">
-              <i class="fas fa-star"style="color:yellow"></i>
-              <i class="far fa-star"></i>
-            </div>
+                <i class="fas fa-star"style="color:yellow"></i>
+                <i class="far fa-star"></i>
+              </div>
                 <div class="accordion" id="result" role="tablist" aria-multiselectable="true">
                   <button type="button" class="btn btn-success" id="newResultbtn" style="display: none;width: 100%;">新しい投稿があります</button>
                   <text type="text" class="text text-primary" id="noResulttext" style="display: none;width: 100%;">投稿がまだありません。</text>
@@ -238,12 +238,21 @@
           inp.setAttribute("type","checkbox");
           inp.setAttribute("style","display:none;");
           inp.setAttribute("onclick","favorite(this)");
+          if(data.myfavorite){
+            inp.setAttribute("checked","true");
+          }
           label3.appendChild(inp);
 
           const i2 = document.createElement("i");
-          i2.setAttribute("class","far fa-heart");
-          i2.setAttribute("style","color:#000000");
-          i2.innerHTML = data.favorite;
+          i2.setAttribute("id",data._id + "-star");
+          if(data.myfavorite){
+            i2.setAttribute("class","fas fa-star");
+            i2.setAttribute("style","color:yellow");
+          }else {
+            i2.setAttribute("class","far fa-star");
+            i2.setAttribute("style","color:#000000");
+          }
+          i2.textContent = " " + data.favorite;
           label3.appendChild(i2);
 
           form.appendChild(label3);
@@ -407,11 +416,13 @@
         req.addEventListener("load",function(e) {
           console.log(req.response)
           if(req.response.status == "success"){
-            document.getElementById(data.targetId + "-favorite").parentElement.lastElementChild.textContent = req.response.favorite;
+            document.getElementById(data.targetId + "-star").textContent = " " + req.response.favorite;
             if(data.favorite === 1){
-              document.getElementById(data.targetId + "-favorite").parentElement.lastElementChild.setAttribute("style","color:red;");
+              document.getElementById(data.targetId + "-star").setAttribute("class","fas fa-star");
+              document.getElementById(data.targetId + "-star").setAttribute("style","color:yellow;");
             }else {
-              document.getElementById(data.targetId + "-favorite").parentElement.lastElementChild.setAttribute("style","color:#000000;");
+              document.getElementById(data.targetId + "-star").setAttribute("class","far fa-star");
+              document.getElementById(data.targetId + "-star").setAttribute("style","color:#000000;");
             }
           }
         })

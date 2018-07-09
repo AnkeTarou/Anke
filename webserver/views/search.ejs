@@ -241,9 +241,15 @@
             label3.appendChild(inp);
 
             const i2 = document.createElement("i");
-            i2.setAttribute("class","far fa-heart");
-            i2.setAttribute("style","color:#000000");
-            i2.innerHTML = data.favorite;
+            i2.setAttribute("id",data._id + "-star");
+            if(data.myfavorite){
+              i2.setAttribute("class","fas fa-star");
+              i2.setAttribute("style","color:yellow");
+            }else {
+              i2.setAttribute("class","far fa-star");
+              i2.setAttribute("style","color:#000000");
+            }
+            i2.innerHTML = " " + data.favorite;
             label3.appendChild(i2);
 
             form.appendChild(label3);
@@ -407,11 +413,13 @@
           req.addEventListener("load",function(e) {
             console.log(req.response)
             if(req.response.status == "success"){
-              document.getElementById(data.targetId + "-favorite").parentElement.lastElementChild.textContent = req.response.favorite;
+              document.getElementById(data.targetId + "-star").textContent = " " + req.response.favorite;
               if(data.favorite === 1){
-                document.getElementById(data.targetId + "-favorite").parentElement.lastElementChild.setAttribute("style","color:red;");
+                document.getElementById(data.targetId + "-star").setAttribute("class","fas fa-star");
+                document.getElementById(data.targetId + "-star").setAttribute("style","color:yellow;");
               }else {
-                document.getElementById(data.targetId + "-favorite").parentElement.lastElementChild.setAttribute("style","color:#000000;");
+                document.getElementById(data.targetId + "-star").setAttribute("class","far fa-star");
+                document.getElementById(data.targetId + "-star").setAttribute("style","color:#000000;");
               }
             }
           })
