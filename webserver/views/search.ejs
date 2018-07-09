@@ -147,29 +147,12 @@
           function updateResult(response){
             const res = response.result;
             const result = document.getElementById("result");
-<<<<<<< HEAD
-            for(let i in res){
-              result.innerHTML +=
-              `<div class="card" style="margin-top:10px;" key="` + res[i]._id + `">
-                  <div class="card-header" role="tab" style="background-color:white">
-                      <img class="rounded-circle" height="46" src="a.jpg" align="top" /><label class="ml-3">` + res[i].senderId + `</label><label class="text-center text-muted">@` + res[i].senderId + `</label>
-                      <a class="text-body ml-5" data-toggle="collapse" href=` + '#'+ res[i]._id + ` role="button" aria-expanded="false" aria-controls="collapseOne">` + res[i].query + `</a><br>
-                      <div class="form-check-inline">
-                          <i class="far fa-chart-bar">` + res[i].total + `</i>
-                          <label for="` + res[i]._id + "-favorite" + `"><input id="` + res[i]._id + "-favorite" + `" class="fas fa-heart favorite-icon" type="checkbox" onclick="favorite(this)"` + (res[i].myfavorite ? "checked":"") + `>` + res[i].favorite + `</label>
-                      </div>
-                  </div>
-                  <div id=` + res[i]._id + ` class="card-body collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
-                  </div>
-              </div>`;
-=======
             for(let index in res){
               const card = createCard(res[index]);
 
               result.appendChild(card);
 
               createBody(res,res[index]);
->>>>>>> 49017e221fe4e24af02ec4869b07de03e7a80e85
             }
             setActionVote();
             key.index += res.length;
