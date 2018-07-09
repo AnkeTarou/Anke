@@ -321,41 +321,68 @@
 
           function graph(canvas,array){
             const ctx = canvas.getContext("2d");
+            const background = [
+              "rgba(255, 99, 132, 0.2)",
+              "rgba(255, 159, 64, 0.2)",
+              "rgba(255, 205, 86, 0.2)",
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(201, 203, 207, 0.2)"
+            ];
+            const border = [
+              "rgb(255, 99, 132)",
+              "rgb(255, 159, 64)",
+              "rgb(255, 205, 86)",
+              "rgb(75, 192, 192)",
+              "rgb(54, 162, 235)",
+              "rgb(153, 102, 255)",
+              "rgb(201, 203, 207)"
+            ];
             const chartData = function(data){
               const obj = {
                 labels:[],
                 datasets:[
                   {
-                    label:"なし",
-                    data:[]
+                    label:"投票数",
+                    data:[1,2,3,4,5,6,7],
+                    backgroundColor:undefined,
+                    borderColor:undefined
                   }
                 ]
               };
-              for(let d of data.answers){
-                obj.labels.push(d.answer);
-                obj.datasets[0].data.push(d.total);
+
+              for(let i in data.answers){
+                obj.labels.push(data.answers[i].answer);
+                obj.datasets[0].data.push(data.answers[i].total);
+                obj.datasets[0].backgroundColor = background[i];
+                obj.datasets[0].borderColor = border[i];
               }
               return obj;
-            }(array)
+            }(array);
+            Chart.defaults.global.elements.rectangle = {
+    borderWidth: 1,       // 枠線の太さ
+    borderSkipped: 'top'  // 上部の枠線の除外
+};
             new Chart(ctx, {
               // 作成するグラフの種類
-              type: 'bar',
+              type: 'horizontalBar',
               // ラベルとデータセットを設定
               data: chartData,
               //オプション設定
               options: {
                 legend: {
-                    display: false,            //詳細ラベルの表示
+                  display: true,            //詳細ラベルの表示
                 },
                 scales: {                      //軸設定
                   yAxes: [{                    //表示設定
-                    stacked: false,
+                    stacked: true,
                     //y軸の数字
                     ticks: {
                       min: 0,                   //最小値
                       fontSize: 18,             //フォントサイズ
                       stepSize: 10,             //軸間隔
-                      fontColor: "#00f"
+                      fontColor: "#00f",
                     },
                     //y軸グリッド
                     gridLines:{           //グリッド設定
@@ -364,8 +391,7 @@
                     }
                   }],
                   xAxes: [{                         //x軸設定
-                    stacked: false,
-                    categoryPercentage: 0.4,      //棒グラフ幅
+                    stacked: true,
                     scaleLabel: {                 //軸ラベル設定
                       display: true,             //表示設定
                       fontSize: 18               //フォントサイズ
@@ -387,9 +413,15 @@
                   duration:1500, //アニメーションにかける時間
                   easing:"easeInQuad"
                 },
+                layout:{
+                  padding:20
+                },
                 tooltips:{
+                  bodySpacing:4,
                   mode:'label' //マウスオーバー時に表示されるtooltip
-                }
+                },
+                maintainAspectRatio:true,
+                responsive:true
               }
             });
           }
