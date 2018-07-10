@@ -10,17 +10,28 @@ const home = require('./home');
 const follow = require('./follow');
 //const follow = require('./follow');
 
-router.use(function(req,res,next){
+router.get(function(req,res,next){
   if(req.session.user){
     next();
   }else{
-    if(req.url == '/login' || req.url == '/search' || req.url == '/post'){
+    if(req.url == '/login' || req.url == '/search' || req.url == "/"){
       next();
     }else {
       res.redirect('/login');
     }
   }
 });
+router.post(function(req,res,next){
+  if(req.session.user){
+    next();
+  }else{
+    if(req.url == '/login' || req.url == '/search' || req.url == '/home'){
+      next();
+    }else {
+      res.json('err');
+    }
+  }
+})
 
 router.get('/',home.get);
 router.post('/home',home.post);

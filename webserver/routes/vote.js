@@ -1,6 +1,9 @@
 const db = require('../lib/mongo');
 exports.post = function(req,res){
-  //ユーザーチェック
+  if(!req.session.user){
+    res.json({status:"error"});
+    return;
+  }
   db.userCheck(req.session.user)
   .then(()=>{
     let id;
