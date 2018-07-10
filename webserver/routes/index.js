@@ -10,8 +10,9 @@ const home = require('./home');
 const login = require('./login');
 const follow = require('./follow');
 
-router.get(function(req,res,next){
-  if(req.cookies){
+router.get('/',function(req,res,next){
+  console.log("get",req.cookies._id && req.cookies.sessionkey);
+  if(req.cookies._id && req.cookies.sessionkey){
     next();
   }else{
     if(req.url == '/login' || req.url == '/search'){
@@ -21,8 +22,9 @@ router.get(function(req,res,next){
     }
   }
 });
-router.post(function(req,res,next){
-  if(req.cookies){
+router.post('/',function(req,res,next){
+  console.log("post",req.cookies._id && req.cookies.sessionkey);
+  if(req.cookies._id && req.cookies.sessionkey){
     next();
   }else{
     if(req.url == '/login' || req.url == '/search' || req.url == '/home'){
@@ -48,7 +50,7 @@ router.post('/favorite',favorite.post);
 router.get('/follow',follow.get);
 
 router.get('/login',function(req,res){
-  if(req.cookies){
+  if(req.cookies._id && req.cookies.sessionkey){
     res.redirect('/');
   }else {
     res.render('login');

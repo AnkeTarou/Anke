@@ -23,6 +23,6 @@ app.use(function(req,res,next){
   next();
 });
 app.set('view engine', 'ejs');
-app.use('/',indexRouter);
+app.use(indexRouter);
 
 app.listen(80);

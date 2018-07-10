@@ -22,9 +22,9 @@ exports.post = function(req,res){
     pageCheck(req.body.page),
     req.cookies
   );
-  console.log(req.cookies.user);
+  console.log(req.cookies);
   //  未ログインなら検索結果だけを返す
-  if(!req.cookies){
+  if(!(req.cookies._id && req.cookies.sessionkey)){
     dbo.aggregate("question",keyObj)
     .then(function(result){
       /**** 検索結果を整形する ****/
@@ -54,8 +54,8 @@ exports.post = function(req,res){
     });
   }
   // ログイン状態かチェック
-  if(req.cookies){
-    dbo.userCheck(req.cookies.user)
+  if(req.cookies._id && req.cookies.sessionkey){
+    dbo.userCheck(req.cookies)
     .then(function(usercheck){
       if(usercheck){
         return true;

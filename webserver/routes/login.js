@@ -34,12 +34,11 @@ exports.post = function(req,res){
   dbo.aggregate("user",key)
   .then(function(result){
     const user = result[0];
-    let inquiry;
     if(user){
       dbo.session(user._id,newSessionkey);
       res.cookie('sessionkey', newSessionkey, {maxAge:259200, httpOnly:false});
       res.cookie('_id', user._id, {maxAge:259200, httpOnly:false});
-      res.redirect("/",user);
+      res.redirect("/");
     }else{
       res.redirect("login");
     }

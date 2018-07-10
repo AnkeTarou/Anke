@@ -41,6 +41,10 @@ exports.insert = function(collection,key){
 
 // userの認証
 exports.userCheck = function(checkuser){
+  if(!(checkuser._id && checkuser.sessionkey)){
+    checkuser._id = "";
+    checkuser.sessionkey = "";
+  }
   return new Promise(function(resolve,reject){
     MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
       if(error) reject(error);

@@ -2,9 +2,6 @@ const dbo = require('../lib/mongo');
 
 exports.get = function(req,res){
   let user = req.cookies;
-  if(!user){
-    res.render('login');
-  }
   const key = [
     {$lookup:{
         from:"question",
