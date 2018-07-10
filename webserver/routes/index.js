@@ -9,7 +9,6 @@ const favorite = require('./favorite');
 const home = require('./home');
 const login = require('./login');
 const follow = require('./follow');
-//const follow = require('./follow');
 
 router.get(function(req,res,next){
   if(req.session.user){
