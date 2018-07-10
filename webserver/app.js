@@ -16,10 +16,7 @@ app.use(cookieParser());
 app.use(function(req,res,next){
   //res.cookie("key","value")
   console.log("url\n"+req.url);
-
-  if(req.cookies){
-    req.session.user = {_id:req.cookies.userId, sessionkey:req.cookies.sessionkey};
-  }
+  req.cookies.user = {_id:req.cookies.userId, sessionkey:req.cookies.sessionkey};
   console.log("セッション\n"+JSON.stringify(req.session));
   console.log("cookie\n"+JSON.stringify(req.cookies));
   console.log("受信データ\n");
