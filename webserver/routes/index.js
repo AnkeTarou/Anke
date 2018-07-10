@@ -11,6 +11,29 @@ const login = require('./login');
 const follow = require('./follow');
 //const follow = require('./follow');
 
+router.get(function(req,res,next){
+  if(req.session.user){
+    next();
+  }else{
+    if(req.url == '/login' || req.url == '/search'){
+      next();
+    }else {
+      res.redirect('/login');
+    }
+  }
+});
+router.post(function(req,res,next){
+  if(req.session.user){
+    next();
+  }else{
+    if(req.url == '/login' || req.url == '/search' || req.url == '/home'){
+      next();
+    }else {
+      res.json('err');
+    }
+  }
+})
+
 router.get('/',home.get);
 router.post('/home',home.post);
 

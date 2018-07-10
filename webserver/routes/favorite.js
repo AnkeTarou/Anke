@@ -1,6 +1,10 @@
 const db = require('../lib/mongo');
 exports.post = function(req,res){
   let id;
+  if(!req.session.user){
+    res.json({status:"error"});
+    return;
+  }
   db.userCheck(req.session.user)
   .then(()=>{
     if(favoriteCheck(req.body.favorite)){
@@ -23,7 +27,6 @@ exports.post = function(req,res){
     res.json(result);
   })
   .catch((err)=>{
-    console.error(err);
     res.json({status:"error"});
   })
 
