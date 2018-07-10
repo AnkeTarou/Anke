@@ -36,6 +36,8 @@ router.post(function(req,res,next){
 router.get('/',home.get);
 router.post('/home',home.post);
 
+router.post('/post',post.post);
+
 router.post('/vote',vote.post);
 
 router.post('/favorite',favorite.post);

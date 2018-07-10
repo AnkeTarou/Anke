@@ -25,7 +25,6 @@ exports.post = function(req,res){
   console.log(req.session.user);
   //  未ログインなら検索結果だけを返す
   if(!req.session.user){
-    console.log("sjdpoewjqpfjpoeqjfewojgw");
     dbo.aggregate("question",keyObj)
     .then(function(result){
       /**** 検索結果を整形する ****/
@@ -46,7 +45,6 @@ exports.post = function(req,res){
           }
         }
       }
-      console.log("result",result);
       //　レスポンスオブジェクトの生成
       const response = {
         result:result,
