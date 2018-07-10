@@ -3,7 +3,7 @@ const dbo = require('../lib/mongo');
 exports.get = function(req,res){
   let user = req.session.user;
   if(!user){
-    user = {_id:""};
+    res.render('login');
   }
   const key = [
     {$match:{_id:user._id}},
