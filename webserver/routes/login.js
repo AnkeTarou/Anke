@@ -37,14 +37,9 @@ exports.post = function(req,res){
     let inquiry;
     if(user){
       dbo.session(user._id,newSessionkey);
-      inquiry={boo: true, userid:user._id, 'sessionkey':newSessionkey, type:"POST"};
       res.cookie('sessionkey', newSessionkey, {maxAge:259200, httpOnly:false});
-      res.cookie('userId', user._id, {maxAge:259200, httpOnly:false});
-      if(req.body.type == "session"){
-        res.json(inquiry);
-      }else {
-        res.render("home",user);
-      }
+      res.cookie('_id', user._id, {maxAge:259200, httpOnly:false});
+      res.redirect("/",user);
     }else{
       res.redirect("login");
     }

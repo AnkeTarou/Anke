@@ -11,7 +11,7 @@ const login = require('./login');
 const follow = require('./follow');
 
 router.get(function(req,res,next){
-  if(req.cookies.user){
+  if(req.cookies){
     next();
   }else{
     if(req.url == '/login' || req.url == '/search'){
@@ -22,7 +22,7 @@ router.get(function(req,res,next){
   }
 });
 router.post(function(req,res,next){
-  if(req.cookies.user){
+  if(req.cookies){
     next();
   }else{
     if(req.url == '/login' || req.url == '/search' || req.url == '/home'){
@@ -48,7 +48,7 @@ router.post('/favorite',favorite.post);
 router.get('/follow',follow.get);
 
 router.get('/login',function(req,res){
-  if(req.cookies.user){
+  if(req.cookies){
     res.redirect('/');
   }else {
     res.render('login');

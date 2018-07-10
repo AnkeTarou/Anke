@@ -14,9 +14,7 @@ app.use(cookieParser());
 
 // アクセスしてきたときに最初に実行される処理
 app.use(function(req,res,next){
-  //res.cookie("key","value")
   console.log("url\n"+req.url);
-  req.cookies.user = {_id:req.cookies.userId, sessionkey:req.cookies.sessionkey};
   console.log("セッション\n"+JSON.stringify(req.session));
   console.log("cookie\n"+JSON.stringify(req.cookies));
   console.log("受信データ\n");

@@ -9,7 +9,7 @@ exports.post = function(req,res){
   let check = querycheck(key.query) && answersCheck(key.answers) && typeCheck(key.type);
 
   // ユーザー認証
-  if(!req.cookies.user){
+  if(!req.cookies){
     res.json(err);
     return;
   }
