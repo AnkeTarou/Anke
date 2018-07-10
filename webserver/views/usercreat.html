@@ -25,68 +25,67 @@
         .card .card-header a[data-toggle="collapse"]:focus {
             text-decoration: none; //リンクテキストの下線を消す
         }
-        .container {
-          min-width: 850px;
-          max-width: 850px;
-        }
 
+        .container {
+            min-width: 850px;
+            max-width: 850px;
+        }
     </style>
 </head>
 
 <body style="background-color:#fff">
-<div class="container mx-auto">
-    <div class="row">
-        <div class="col- mx-auto">
-          <div style="text-align: center">
-            <h1 style="border-bottom: solid 3px black;">アカウント作成</h1>
-          </div>
-            <form class="needs-validation" novalidate>
-              <div class="form-group">
-                  <label for="exampleFormControlInput1">メールアドレス</label>
-                  <input type="email" id="validationCustom01" class="form-control" id="exampleFormControlInput1" value="123@123" required>
-                  <div class="invalid-feedback">
-                      メールアドレスを入力してください
-                  </div>
-              </div>
-              <div class="row">
-                <div class="form-group col-6">
-                    <label for="Password" class="col-form-label">パスワード</label>
-                    <input type="password" id="validationCustom02" class="form-control" id="Password" value="パスワード" required>
-                    <div class="invalid-feedback">
-                        パスワードを入力してください
+    <div class="container mx-auto">
+        <div class="row">
+            <div class="col- mx-auto">
+                <div style="text-align: center">
+                    <h1 style="border-bottom: solid 3px black;">アカウント作成</h1>
+                </div>
+                <form class="needs-validation" novalidate>
+                    <div class="form-group">
+                        <label for="emailaddress">メールアドレス</label>
+                        <input type="email" class="form-control" id="emailaddress" value="123@123" required>
+                        <div class="invalid-feedback">
+                            メールアドレスを入力してください
+                        </div>
                     </div>
-                </div>
-                <div class="form-group col-6">
-                    <label for="Password" class="col-form-label">再入力</label>
-                    <input type="password" id="validationCustom02" class="form-control" id="Password" value="パスワード" required>
-                    <div class="invalid-feedback">
-                        パスワードを入力してください
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="Password1" class="col-form-label">パスワード</label>
+                            <input type="password" class="form-control" id="Password1" value="パスワード" required>
+                            <div class="invalid-feedback">
+                                パスワードを入力してください
+                            </div>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="Password2" class="col-form-label">再入力</label>
+                            <input type="password" class="form-control" id="Password2" value="パスワード" required>
+                            <div class="invalid-feedback">
+                                パスワードを入力してください
+                            </div>
+                        </div>
                     </div>
-                </div>
-              </div >
-              <label class="text-center text-muted small">?文字以上</label>
+                    <label class="text-center text-muted small">?文字以上</label>
 
-                <div class="form-group mt-2">
-                    <label for="File">ID</label>
-                    <input type="text" class="form-control" value="ID" required>
-                </div>
-                <div class="form-group">
-                    <label for="File">ユーザーネーム</label>
-                    <input type="text" class="form-control" value="ユーザーネーム" required>
-                </div>
-                                      <label for="inputState">生年月日</label>
-                <div class="row">
-                  <div class="form-group col-4">
-                      <select id="inputState" class="form-control">
-                            <option selected>年</option>
-                                    <option></option>
-                                    <option></option>
-                                </select>
-                  </div>
-                  <div class="form-group col-4">
-
-                      <select id="inputState" class="form-control">
-                        <option selected>月</option>
+                    <div class="form-group mt-2">
+                        <label for="ID">ID</label>
+                        <input type="text" id="ID" class="form-control" value="ID" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">ユーザーネーム</label>
+                        <input type="text" id="name" class="form-control" value="ユーザーネーム" required>
+                    </div>
+                    <label for="inputState1">生年月日</label>
+                    <div class="row">
+                        <div class="form-group col-4">
+                            <select id="inputState1" class="form-control">
+                                <option selected>年</option>
+                                <option></option>
+                                <option></option>
+                            </select>
+                        </div>
+                        <div class="form-group col-4">
+                            <select id="inputState" class="form-control">
+                                <option selected>月</option>
                                 <option value="1" >1月</option>
                                 <option value="2" >2月</option>
                                 <option value="3" >3月</option>
@@ -100,90 +99,89 @@
                                 <option value="11" >11月</option>
                                 <option value="12" >12月</option>
                             </select>
-                  </div>
-                  <div class="form-group col-4">
-
-                      <select id="inputState" class="form-control">
-                          <option selected>日</option>
-                          <option></option>
-                          <option></option>
-                          <option></option>
-                          </select>
-                  </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputState">性別</label>
-                    <select id="inputState" class="form-control">
-                        <option selected>選択してください</option>
-                        <option>男性</option>
-                        <option>女性</option>
-                        <option>その他</option>
+                        </div>
+                        <div class="form-group col-4">
+                            <select id="inputState" class="form-control">
+                                <option selected>日</option>
+                                <option></option>
+                                <option></option>
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputState2">性別</label>
+                        <select id="inputState2" class="form-control">
+                            <option selected>選択してください</option>
+                            <option>男性</option>
+                            <option>女性</option>
+                            <option>その他</option>
                         </select>
-                </div>
-                <div class="form-group">
-                    <label for="inputState">都道府県</label>
-                    <select id="inputState" class="form-control">
-                        <option selected>選択してください</option>
-                        <option>北海道</option>
-                				<option>青森</option>
-                				<option>岩手</option>
-                				<option>宮城</option>
-                				<option>秋田</option>
-                				<option>山形</option>
-                				<option>福島</option>
-                				<option>茨城</option>
-                				<option>栃木</option>
-                				<option>群馬</option>
-                				<option>埼玉</option>
-                				<option>千葉</option>
-                				<option>東京</option>
-                				<option>神奈川</option>
-                				<option>新潟</option>
-                				<option>富山</option>
-                				<option>石川</option>
-                				<option>福井</option>
-                				<option>山梨</option>
-                				<option>長野</option>
-                				<option>岐阜</option>
-                				<option>静岡</option>
-                				<option>愛知</option>
-                				<option>三重</option>
-                				<option>滋賀</option>
-                				<option>京都</option>
-                				<option>大阪</option>
-                				<option>兵庫</option>
-                				<option>奈良</option>
-                				<option>和歌山</option>
-                				<option>鳥取</option>
-                				<option>島根</option>
-                				<option>岡山</option>
-                				<option>広島</option>
-                				<option>山口</option>
-                				<option>徳島</option>
-                				<option>香川</option>
-                				<option>愛媛</option>
-                				<option>高知</option>
-                				<option>福岡</option>
-                				<option>佐賀</option>
-                				<option>長崎</option>
-                				<option>熊本</option>
-                				<option>大分</option>
-                				<option>宮崎</option>
-                				<option>鹿児島</option>
-                				<option>沖縄</option>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputState3">都道府県</label>
+                        <select id="inputState3" class="form-control">
+                            <option selected>選択してください</option>
+                            <option>北海道</option>
+                				    <option>青森</option>
+                				    <option>岩手</option>
+                			    	<option>宮城</option>
+                			    	<option>秋田</option>
+                			    	<option>山形</option>
+                			    	<option>福島</option>
+                			    	<option>茨城</option>
+                			    	<option>栃木</option>
+                			    	<option>群馬</option>
+                			    	<option>埼玉</option>
+                			    	<option>千葉</option>
+                		    		<option>東京</option>
+                		    		<option>神奈川</option>
+                		    		<option>新潟</option>
+                		    		<option>富山</option>
+                			    	<option>石川</option>
+                			    	<option>福井</option>
+                			    	<option>山梨</option>
+                			    	<option>長野</option>
+                			    	<option>岐阜</option>
+                			    	<option>静岡</option>
+                			    	<option>愛知</option>
+                			    	<option>三重</option>
+                			    	<option>滋賀</option>
+                			    	<option>京都</option>
+                			    	<option>大阪</option>
+                			    	<option>兵庫</option>
+                			    	<option>奈良</option>
+                			    	<option>和歌山</option>
+                		    		<option>鳥取</option>
+                			    	<option>島根</option>
+                		    		<option>岡山</option>
+                		    		<option>広島</option>
+                			    	<option>山口</option>
+                			    	<option>徳島</option>
+                			    	<option>香川</option>
+                		    		<option>愛媛</option>
+                		    		<option>高知</option>
+                		    		<option>福岡</option>
+                		    		<option>佐賀</option>
+                			    	<option>長崎</option>
+                			    	<option>熊本</option>
+                			    	<option>大分</option>
+                			    	<option>宮崎</option>
+                		    		<option>鹿児島</option>
+                		    		<option>沖縄</option>
                         </select>
-                </div>
-                <div class="form-group">
-                    <label for="File">プロフィール画像</label>
-                    <input type="file" class="form-control-file" id="File">
-                </div>
-                <div class="form-group mx-auto" style="width:100px">
-                    <button type="submit" class="btn btn-primary badge-pill">決定</button>
-                </div>
-            </form>
+                    </div>
+                    <div class="form-group">
+                        <label for="File">プロフィール画像</label>
+                        <input type="file" class="form-control-file" id="File">
+                    </div>
+                    <div class="form-group mx-auto" style="width:100px">
+                        <button type="submit" class="btn btn-primary badge-pill">決定</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-  </div>
     <script>
         // 赤くする　仮
         (function() {
