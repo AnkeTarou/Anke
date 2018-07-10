@@ -45,13 +45,12 @@ exports.userCheck = function(checkuser){
     MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
       if(error) reject(error);
       const dbo = database.db("Data");
-      const key = [{$match:{sessionkey:checkuser.sessionkey}}];
+      const key = [{$match:{_id:checkuser._id,sessionkey:checkuser.sessionkey}}];
       dbo.collection("user").aggregate(key).toArray(function(err, result) {
         if (err) reject(err);
         database.close();
-        const user = result[0];
-        if(user && (user._id == checkuser._id) ){
-          resolve(user)
+        if(result[0]){
+          resolve(result[0])
         }else {
           resolve(null);
         }

@@ -9,6 +9,10 @@ exports.post = function(req,res){
   let check = querycheck(key.query) && answersCheck(key.answers) && typeCheck(key.type);
 
   // ユーザー認証
+  if(!req.session.user){
+    res.json(err);
+    return;
+  }
   dbo.userCheck(req.session.user)
   .then(
   function(user) {

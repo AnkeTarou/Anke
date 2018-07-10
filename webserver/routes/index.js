@@ -11,19 +11,15 @@ const follow = require('./follow');
 //const follow = require('./follow');
 
 router.use(function(req,res,next){
-  /*
   if(req.session.user){
-    console.log(req.session.user);
     next();
   }else{
-    if(req.url == '/login'){
+    if(req.url == '/login' || req.url == '/search' || req.url == '/post'){
       next();
     }else {
       res.redirect('/login');
     }
   }
-  */
-  next();
 });
 
 router.get('/',home.get);
@@ -33,10 +29,9 @@ router.post('/vote',vote.post);
 
 router.post('/favorite',favorite.post);
 
-router.post('/post',post.post);
-
 router.get('/search',search.get);
 router.post('/search',search.post);
+
 
 router.get('/follow',follow.get);
 
