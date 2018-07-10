@@ -9,6 +9,7 @@ const favorite = require('./favorite');
 const home = require('./home');
 const login = require('./login');
 const follow = require('./follow');
+const insertuser = require('./insertuser');
 
 router.get('/',function(req,res,next){
   console.log("get",req.cookies._id && req.cookies.sessionkey);
@@ -48,6 +49,12 @@ router.post('/vote',vote.post);
 router.post('/favorite',favorite.post);
 
 router.get('/follow',follow.get);
+
+router.post('/insertuser',insertuser.post);
+
+router.get('/usercreate',function(req,res){
+  res.render('usercreate');
+});
 
 router.get('/login',function(req,res){
   if(req.cookies._id && req.cookies.sessionkey){
