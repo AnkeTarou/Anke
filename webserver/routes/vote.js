@@ -1,10 +1,10 @@
 const db = require('../lib/mongo');
 exports.post = function(req,res){
-  if(!req.session.user){
+  if(!req.cookies.user){
     res.json({status:"error"});
     return;
   }
-  db.userCheck(req.session.user)
+  db.userCheck(req.cookies.user)
   .then(()=>{
     let id;
     try{
@@ -16,7 +16,7 @@ exports.post = function(req,res){
       {$match:{_id:id}},
       {$addFields:{
         voted:{
-          $in:[req.session.user._id,"$voters"]
+          $in:[req.cookies.user._id,"$voters"]
         }
       }}
     ]
@@ -37,7 +37,7 @@ exports.post = function(req,res){
   })
   //投票を行う
   .then((question)=>{
-    return db.vote(req.session.user,question._id,req.body.index);
+    return db.vote(req.cookies.user,question._id,req.body.index);
   })
   .then((result)=>{
     res.json(result);

@@ -11,7 +11,7 @@ const follow = require('./follow');
 //const follow = require('./follow');
 
 router.get(function(req,res,next){
-  if(req.session.user){
+  if(req.cookies.user){
     next();
   }else{
     if(req.url == '/login' || req.url == '/search'){
@@ -22,7 +22,7 @@ router.get(function(req,res,next){
   }
 });
 router.post(function(req,res,next){
-  if(req.session.user){
+  if(req.cookies.user){
     next();
   }else{
     if(req.url == '/login' || req.url == '/search' || req.url == '/home'){
@@ -49,7 +49,7 @@ router.post('/search',search.post);
 router.get('/follow',follow.get);
 
 router.get('/login',function(req,res){
-  if(req.session.user){
+  if(req.cookies.user){
     res.redirect('/');
   }else {
     res.render('login');

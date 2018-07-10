@@ -1,7 +1,7 @@
 const dbo = require('../lib/mongo');
 
 exports.get = function(req,res){
-  let user = req.session.user;
+  let user = req.cookies.user;
   if(!user){
     res.render('login');
   }
@@ -41,7 +41,7 @@ exports.get = function(req,res){
 }
 
 exports.post = function(req,res){
-  let user = req.session.user;
+  let user = req.cookies.user;
   if(!user){
     user = {
       _id:"",
