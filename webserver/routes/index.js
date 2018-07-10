@@ -14,7 +14,7 @@ router.get(function(req,res,next){
   if(req.session.user){
     next();
   }else{
-    if(req.url == '/login' || req.url == '/search' || req.url == "/"){
+    if(req.url == '/login' || req.url == '/search'){
       next();
     }else {
       res.redirect('/login');
