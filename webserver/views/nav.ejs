@@ -36,7 +36,7 @@
               </div>
           </form>
           <!--投稿-->
-          <button type="button" class="btn btn-dark badge-pill ml-5"data-toggle="modal" data-target="#exampleModalCenter">
+          <button type="button" class="btn btn-dark badge-pill ml-5" name="modal" data-toggle="modal" data-target="#exampleModalCenter">
               投稿
           </button>
       </div>
@@ -100,8 +100,10 @@
     const answers = document.getElementsByName("post-answer");
     const type = document.getElementsByName("post-type");
     const addbtn = document.getElementById("addbtn");
+    const modal = document.getElementsByName("modal")[0];
 
     //各EventListenerをセット
+    modal.onclick = loginCheck;
     sub.onclick = route;
     addbtn.onclick = addAnswer;
 
@@ -188,5 +190,10 @@
     function delAnswer(e){
       let target = e.currentTarget.parentElement
       target.parentElement.removeChild(target);
+    }
+
+    /****login確認****/
+    function loginCheck(){
+
     }
 </script>
