@@ -4,6 +4,7 @@ exports.get = function(req,res){
   let user = req.cookies.user;
   if(!user){
     res.render('login');
+    return;
   }
   const key = [
     {$match:{_id:user._id}},
