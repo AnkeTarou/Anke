@@ -22,7 +22,6 @@ exports.post = function(req,res){
     pageCheck(req.body.page),
     req.session.user
   );
-  console.log(req.session.user);
   //  未ログインなら検索結果だけを返す
   if(!req.session.user){
     dbo.aggregate("question",keyObj)
