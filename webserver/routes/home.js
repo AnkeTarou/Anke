@@ -1,39 +1,33 @@
 const dbo = require('../lib/mongo');
 
 exports.get = function(req,res){
-  let user = req.cookies.user;
+  let user = req.cookies;
   if(!user){
     res.render('login');
     return;
   }
   const key = [
+    {$lookup:{
+        from:"question",
+        let:{userId:"$_id"},
+        pipeline:[{$match:{$expr:{$eq:["$$userId","$senderId"]}}}],
+        as:"inventory"
+    }},
     {$match:{_id:user._id}},
     {$project:{
       followcount:{$size:"$follow"},
       followercount:{$size:"$follower"},
       favoritecount:{$size:"$favorite"},
       nickname:1,
-      img:1
+      img:1,
+      postcount:{$size:"$inventory"}
     }}
   ]
 
   dbo.aggregate("user",key)
-  .then(function(result1){
-    const key = [
-      {$match:{"senderId":user._id}},
-      {$count:"postcount"}
-    ]
-    dbo.aggregate("question",key)
-    .then(function(result){
-      console.log(result1[0]);
-      console.log(result[0])
-      const homekey = Object.assign(result1[0],result[0]);
-      res.render("home",homekey);
-    })
-    .catch(function(err){
-      console.log(err);
-      res.render("home")
-    })
+  .then(function(result){
+    console.log(result);
+    res.render("home",result[0]);
   })
   .catch(function(err){
     console.log(err);
@@ -42,7 +36,7 @@ exports.get = function(req,res){
 }
 
 exports.post = function(req,res){
-  let user = req.cookies.user;
+  let user = req.cookies;
   if(!user){
     user = {
       _id:"",

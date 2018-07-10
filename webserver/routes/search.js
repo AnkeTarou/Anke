@@ -20,11 +20,11 @@ exports.post = function(req,res){
     textCheck(req.body.text),
     indexCheck(req.body.index,req.body.type),
     pageCheck(req.body.page),
-    req.cookies.user
+    req.cookies
   );
   console.log(req.cookies.user);
   //  未ログインなら検索結果だけを返す
-  if(!req.cookies.user){
+  if(!req.cookies){
     dbo.aggregate("question",keyObj)
     .then(function(result){
       /**** 検索結果を整形する ****/
@@ -54,7 +54,7 @@ exports.post = function(req,res){
     });
   }
   // ログイン状態かチェック
-  if(req.cookies.user){
+  if(req.cookies){
     dbo.userCheck(req.cookies.user)
     .then(function(usercheck){
       if(usercheck){

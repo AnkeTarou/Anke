@@ -1,11 +1,11 @@
 const db = require('../lib/mongo');
 exports.post = function(req,res){
   let id;
-  if(!req.cookies.user){
+  if(!req.cookies){
     res.json({status:"error"});
     return;
   }
-  db.userCheck(req.cookies.user)
+  db.userCheck(req.cookies)
   .then(()=>{
     if(favoriteCheck(req.body.favorite)){
       try{
@@ -19,7 +19,7 @@ exports.post = function(req,res){
   })
   .then((result)=>{
     if(result[0]){
-      return db.favorite(req.cookies.user._id,req.body.targetId,req.body.favorite);
+      return db.favorite(req.cookies._id,req.body.targetId,req.body.favorite);
     }
     return Promise.reject("targetIdが存在しません:"+req.body.targetId);
   })
