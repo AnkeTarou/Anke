@@ -9,11 +9,11 @@ exports.post = function(req,res){
   let check = querycheck(key.query) && answersCheck(key.answers) && typeCheck(key.type);
 
   // ユーザー認証
-  if(!req.session.user){
+  if(!req.cookies){
     res.json(err);
     return;
   }
-  dbo.userCheck(req.session.user)
+  dbo.userCheck(req.cookies.user)
   .then(
   function(user) {
     //全ての認証に通ればDBに投稿内容を挿入する
