@@ -1,6 +1,6 @@
 const db = require('../lib/mongo');
 exports.post = function(req,res){
-  if(!(req.cookies.id && req.cookies.sessionkey)){
+  if(!(req.cookies._id && req.cookies.sessionkey)){
     res.json({status:"error"});
     return;
   }
