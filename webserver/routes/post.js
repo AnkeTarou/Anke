@@ -13,7 +13,7 @@ exports.post = function(req,res){
     res.json(err);
     return;
   }
-  dbo.userCheck(req.cookies)
+  dbo.userCheck(req.cookies.user)
   .then(
   function(user) {
     //全ての認証に通ればDBに投稿内容を挿入する

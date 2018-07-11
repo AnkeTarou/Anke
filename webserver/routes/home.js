@@ -40,6 +40,12 @@ exports.post = function(req,res){
       sessionkey:""
     };
   }
+  const userKey = [
+    {$match:{_id:user._id}},
+    {$project:{
+      follow:1
+    }}
+  ]
   dbo.userCheck(user)
   .then(function(usercheck){
     if(usercheck){

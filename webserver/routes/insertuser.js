@@ -18,8 +18,7 @@ exports.post = function(req,res){
       img:"default.jpg",
       favorite:[],
       follow:[],
-      follower:[],
-      sessionkey:[]
+      follower:[]
     }
     console.log(userObj);
     dbo.aggregate("user",[{$match:{_id:userObj._id}}])
