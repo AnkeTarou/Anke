@@ -9,6 +9,7 @@ const favorite = require('./favorite');
 const home = require('./home');
 const login = require('./login');
 const follow = require('./follow');
+//const follower = require('./follower');
 const insertuser = require('./insertuser');
 
 router.get('/',function(req,res,next){
@@ -48,7 +49,13 @@ router.post('/vote',vote.post);
 
 router.post('/favorite',favorite.post);
 
-router.get('/follow',follow.get);
+router.get('/follow',function(req,res){
+  res.render('follow');
+});
+
+router.get('/follower',function(req,res){
+  res.render('follower');
+});
 
 router.post('/insertuser',insertuser.post);
 
