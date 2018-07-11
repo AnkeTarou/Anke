@@ -80,13 +80,14 @@ function createCard(data){
   const img = document.createElement("img");
   img.setAttribute("class","rounded-circle");
   img.setAttribute("height","46");
-  img.setAttribute("src","a.jpg");
+  img.setAttribute("src","/image/" + data.inventory.img);
   img.setAttribute("align","top");
+  img.setAttribute("onerror","src='/image/default.jpg'")
   header.appendChild(img);
 
   const label1 = document.createElement("label");
   label1.setAttribute("class","ml-3");
-  label1.innerHTML = data.senderId;
+  label1.innerHTML = data.inventory.nickname;
   header.appendChild(label1);
 
   const label2 = document.createElement("label");

@@ -15,7 +15,7 @@ exports.post = function(req,res){
       age:getAge(parseInt(param.inputBirthYear), parseInt(param.inputBirthMonth), parseInt(param.inputBirthDay)),
       area:param.inputArea.toString(),
       nickname:param.inputName.toString(),
-      img:"default",
+      img:"default.jpg",
       favorite:[],
       follow:[],
       follower:[]
