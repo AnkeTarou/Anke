@@ -4,6 +4,8 @@ var key = {
   bottomId:"-1",
   type:"search"
 };
+var conFlg = false;
+var newResultBox = [];
 function connect(uri,data,callback,error){
   const req = new XMLHttpRequest();
 
@@ -220,7 +222,15 @@ function graph(canvas,array){
       datasets:[
         {
           label:"なし",
-          data:[]
+          data:[],
+          backgroundColor: function(context) {
+              console.log(this)
+              var index = context.dataIndex;
+              var value = context.dataset.data[index];
+              return value < 0 ? 'red' :  // 赤で負値を描画する
+                  index % 2 ? 'blue' :    // 負値でなければ、青と緑の交互
+                  'green';
+          }
         }
       ]
     };
@@ -232,7 +242,7 @@ function graph(canvas,array){
   }(array)
   new Chart(ctx, {
     // 作成するグラフの種類
-    type: 'bar',
+    type: 'horizontalBar',
     // ラベルとデータセットを設定
     data: chartData,
     //オプション設定
