@@ -49,28 +49,25 @@
             <div class="col-3 "style="margin-top:10px;">
               <div style="background-color:white; text-align:center;">
             <!--  <div style="max-width:200px;"> -->
-                <img class="rounded-circle img-fluid mt-2"src= "<%== img %>" onerror="this.onerror = null;this.src = 'image/default.png'">
-                <div class="text-center"><%== nickname %></div>
-                <div class="text-center text-muted"><%== _id %></div>
+                <img class="rounded-circle img-fluid mt-2"src= "a.jpg" onerror="this.onerror = null;this.src = 'image/default.png'">
+                <div class="text-center">testuser</div>
+                <div class="text-center text-muted">test</div>
                 <!-- IDつけます -->
-                <input type="button" class="profil btn btn-outline-success btn-sm" value="投稿数 <%= votecount %>" onClick="location.href='https://www.google.co.jp'">
-                <input type="button" class="profil btn btn-outline-success btn-sm" value="いいな数 <%= favoritecount %>" onClick="location.href='#'">
-                <input type="button" class="profil btn btn-outline-success btn-sm" value= "フォロー <%= followcount %>"  onClick="location.href='follow.html'">
-                <input type="button" class="profil btn btn-outline-success btn-sm mb-1" value="フォロワー <%= followercount %>"  onClick="location.href='follow.html'">
+                <input type="button" class="profil btn btn-outline-success btn-sm" value="投稿数 9999" onClick="location.href='https://www.google.co.jp'">
+                <input type="button" class="profil btn btn-outline-success btn-sm" value="いいな数 9999" onClick="location.href='#'">
+                <input type="button" class="profil btn btn-outline-success btn-sm" value= "フォロー 9999"  onClick="location.href='follow.html'">
+                <input type="button" class="profil btn btn-outline-success btn-sm mb-1" value="フォロワー 9999"  onClick="location.href='follow.html'">
               <!--  </div>-->
               </div>
             </div>
 
-            <!--投稿表示-->
+            <!--投稿表示 ここから-->
             <div class="col-9">
-              <div style="text-align: center">
-                  <h1 style="border-bottom: solid 3px black;">フォロー</h1>
-              </div>
                 <div class="row">
                   <div class="col-4" style="margin-top:10px;">
                     <div class="border border-success"style="background-color:white; text-align:center;">
                   <!--  <div style="max-width:200px;"> -->
-                      <img class="rounded-circle img-fluid mt-2"src= "<%= img %>" onerror="this.onerror = null;this.src = 'image/default.png'">
+                      <img class="rounded-circle img-fluid mt-2"src= "" onerror="this.onerror = null;this.src = 'image/default.png'">
                       <div class="text-center"><%= nickname %></div>
                       <div class="text-center text-muted"><%= _id %></div>
                       <!-- IDつけます -->
