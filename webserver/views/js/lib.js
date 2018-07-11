@@ -82,7 +82,7 @@ function createCard(data){
   img.setAttribute("height","46");
   img.setAttribute("src","/image/" + data.inventory.img);
   img.setAttribute("align","top");
-  img.setAttribute("onerror","src='/image/default.jpg'")
+  img.setAttribute("onerror","this.src='/image/default.jpg'")
   header.appendChild(img);
 
   const label1 = document.createElement("label");
