@@ -99,7 +99,7 @@ exports.post = function(req,res){
         });
       }else{
         // ユーザー認証失敗ならnullを返す
-        console.log("user認証失敗",user);
+        console.log("user認証失敗");
         res.json(null);
       }
     })

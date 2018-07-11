@@ -42,7 +42,6 @@ exports.post = function(req,res){
     }else{
       res.redirect("login");
     }
-
   })
 }
 

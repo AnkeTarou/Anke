@@ -178,7 +178,7 @@ exports.session = function(id,sessionkey){
     MongoClient.connect(url,{ useNewUrlParser:true },function(error, database) {
       if (error) throw error;
       const dbo = database.db("Data");
-      dbo.collection("user").update({_id:id},{$set:{'sessionkey':sessionkey}},
+      dbo.collection("user").update({_id:id},{$addToSet:{'sessionkey':sessionkey}},
       function(err, res) {
         if (err) throw err;
         resolve();
