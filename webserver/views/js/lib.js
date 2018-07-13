@@ -216,7 +216,7 @@ function setActionVote(){
 }
 
 function graph(canvas,array){
-  const ctx = canvas.getContext("2d");
+  canvas.parentNode.style.height= array.answers.length*60+"px";
   const chartData = function(data){
     const obj = {
       labels:[],
@@ -241,7 +241,7 @@ function graph(canvas,array){
     }
     return obj;
   }(array)
-  new Chart(ctx, {
+  new Chart(canvas, {
     // 作成するグラフの種類
     type: 'horizontalBar',
     // ラベルとデータセットを設定
